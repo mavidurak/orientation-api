@@ -1,0 +1,72 @@
+{
+  "name": "orientation-api",
+  "version": "1.0.0",
+  "description": "node, express, postgesql, sequelize MaviDurak-IO orientation team main project api",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "nodemon start",
+    "build-hooks": "cp -R hooks ./.git/ && chmod +x ./.git/hooks/pre-commit",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --fix",
+    "build": "babel --config-file=./.babelrc ./src -d ./dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mavidurak/orientation-api.git"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "postgresql",
+    "sequelize"
+  ],
+  "author": "",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/mavidurak/orientation-api/issues"
+  },
+  "homepage": "https://github.com/mavidurak/orientation-api#readme",
+  "dependencies": {
+    "body-parser": "*",
+    "colors": "*",
+    "cors": "*",
+    "dotenv": "*",
+    "express": "*",
+    "pg": "*",
+    "pg-hstore": "*",
+    "sequelize": "*"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/node": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/plugin-proposal-decorators": "^7.0.0",
+    "@babel/plugin-proposal-do-expressions": "^7.0.0",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0",
+    "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
+    "@babel/plugin-proposal-function-bind": "^7.0.0",
+    "@babel/plugin-proposal-function-sent": "^7.0.0",
+    "@babel/plugin-proposal-json-strings": "^7.0.0",
+    "@babel/plugin-proposal-logical-assignment-operators": "^7.0.0",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.0.0",
+    "@babel/plugin-proposal-numeric-separator": "^7.0.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.0.0",
+    "@babel/plugin-proposal-pipeline-operator": "^7.0.0",
+    "@babel/plugin-proposal-throw-expressions": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "@babel/plugin-syntax-import-meta": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/runtime-corejs2": "^7.13.8",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^26.6.3",
+    "babel-node": "*",
+    "eslint": "^7.15.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.7"
+  }
+}
