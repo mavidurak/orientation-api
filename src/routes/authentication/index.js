@@ -120,7 +120,7 @@ const register = async (req, res) => {
 };
 
 const userInfo = async (req, res) => {
-  res.send(req.user)
+  res.send(req.user);
 };
 
 export default {
