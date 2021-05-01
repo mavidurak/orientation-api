@@ -8,11 +8,9 @@ export const encrypt = (data, cryptType = 'sha256', secret = SECRET_KEY, encodin
     .digest(encoding)
 );
 
-export const generateSalt = (length) => {
-  return crypto.randomBytes(Math.ceil(length / 2))
-    .toString('hex') /** convert to hexadecimal format */
-    .slice(0, length); /** return required number of characters */
-}
+export const generateSalt = (length) => crypto.randomBytes(Math.ceil(length / 2))
+  .toString('hex') /** convert to hexadecimal format */
+  .slice(0, length); /** return required number of characters */
 
 export const intToBase36 = (timestamp) => timestamp.toString(36);
 

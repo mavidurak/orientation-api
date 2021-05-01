@@ -15,5 +15,8 @@ module.exports = {
     'no-underscore-dangle': 'off',
     indent: ['error', 2],
     camelcase: 'off',
+    'func-names': 'off',
+    'no-param-reassign': 'off',
+    'consistent-return': 'off',
   },
 };

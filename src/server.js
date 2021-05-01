@@ -8,8 +8,6 @@ import cors from 'cors';
 import router from './router';
 import pre_handlers from './pre_handlers';
 
-import connection from './sequelize';
-
 const server = express();
 const { PORT } = process.env;
 

@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 
 import Sequelize from '../sequelize';
+import { encrypt } from '../utils/encription';
 
 const users = Sequelize.define('users',
   {
@@ -39,6 +40,13 @@ const users = Sequelize.define('users',
   });
 
 const initialize = (models) => {
+  models.users.hasMany(
+    models.tokens, {
+      as: 'user_tokens',
+      foreignKey: 'user_id',
+      sourceKey: 'id',
+    },
+  );
 
   models.users.prototype.toJSON = function () {
     const values = { ...this.get() };
@@ -49,6 +57,21 @@ const initialize = (models) => {
     return values;
   };
 
+  models.users.prototype.createToken = async function (ip_address) {
+    const expired_at = new Date();
+    expired_at.setDate(new Date().getDate() + 30);
+    const timestamp = Math.round(new Date().getTime() / 1000);
+    const key = `${this.id}_${this.password_hash}_${timestamp}`;
+
+    const token = await models.tokens.create({
+      user_id: this.id,
+      value: encrypt(key),
+      ip_address,
+      expired_at,
+    });
+
+    return token;
+  };
 };
 
 export default {

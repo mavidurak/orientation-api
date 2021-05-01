@@ -1,7 +1,5 @@
 import fs from 'fs';
 
-import sequelize from '../sequelize';
-
 const models = {};
 const init_callbacks = [];
 
