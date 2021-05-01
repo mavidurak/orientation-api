@@ -27,6 +27,11 @@ npm start
 ```bash
 npm run lint
 ```
+## Build Hooks
+Build git hooks
+```bash
+npm run build-hooks
+```
 
 ## License
 [GNU General Public License v3.0](LICENSE)

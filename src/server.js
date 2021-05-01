@@ -8,6 +8,8 @@ import cors from 'cors';
 import router from './router';
 import pre_handlers from './pre_handlers';
 
+import connection from './sequelize';
+
 const server = express();
 const { PORT } = process.env;
 
@@ -19,5 +21,5 @@ server.use(router);
 server.get('/api/health-check', (req, res) => res.status(200).send('OK'));
 
 server.listen(PORT, () => {
-  console.log(`🚀 Server listening to ${`http://localhost:${PORT}`.green}`);
+  console.log(`🚀 Server listening to ${`http://localhost:${PORT}`.green} , NODE_ENV=${`${process.env.NODE_ENV}`.green}`);
 });

@@ -6,9 +6,9 @@
   "scripts": {
     "start": "nodemon start",
     "build-hooks": "cp -R hooks ./.git/ && chmod +x ./.git/hooks/pre-commit",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --fix",
-    "build": "babel --config-file=./.babelrc ./src -d ./dist"
+    "build": "babel --config-file=./.babelrc ./src -d ./dist",
+    "migrate": "sequelize db:migrate"
   },
   "repository": {
     "type": "git",
@@ -30,11 +30,14 @@
     "body-parser": "*",
     "colors": "*",
     "cors": "*",
+    "crypto": "*",
     "dotenv": "*",
     "express": "*",
+    "joi": "*",
     "pg": "*",
     "pg-hstore": "*",
-    "sequelize": "*"
+    "sequelize": "*",
+    "sequelize-cli": "^6.2.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",

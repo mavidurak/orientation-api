@@ -3,6 +3,7 @@
     "verbose": true,
     "watch": [
         "src",
+        ".env",
         "node_modules"
     ],
     "ignore": [
