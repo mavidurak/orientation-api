@@ -12,7 +12,7 @@ const server = express();
 const { PORT } = process.env;
 
 server.use(cors());
-server.use(bodyParser.json());
+server.use(bodyParser.json());aaa
 pre_handlers.forEach((h) => server.use(h));
 server.use(router);
 
