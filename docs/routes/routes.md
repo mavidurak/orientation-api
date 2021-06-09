@@ -669,3 +669,47 @@
     "message": "Community deleted successfully!"
 }
 ```
+
+# Messages
+## `Post` /messages
+### Request
+```json
+{
+    "to": Number,
+    "text": String
+}
+```
+### Response
+```json
+{
+    "status": String,
+    "timestamp": Date
+}
+```
+## `GET` /messages
+### Request
+```json
+{
+    "to": Number
+}
+```
+### Response
+```json
+{
+    "messages": [
+        {
+            "from": Number,
+            "to": Number,
+            "text": String,
+            "created_at": Date
+        }
+    ]
+}
+```
+## `DELETE` /messages/:id
+### Request
+### Response
+```json
+{
+    "message": "Message deleted successfully!"
+}
