@@ -326,6 +326,25 @@
     "deleted_at":"Date"
 }
 ```
+## `GET` /wanted-lists/
+### Request
+### Response
+```json
+{
+    wantedLists: [
+        {
+            "id":"Number",
+            "user_id":"Number",
+            "content_id":"Number",
+            "status":"String",
+            "my_score":"Number",
+            "created_at":"Date",
+            "updated_at":"Date",
+            "deleted_at":"Date"
+        }
+    ]
+}
+```
 ## `PUT` /wanted-lists/:contentId
 ### Request
 ```json
@@ -344,6 +363,14 @@
     "created_at":"Date",
     "updated_at":"Date",
     "deleted_at":"Date"
+}
+```
+## `DELETE` /wanted-lists/:contentId
+### Request
+### Response
+```json
+{
+    "message": "Content deleted successfully from yours wanted list!",
 }
 ```
 ## `GET` /users/:userId/wanted-lists
