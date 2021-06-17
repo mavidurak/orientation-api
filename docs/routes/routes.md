@@ -303,8 +303,8 @@
 ```
 
 
-# Wanted Lists
-## `POST` /wanted-lists/
+# Wanted List
+## `POST` /wanted-list
 ### Request
 ```json
 {
@@ -326,12 +326,12 @@
     "deleted_at":"Date"
 }
 ```
-## `GET` /wanted-lists/
+## `GET` /wanted-list
 ### Request
 ### Response
 ```json
 {
-    wantedLists: [
+    "wantedLists": [
         {
             "id":"Number",
             "user_id":"Number",
@@ -345,7 +345,7 @@
     ]
 }
 ```
-## `PUT` /wanted-lists/:contentId
+## `PUT` /wanted-list/:contentId
 ### Request
 ```json
 {
@@ -365,7 +365,7 @@
     "deleted_at":"Date"
 }
 ```
-## `DELETE` /wanted-lists/:contentId
+## `DELETE` /wanted-list/:contentId
 ### Request
 ### Response
 ```json
@@ -373,7 +373,7 @@
     "message": "Content deleted successfully from yours wanted list!",
 }
 ```
-## `GET` /users/:userId/wanted-lists
+## `GET` /users/:userId/wanted-list
 ### Request
 ### Response
 ```json
@@ -391,7 +391,7 @@
     ]
 }
 ```
-## `GET` /users/:userId/wanted-lists
+## `GET` /users/:userId/wanted-list
 ### Request
 ### Response
 ```json
@@ -702,22 +702,22 @@
 ### Request
 ```json
 {
-    "to": Number,
-    "text": String
+    "to": "Number",
+    "text": "String"
 }
 ```
 ### Response
 ```json
 {
-    "status": String,
-    "timestamp": Date
+    "status": "String",
+    "timestamp": "Date"
 }
 ```
 ## `GET` /messages
 ### Request
 ```json
 {
-    "to": Number
+    "to": "Number"
 }
 ```
 ### Response
@@ -725,10 +725,10 @@
 {
     "messages": [
         {
-            "from": Number,
-            "to": Number,
-            "text": String,
-            "created_at": Date
+            "from": "Number",
+            "to": "Number",
+            "text": "String",
+            "created_at": "Date"
         }
     ]
 }
@@ -740,3 +740,44 @@
 {
     "message": "Message deleted successfully!"
 }
+```
+
+# Images
+## `Post` /images
+### Request
+```json
+{
+    "name": "String",
+    "path": "String"
+}
+```
+### Response
+```json
+{
+    "id": "Number",
+    "name": "String",
+    "path": "String",
+    "created_at": "Date",
+}
+```
+
+## `GET` /images/:id
+### Request
+### Response
+```json
+{
+    "id": "Number",
+    "name": "String",
+    "path": "String",
+    "created_at": "Date",
+}
+```
+
+## `DELETE` /images/:id
+### Request
+### Response
+```json
+{
+    "message": "Image deleted successfully!"
+}
+```
