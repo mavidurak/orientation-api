@@ -64,6 +64,7 @@ table content_reviews{
 
 table images{
   id int [pk, increment]
+  user_id int [not null, ref: - users.id]
   name varchar [not null]
   path varchar [not null]
   created_at timestamp
