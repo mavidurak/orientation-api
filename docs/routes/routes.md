@@ -642,6 +642,14 @@
     "deleted_at":"Date"
 }
 ```
+## `DELETE` /discussions/:id
+### Request
+### Response
+```json
+{
+    "message": "Discussions deleted successfully!"
+}
+```
 ## `GET` /communities/discussions
 ### Request
 ### Response
@@ -659,14 +667,6 @@
             "deleted_at":"Date"
         }
     ]
-}
-```
-## `GET` /communities/:id
-### Request
-### Response
-```json
-{
-    "message": "Community deleted successfully!"
 }
 ```
 
