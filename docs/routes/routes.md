@@ -647,10 +647,10 @@
 ### Response
 ```json
 {
-    "message": "Discussions deleted successfully!"
+    "message": "Discussion deleted successfully!"
 }
 ```
-## `GET` /communities/discussions
+## `GET` /communities/:communityId/discussions
 ### Request
 ### Response
 ```json
