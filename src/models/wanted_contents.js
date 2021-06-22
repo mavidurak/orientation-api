@@ -31,8 +31,9 @@ const wanted_contents = Sequelize.define('wanted_contents',
   timestamps: true,
   paranoid: true,
   underscored: true,
-});
+},
+);
 export default {
-    model: wanted_contents,
+    model: wanted_contents
   };
   
