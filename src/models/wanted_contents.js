@@ -35,7 +35,6 @@ const wanted_contents=sequelize.define('wanted_contents',
   underscored: true,
 });
 
-
 export default {
     model: wanted_contents,
     initialize,

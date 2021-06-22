@@ -48,6 +48,6 @@ module.exports = {
     });
   },
   down(queryInterface) {
-    return queryInterface.dropTable('users');
+    return queryInterface.dropTable('wanted_contents');
   },
 };
