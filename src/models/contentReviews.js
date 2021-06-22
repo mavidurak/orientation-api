@@ -4,18 +4,6 @@ import Sequelize from '../sequelize';
 
 const content_reviews = Sequelize.define('content_reviews',
   {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-    },
-    user_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    content_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     text: {
       type: DataTypes.STRING,
     },
