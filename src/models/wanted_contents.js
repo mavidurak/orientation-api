@@ -6,8 +6,9 @@ const wanted_contents=sequelize.define('wanted_contents',
   id:{
     type:DataTypes.INTEGER,
     autoIncrement:true,
-    allowNull:false
-
+    primaryKey:true,
+    allowNull:false,
+    unique:true,
   },
   user_id: {
     type: DataTypes.INTEGER,
@@ -19,14 +20,14 @@ const wanted_contents=sequelize.define('wanted_contents',
     allowNull:false,
   },
   status:{
-    type:DataTypes.STRING(100),
-    allowNull:false
+    type:DataTypes.STRING(200),
+    allowNull:false,
   },
   my_score:{
     type:DataTypes.INTEGER,
     maxvalue:5,
     minvalue:1,
-    allowNull:true
+    allowNull:true,
   },
 },
 {
@@ -34,7 +35,6 @@ const wanted_contents=sequelize.define('wanted_contents',
   paranoid: true,
   underscored: true,
 });
-
 export default {
     model: wanted_contents,
     initialize,

@@ -6,6 +6,7 @@ module.exports = {
           autoIncrement: true,
           primaryKey: true,
           allowNull: false,
+          unique:true,
         },
         user_id: {
           type: Sequelize.INTEGER,
@@ -17,8 +18,8 @@ module.exports = {
            allowNull:false,
         },
         status: {
-          type: Sequelize.STRING(100),
-          allowNull: false,
+          type: Sequelize.STRING(200),
+          allowNull:false,
         },
         my_score: {
           type: Sequelize.INTEGER,
