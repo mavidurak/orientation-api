@@ -1,14 +1,14 @@
-import DataTypes from 'sequelize';
-import { Sequelize } from 'sequelize';
+import { DataTypes } from 'sequelize';
 
-const wanted_contents=sequelize.define('wanted_contents',
+import Sequelize from '../sequelize';
+
+const wanted_contents = Sequelize.define('wanted_contents',
 {
   id:{
     type:DataTypes.INTEGER,
     autoIncrement:true,
     primaryKey:true,
     allowNull:false,
-    unique:true,
   },
   user_id: {
     type: DataTypes.INTEGER,
@@ -25,9 +25,6 @@ const wanted_contents=sequelize.define('wanted_contents',
   },
   my_score:{
     type:DataTypes.INTEGER,
-    maxvalue:5,
-    minvalue:1,
-    allowNull:true,
   },
 },
 {
@@ -37,6 +34,5 @@ const wanted_contents=sequelize.define('wanted_contents',
 });
 export default {
     model: wanted_contents,
-    initialize,
   };
   
