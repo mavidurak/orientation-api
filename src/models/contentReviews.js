@@ -7,18 +7,14 @@ const content_reviews = Sequelize.define('content_reviews',
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true,
-      allowNull: false,
     },
     user_id: {
-      type: DataTypes.ARRAY(DataTypes.INTEGER),
-      allowNull: true,
-      defaultValue: null,
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     content_id: {
-      type: DataTypes.ARRAY(DataTypes.INTEGER),
-      allowNull: true,
-      defaultValue: null,
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     text: {
       type: DataTypes.STRING,

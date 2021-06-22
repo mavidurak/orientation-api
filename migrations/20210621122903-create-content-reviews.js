@@ -4,18 +4,14 @@ module.exports = {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
-        primaryKey: true,
-        allowNull: false,
       },
       user_id: {
-        type: Sequelize.ARRAY(Sequelize.INTEGER),
-        allowNull: true,
-        defaultValue: null,
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
       content_id: {
-        type: Sequelize.ARRAY(Sequelize.INTEGER),
-        allowNull: true,
-        defaultValue: null,
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
       text: {
         type: Sequelize.STRING,
@@ -29,11 +25,9 @@ module.exports = {
       },
       created_at: {
         type: Sequelize.DATE,
-        allowNull: false,
       },
       updated_at: {
         type: Sequelize.DATE,
-        allowNull: false,
       },
       deleted_at: {
         type: Sequelize.DATE,
