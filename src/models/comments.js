@@ -37,6 +37,9 @@ const comments = Sequelize.define('comments',
     underscored: true,
   });
 
+  const initialize = (models) => {
+  }
+
   export default {
     model: comments,
     initialize,

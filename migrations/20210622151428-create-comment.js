@@ -31,16 +31,15 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      expired_at: {
-        allowNull: false,
+      deleted_at: {
         type: Sequelize.DATE,
       },
     });
