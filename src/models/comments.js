@@ -1,7 +1,5 @@
 import { DataTypes } from 'sequelize';
-
 import Sequelize from '../sequelize';
-
 
 const comments = Sequelize.define('comments',
   {
@@ -64,11 +62,7 @@ const initialize = (models) => {
   );
 };
 
-
 export default {
   model: comments,
   initialize,
 };
-
-
-
