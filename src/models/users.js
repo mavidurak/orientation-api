@@ -46,6 +46,10 @@ const initialize = (models) => {
       foreignKey: 'user_id',
       sourceKey: 'id',
     },
+    models.comments, {
+      as: 'comment',
+      foreignKey: 'user_id',
+    },
   );
 
   models.users.prototype.toJSON = function () {

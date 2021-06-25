@@ -37,13 +37,31 @@ const comments = Sequelize.define('comments',
     underscored: true,
   });
 
-  const initialize = (models) => {
-  }
+const initialize = (models) => {
+  models.comments.belongsTo(
+    models.users, {
+    as: 'user',
+    foreignKey: 'user_id'
+  },
+    models.content_reviews, {
+    as: 'content_review',
+    foreignKey: 'content_reviews_id'
+  },
+    models.discussions, {
+    as: 'discussion',
+    foreignKey:'discussions_id' 
+  },
+    models.parent_comments, {
+    as: 'parent_comment',
+    foreignKey: 'parent_comment_id'
+  },
+  );
+};
 
-  export default {
-    model: comments,
-    initialize,
-  };
+export default {
+  model: comments,
+  initialize,
+};
 
 
 
