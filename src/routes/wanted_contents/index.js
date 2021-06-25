@@ -48,18 +48,19 @@ const readwwantedcontent = async (req, res) => {
             ],
         });
     }
-    while (true) {
-        let wanted_content = await models.wanted_contents.findOne();
+        let wanted_content = await models.wanted_contents.findOne(){
+            content_id:content_id
+        };
         if(wanted_content.content_id==content_id)
         {
             return res.send(201, wanted_content);
         }
-    }
 };
 export default {
     prefix: '/wanted-contents',
     inject: (router) => {
         router.post('', addnewwantedcontent);
         router.get('', readwwantedcontent);
+        router.post('/delete', addnewwantedcontent);
     },
 };
