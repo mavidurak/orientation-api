@@ -15,7 +15,6 @@ const createCommentSchema = {
   }),
 };
 
-
 const createComment = async (req, res) => {
   const { error } = createCommentSchema.body.validate(req.body);
   if (error) {
@@ -60,7 +59,14 @@ const updateComment = async (req, res) => {
     }
   })
   if (!comment || comment.user_id !== req.user.id) {
-    return res.send(403, 'Comment not found or you don\'t have a permission!');
+      return res.send(403, {
+      errors: [
+        {
+          message: 'Comment not found or you don\'t have a permission!',
+
+        },
+      ],
+    });
   }
 
   const { text, is_spoiler } = req.body;
@@ -70,7 +76,6 @@ const updateComment = async (req, res) => {
 
   res.send({ comment })
 };
-
 
 
 const deleteComment = async (req, res) => {
@@ -99,10 +104,6 @@ const deleteComment = async (req, res) => {
     });
   }
 }
-
-
-
-
 
 export default {
   prefix: '/comments',
