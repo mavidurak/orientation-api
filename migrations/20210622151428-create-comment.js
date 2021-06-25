@@ -31,7 +31,7 @@ module.exports = {
       },
       text: {
         type: Sequelize.STRING,
-        allownull: false
+        allowNull: false
       },
       is_spoiler: {
         type: Sequelize.BOOLEAN,
