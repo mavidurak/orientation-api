@@ -23,9 +23,20 @@ const createComment = async (req, res) => {
       errors: error.details,
     });
   }
-  const{
-    text,content_review_id,discussion_id,parent_comment_id,is_spoiler
-  }=req.body;
+  const {
+    text, content_review_id, discussion_id, parent_comment_id, is_spoiler,
+  } = req.body;
+
+  if ([content_review_id, discussion_id, parent_comment_id].filter((e) => e).length !== 1) {
+    return res.send(400, {
+      errors: [
+        {
+          message: 'There must be only one id'
+
+        },
+      ],
+    });
+  }
 
   const comment = await models.comments.create({
     user_id: req.user.id,
@@ -33,105 +44,71 @@ const createComment = async (req, res) => {
     content_review_id,
     discussion_id,
     parent_comment_id,
-    is_spoiler
+    is_spoiler,
   });
   res.send({
-    comment
+    comment,
+  });
+};
+
+
+const updateComment = async (req, res) => {
+  const { id } = req.params;
+  let comment = await models.comments.findOne({
+    where: {
+      id,
+    }
   })
+  if (!comment || comment.user_id !== req.user.id) {
+    return res.send(403, 'Comment not found or you don\'t have a permission!');
+  }
+
+  const { text, is_spoiler } = req.body;
+  comment.text = text;
+  comment.is_spoiler = is_spoiler;
+  await comment.save();
+
+  res.send({ comment })
+};
+
+
+
+const deleteComment = async (req, res) => {
+  
+    const { id } = req.params;
+    let comment = await models.comments.findOne({
+    where: {
+      id,
+    }
+  });
+  if (!comment) {
+    return res.send(403, 'Comment not found or you don\'t have a permission!');
+  }
+  const deletedComment = await models.comments.destroy({
+    where: {
+      id,
+    }
+  });
+
+  if(deletedComment){
+    return res.send(200, 'Comment `DELETE`d successfully!');
+  }
+  else{
+    res.send({
+      message: 'Comment not found or you don\'t have a permission!!',
+    });
+  }
 }
 
 
-const login = async (req, res) => {
-  const { error } = loginSchema.body.validate(req.body);
-  if (error) {
-    return res.status(400).send({
-      errors: error.details,
-    });
-  }
 
-  const { username, password } = req.body;
 
-  const user = await models.users.findOne({
-    where: {
-      username,
-    },
-  });
-
-  if (user) {
-    const passwordHash = makeSha512(password, user.password_salt);
-    if (passwordHash === user.password_hash) {
-      const token = await user.createToken(req.headers['x-forwarded-for'] || req.connection.remoteAddress);
-
-      return res.send({ token });
-    }
-  }
-
-  return res.status(401).send({
-    errors: [
-      {
-        message: 'Username or password is incorrect!',
-      },
-    ],
-  });
-};
-
-const register = async (req, res) => {
-  const { error } = registerSchema.body.validate(req.body);
-  if (error) {
-    return res.status(400).send({
-      errors: error.details,
-    });
-  }
-
-  const {
-    username, email, password, name,
-  } = req.body;
-
-  let user = await models.users.findOne({
-    where: {
-      [Op.or]: {
-        username: username.trim(),
-        email: email.trim(),
-      },
-    },
-  });
-  if (user) {
-    return res.send(400, {
-      errors: [
-        {
-          message: 'E-mail or username is already used!',
-        },
-      ],
-    });
-  }
-
-  const {
-    hash: password_hash,
-    salt: password_salt,
-  } = createSaltHashPassword(password);
-
-  user = await models.users.create({
-    username,
-    email,
-    name,
-    password_hash,
-    password_salt,
-  });
-
-  return res.status(201).send({
-    user: user.toJSON(),
-  });
-};
-
-const userInfo = async (req, res) => {
-  res.send(req.user);
-};
 
 export default {
   prefix: '/comments',
   inject: (router) => {
     router.post('', createComment);
-    router.put('/:id', register);
-    router.delete('/:id', login);
+    router.put('/:id', updateComment);
+    router.delete('/:id', deleteComment);
   },
 };
