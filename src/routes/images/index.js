@@ -21,15 +21,6 @@ const create = async (req, res) => {
   }
   const { name, path } = req.body;
   
-  if (!req.user) {
-    return res.status(403).send({
-    errors: [
-      {
-        message: 'Image not found or you don\'t have a permission!',
-      },
-    ],
-  });
-  }
   const image = await models.images.create({
       user_id: user.id,
       name,
