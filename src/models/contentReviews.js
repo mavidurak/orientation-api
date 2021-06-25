@@ -9,6 +9,7 @@ const content_reviews = Sequelize.define('content_reviews',
     },
     score: {
       type: DataTypes.NUMBER,
+      default: null,
     },
     is_spoiler: {
       type: DataTypes.BOOLEAN,
@@ -17,12 +18,19 @@ const content_reviews = Sequelize.define('content_reviews',
   },
   {
     timestamps: true,
+    paranoid: true,
+    underscored: true,
   });
 
   const initialize = (models) => {
-  };
-
-
+    models.content_reviews.belongsTo(models.users, {
+      as: 'user',
+      foreignKey: {
+        name: 'user_id',
+        allowNull: false,
+      },
+    });
+  }
 export default {
   model: content_reviews,
   initialize,

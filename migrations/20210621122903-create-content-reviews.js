@@ -10,19 +10,22 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      content_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
+      // content_id: {
+      //   type: Sequelize.INTEGER,
+      //   allowNull: false,
+      // },
       text: {
         type: Sequelize.STRING,
       },
       score: {
         type: Sequelize.INTEGER,
+        default: null,
+        allowNull: true,
       },
       is_spoiler: {
         type: Sequelize.BOOLEAN,
         default: false,
+        allowNull: true,
       },
       created_at: {
         type: Sequelize.DATE,
