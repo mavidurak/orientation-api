@@ -21,13 +21,17 @@ const add = async (req, res) => {
                    );
   }
   const { name, path } = req.body;
-  const user = await models.users.findOne({
-    where: {
-      id: req.user.id,
-    },
+  
+  if (!req.user) {
+    return res.status(403).send({
+    errors: [
+      {
+        message: 'Image not found or you don\'t have a permission!',
+      },
+    ],
   });
-  if (user) {
-    const image = await models.images.create({
+  }
+  const image = await models.images.create({
       user_id: user.id,
       name,
       path,
@@ -36,13 +40,6 @@ const add = async (req, res) => {
       image,
     });
   }
-  return res.status(403).send({
-    errors: [
-      {
-        message: 'Image not found or you don\'t have a permission!',
-      },
-    ],
-  });
 };
 
 const detail = async (req, res) => {
@@ -54,18 +51,17 @@ const detail = async (req, res) => {
       },
     });
 
-    if(image){
-      return res.send(image);
-    }
-
-    return res.send({
+    if(!image){
+      return res.send({
       errors: [
         {
           message: 'Image not found or you don\'t have a permission!',
         },
       ],
     });
-    
+    }
+    return res.send(image);
+
   } catch (err) {
     return res.status(500).send({
       errors: [
@@ -87,31 +83,31 @@ const deleteById = async (req, res) => {
       },
     });
 
-    if(image){
-      const deleteimage = await models.images.destroy({
-        where:{
-          id,
-        },
-      });
-
-      if(deleteimage==1){
-        res.send({
-          message: 'Image was deleted successfully!',
-        });
-      }
-      else{
-        res.send({
-          message: 'Image not found or you don\'t have a permission!',
-        });
-      }
-    }
-    return res.send({
+    if(!image){
+      return res.send({
       errors: [
         {
           message: 'Image not found or you don\'t have a permission!',
         },
       ],
     });
+    }
+    const deleteimage = await models.images.destroy({
+        where:{
+          id,
+        },
+      });
+
+      if(!deleteimage){
+         res.send({
+          message: 'Image not found or you don\'t have a permission!',
+        });
+    
+      }
+      res.send({
+          message: 'Image was deleted successfully!',
+        });
+       
   } catch (err) {
     return res.status(500).send({
       errors: [
