@@ -51,12 +51,19 @@ const initialize = (models) => {
     as: 'discussion',
     foreignKey:'discussions_id' 
   },
-    models.parent_comments, {
-    as: 'parent_comment',
+  models.comments, {
+    as: 'parent',
     foreignKey: 'parent_comment_id'
   },
   );
+  model.comments.hasMany(
+    models.comments, {
+      as: 'children',
+      foreignKey: 'parent_comment_id'
+    }
+  );
 };
+
 
 export default {
   model: comments,
