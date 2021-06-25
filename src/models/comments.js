@@ -54,7 +54,7 @@ const initialize = (models) => {
     foreignKey: 'parent_comment_id'
   },
   );
-  model.comments.hasMany(
+  models.comments.hasMany(
     models.comments, {
       as: 'children',
       foreignKey: 'parent_comment_id'
