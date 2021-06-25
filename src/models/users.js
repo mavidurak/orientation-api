@@ -48,6 +48,14 @@ const initialize = (models) => {
     },
   );
 
+  models.users.hasMany(
+    models.images, {
+      as: 'user_images',
+      foreignKey: 'user_id',
+      sourceKey: 'id',
+    },
+  );
+
   models.users.prototype.toJSON = function () {
     const values = { ...this.get() };
 
