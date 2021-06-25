@@ -35,7 +35,7 @@ const create = async (req, res) => {
   }
   const { content_id,text,score,is_spoiler } = req.body;
   const contentReview = await models.content_reviews.create({
-    user_id: 2,
+    user_id: req.user.id,
    // content_id,
     text,
     score,
