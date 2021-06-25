@@ -27,7 +27,7 @@ const updateContentReviewsSchema = {
 }
 
 const create = async (req, res) => {
-  const {error } = createContentReviewsSchema.body.validate(req.body);
+  const { error } = createContentReviewsSchema.body.validate(req.body);
   if (error) {
     return res.status(400).send({
       errors: error.details,
@@ -78,8 +78,8 @@ const detail = async (req, res) => {
   }
 };
 
-const update = async (req, res, next) => {
-  const {error } = updateContentReviewsSchema.body.validate(req.body);
+const update = async (req, res) => {
+  const { error } = updateContentReviewsSchema.body.validate(req.body);
   if (error) {
     return res.status(400).send({
       errors: error.details,
