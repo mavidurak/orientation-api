@@ -3,8 +3,10 @@ import Joi from '../../joi';
 
 const create_validation = {
   body: Joi.object({
-    name: Joi.required(),
-    path: Joi.required(),
+    name: Joi.string()
+    .required(),
+    path: Joi.string()
+    .required(),
   }),
 };
 
