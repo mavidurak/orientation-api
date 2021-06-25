@@ -3,14 +3,14 @@ import models from '../../models';
 
 const createContentReviewsSchema = {
   body: Joi.object({
-   // content_id: Joi.number()
-   // .required(),
+    // content_id: Joi.number()
+    // .required(),
     text: Joi.string()
       .max(250)
       .required(),
     score: Joi.number()
-       .min(0)
-       .max(10),
+      .min(0)
+      .max(10),
     is_spoiler: Joi.boolean()
   })
 }
@@ -27,16 +27,16 @@ const updateContentReviewsSchema = {
 }
 
 const create = async (req, res) => {
-  const {error } = createContentReviewsSchema.body.validate(req.body);
+  const { error } = createContentReviewsSchema.body.validate(req.body);
   if (error) {
     return res.status(400).send({
       errors: error.details,
     });
   }
-  const { content_id,text,score,is_spoiler } = req.body;
+  const { content_id, text, score, is_spoiler } = req.body;
   const contentReview = await models.content_reviews.create({
-    user_id: 2,
-   // content_id,
+    user_id: req.user.id,
+    // content_id,
     text,
     score,
     is_spoiler
@@ -47,39 +47,38 @@ const create = async (req, res) => {
 };
 
 const detail = async (req, res) => {
-  const { id }=req.params;
+  const { id } = req.params;
   try {
     const contentReview = await models.content_reviews.findOne({
-      where:{
+      where: {
         id,
       },
     });
 
-    if(contentReview){
-      return res.send(contentReview);
+    if (!contentReview) {
+      return res.send({
+        errors: [
+          {
+            message: 'Review not found or you don\'t have a permission!',
+          },
+        ],
+      });
     }
 
-    return res.send({
-      errors: [
-        {
-          message: 'Review not found or you don\'t have a permission!',
-        },
-      ],
-    });
-
+    return res.send(contentReview);
   } catch (err) {
     return res.status(500).send({
       errors: [
         {
-          message: err.message ,
+          message: err.message,
         },
       ],
     });
   }
 };
 
-const update = async (req, res, next) => {
-  const {error } = updateContentReviewsSchema.body.validate(req.body);
+const update = async (req, res) => {
+  const { error } = updateContentReviewsSchema.body.validate(req.body);
   if (error) {
     return res.status(400).send({
       errors: error.details,
@@ -100,15 +99,20 @@ const update = async (req, res, next) => {
       }
     });
     if (contentReview) {
-        models.content_reviews.update(req.body, {
-          where: {
-            id: contentReview.id,
-          },
-        });
-        res.send({
-          message: `Id= ${id} was updated succesfully`,
-        });
-       
+      const { text, is_spoiler, score } = req.body;
+      contentReview.text = text;
+      contentReview.is_spoiler = is_spoiler;
+      contentReview.score = score;
+
+      models.content_reviews.update(text, is_spoiler, score, {
+        where: {
+          id: contentReview.id,
+        },
+      });
+      res.send({
+        message: `Id= ${id} was updated succesfully`,
+      });
+
     } else {
       res.status(403).send({
         errors: [
@@ -129,7 +133,7 @@ const update = async (req, res, next) => {
   }
 };
 
-const deleteById = async (req, res, next) => {
+const deleteById = async (req, res) => {
   const { id } = req.params;
   const user_id = req.user.id;
   const contentReview = await models.content_reviews.findOne({
