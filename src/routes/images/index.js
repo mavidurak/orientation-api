@@ -10,7 +10,7 @@ const create_validation = {
   }),
 };
 
-const add = async (req, res) => {
+const create = async (req, res) => {
   const { error } = create_validation.body.validate(req.body);
 
   if (error) {
@@ -92,13 +92,13 @@ const deleteById = async (req, res) => {
       ],
     });
     }
-    const deleteimage = await models.images.destroy({
+    const isdeleted = await models.images.destroy({
         where:{
           id,
         },
       });
 
-      if(!deleteimage){
+      if(!isdeleted){
          res.send({
           message: 'Image not found or you don\'t have a permission!',
         });
@@ -122,7 +122,7 @@ const deleteById = async (req, res) => {
 export default {
   prefix: '/images',
   inject: (router) => {
-    router.post('/add', add);
+    router.post('', create);
     router.get('/:id', detail);
     router.delete('/:id', deleteById);
   },
