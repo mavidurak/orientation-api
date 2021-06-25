@@ -14,11 +14,10 @@ const create = async (req, res) => {
   const { error } = create_validation.body.validate(req.body);
 
   if (error) {
-    return res.send(400,
-                    { 
-      errors: error.details
-    }
-                   );
+    return res.send(400, 
+      { 
+        errors: error.details 
+      });
   }
   const { name, path } = req.body;
   
