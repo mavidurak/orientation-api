@@ -11,13 +11,19 @@ module.exports = {
           type: Sequelize.INTEGER,
           unique: true,
           allowNull: false,
+          references: {
+            model: 'users',
+            key: 'id',
+          },
+          onUpdate: 'cascade',
+          onDelete: 'cascade',
         },
         content_id: {
            type: Sequelize.INTEGER,
            allowNull:false,
         },
         status: {
-          type: Sequelize.STRING(200),
+          type: Sequelize.STRING,
           allowNull:false,
         },
         my_score: {
@@ -38,7 +44,7 @@ module.exports = {
       });
     },
     down(queryInterface) {
-      return queryInterface.dropTable('users');
+      return queryInterface.dropTable('wanted_contents');
     },
   };
   

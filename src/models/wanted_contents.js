@@ -20,11 +20,12 @@ const wanted_contents = Sequelize.define('wanted_contents',
     allowNull:false,
   },
   status:{
-    type:DataTypes.STRING(200),
+    type:DataTypes.STRING,
     allowNull:false,
   },
   my_score:{
     type:DataTypes.INTEGER,
+    default:null,
   },
 },
 {
@@ -35,6 +36,13 @@ const wanted_contents = Sequelize.define('wanted_contents',
 );
 
 const initialize = (models) => {
+  models.wanted_contents.belongsTo(models.users,{
+    as: 'user',
+    foreignKey: {
+      name: 'user_id',
+      allowNull: false,
+    },
+  })
 }
 export default {
     model: wanted_contents,
