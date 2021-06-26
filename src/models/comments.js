@@ -21,7 +21,7 @@ const comments = Sequelize.define('comments',
     },
     text: {
       type: DataTypes.STRING,
-      allownull: false,
+      allowNull: false,
     },
     is_spoiler: {
       type: DataTypes.BOOLEAN,
