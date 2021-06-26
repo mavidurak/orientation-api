@@ -41,7 +41,7 @@ const initialize = (models) => {
     as: 'user',
     foreignKey: 'user_id'
   },
-    models.content_reviews, {
+    /*models.content_reviews, {
     as: 'content_review',
     foreignKey: 'content_reviews_id'
   },
@@ -59,7 +59,7 @@ const initialize = (models) => {
       as: 'children',
       foreignKey: 'parent_comment_id'
     }
-  );
+  );*/
 };
 
 export default {
