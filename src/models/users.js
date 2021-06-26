@@ -50,7 +50,7 @@ const initialize = (models) => {
 
   models.users.hasMany(
     models.wanted_contents, {
-      as: 'user_wanted_contents2',
+      as: 'user_wanted_contents',
       foreignKey: 'user_id',
       sourceKey: 'id',
     },
