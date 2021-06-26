@@ -79,31 +79,47 @@ const updateComment = async (req, res) => {
 
 
 const deleteComment = async (req, res) => {
-  
-    const { id } = req.params;
-    let comment = await models.comments.findOne({
+  const { id } = req.params;
+  const comment = await models.comments.findOne({
     where: {
       id,
-    }
-  });
-  if (!comment) {
-    return res.send(403, 'Comment not found or you don\'t have a permission!');
-  }
-  const deletedComment = await models.comments.destroy({
-    where: {
-      id,
-    }
+    },
+    include: {
+      model: models.users,
+      as: 'user',
+      where: {
+        id: req.user.id,
+      },
+    },
   });
 
-  if(deletedComment){
-    return res.send(200, 'Comment `DELETE`d successfully!');
-  }
-  else{
-    res.send({
-      message: 'Comment not found or you don\'t have a permission!!',
+  if (!comment) {
+    return res.send(403, {
+      errors: [
+        {
+          message: 'Comment not found or you don\'t have a permission!',
+        },
+      ],
     });
   }
-}
+
+  const isDeleted = await models.comments.destroy({
+    where: {
+      id,
+    },
+  });
+
+  if (!isDeleted) {
+    res.send(403, {
+      errors: [
+        {
+          message: 'Comment not found or you don\'t have a permission!',
+        },
+      ],
+    });
+  }
+  return res.send(200, 'Comment `DELETE`d successfully!');
+};
 
 export default {
   prefix: '/comments',
