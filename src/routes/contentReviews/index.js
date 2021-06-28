@@ -17,8 +17,7 @@ const createContentReviewsSchema = {
 const updateContentReviewsSchema = {
   body: Joi.object({
     text: Joi.string()
-      .max(250)
-      .required(),
+      .max(250),
     score: Joi.number()
       .min(0)
       .max(10),
@@ -104,7 +103,7 @@ const update = async (req, res) => {
       contentReview.is_spoiler = is_spoiler;
       contentReview.score = score;
 
-      models.content_reviews.update(text, is_spoiler, score, {
+      models.content_reviews.update({text, is_spoiler, score}, {
         where: {
           id: contentReview.id,
         },
