@@ -1,7 +1,7 @@
 export const WHITE_LIST = [
   '/api/health-check/',
   '/authentication/login/',
-  '/authentication/register/',
+  '/authentication/register/'
 ];
 
 export const ACCESS_TOKEN_KEY = 'x-access-token';

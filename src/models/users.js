@@ -47,6 +47,13 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
+  models.users.hasMany(
+    models.content_reviews, {
+      as: 'user_content_reviews',
+      foreignKey: 'user_id',
+      sourceKey: 'id',
+    },
+  );
 
   models.users.hasMany(
     models.images, {
