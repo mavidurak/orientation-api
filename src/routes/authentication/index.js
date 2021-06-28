@@ -150,7 +150,9 @@ const update = async (req, res) => {
       errors: error.details,
     });
   }
-  const { password, username, email, name, friends_ids, new_password, new_password_again } = req.body
+  const {
+    password, username, email, name, friends_ids, new_password, new_password_again,
+  } = req.body;
   const user = await models.users.findOne({
     where: {
       username: req.user.username,
@@ -163,58 +165,60 @@ const update = async (req, res) => {
       return res.send(403, {
         errors: [
           {
-            message: "Şifreyi tekrar deneyiniz"
-          }
-        ]
-      })
+            message: 'Şifreyi tekrar deneyiniz',
+          },
+        ],
+      });
     }
-    let where = {}
+    let where = {};
     if (username || email) {
       where = username ? { username } : { email };
       const isExist = await models.users.findOne({
         where,
-      })
+      });
       if (isExist) {
         return res.send(403, {
           errors: [
             {
-              message: "Bu username veya email kullanılıyor.."
-            }
-          ]
-        })
+              message: 'Bu username veya email kullanılıyor..',
+            },
+          ],
+        });
       }
     }
-    let passwordValdation = { password_hash: null, password_salt: null }
+    let passwordValdation = { password_hash: null, password_salt: null };
     if (new_password && new_password_again) {
       if (new_password !== new_password_again) {
         return res.send(403, {
           errors: [
             {
-              message: "Şifreler aynı olmalı"
-            }
-          ]
-        })
+              message: 'Şifreler aynı olmalı',
+            },
+          ],
+        });
       }
       passwordValdation = createSaltHashPassword(new_password);
     }
-    //şifre güncelleme olucak
-    where = Object.entries({ username, email, name, friends_ids, password_hash: passwordValdation.password_hash, password_salt: passwordValdation.password_salt}).reduce((a, [k, v]) => (v == null ? a : (a[k] = v, a)), {})
-    console.log(where)
+    // şifre güncelleme olucak
+    where = Object.entries({
+      username, email, name, friends_ids, password_hash: passwordValdation.password_hash, password_salt: passwordValdation.password_salt,
+    }).reduce((a, [k, v]) => (v == null ? a : (a[k] = v, a)), {});
+    console.log(where);
     const user2 = await user.update(where);
-    return res.send(user2.toJSON())
+    return res.send(user2.toJSON());
   }
-}
+};
 
 const deleteUser = async (req, res) => {
   const isDeleted = await models.users.destroy({
     where: {
-      id: req.user.id
-    }
+      id: req.user.id,
+    },
   });
   if (isDeleted) {
-    res.send(200, 'Başarıyla silindi')
+    res.send(200, 'Başarıyla silindi');
   }
-}
+};
 
 export default {
   prefix: '/authentication',
