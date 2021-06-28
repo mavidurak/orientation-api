@@ -22,15 +22,15 @@ const content_reviews = Sequelize.define('content_reviews',
     underscored: true,
   });
 
-  const initialize = (models) => {
-    models.content_reviews.belongsTo(models.users, {
-      as: 'user',
-      foreignKey: {
-        name: 'user_id',
-        allowNull: false,
-      },
-    });
-  }
+const initialize = (models) => {
+  models.content_reviews.belongsTo(models.users, {
+    as: 'user',
+    foreignKey: {
+      name: 'user_id',
+      allowNull: false,
+    },
+  });
+};
 export default {
   model: content_reviews,
   initialize,
