@@ -4,9 +4,9 @@ import Joi from '../../joi';
 const create_validation = {
   body: Joi.object({
     name: Joi.string()
-    .required(),
+      .required(),
     path: Joi.string()
-    .required(),
+      .required(),
   }),
 };
 
@@ -14,49 +14,47 @@ const create = async (req, res) => {
   const { error } = create_validation.body.validate(req.body);
 
   if (error) {
-    return res.send(400, 
-      { 
-        errors: error.details 
+    return res.send(400,
+      {
+        errors: error.details,
       });
   }
   const { name, path } = req.body;
-  
+
   const image = await models.images.create({
-      user_id: user.id,
-      name,
-      path,
-    });
-    return res.status(201).send({
-      image,
-    });
-  }
+    user_id: req.user.id,
+    name,
+    path,
+  });
+  return res.status(201).send({
+    image,
+  });
 };
 
 const detail = async (req, res) => {
-  const { id }=req.params;
+  const { id } = req.params;
   try {
     const image = await models.images.findOne({
-      where:{
+      where: {
         id,
       },
     });
 
-    if(!image){
+    if (!image) {
       return res.send({
-      errors: [
-        {
-          message: 'Image not found or you don\'t have a permission!',
-        },
-      ],
-    });
+        errors: [
+          {
+            message: 'Image not found or you don\'t have a permission!',
+          },
+        ],
+      });
     }
     return res.send(image);
-
   } catch (err) {
     return res.status(500).send({
       errors: [
         {
-          message: err.message ,
+          message: err.message,
         },
       ],
     });
@@ -64,45 +62,43 @@ const detail = async (req, res) => {
 };
 
 const deleteById = async (req, res) => {
-  const { id }= req.params;
+  const { id } = req.params;
   try {
     const image = await models.images.findOne({
-      where:{
+      where: {
         id,
-        user_id:req.user.id,
+        user_id: req.user.id,
       },
     });
 
-    if(!image){
+    if (!image) {
       return res.send({
-      errors: [
-        {
-          message: 'Image not found or you don\'t have a permission!',
-        },
-      ],
-    });
+        errors: [
+          {
+            message: 'Image not found or you don\'t have a permission!',
+          },
+        ],
+      });
     }
     const isdeleted = await models.images.destroy({
-        where:{
-          id,
-        },
-      });
+      where: {
+        id,
+      },
+    });
 
-      if(!isdeleted){
-         res.send({
-          message: 'Image not found or you don\'t have a permission!',
-        });
-    
-      }
+    if (!isdeleted) {
       res.send({
-          message: 'Image was deleted successfully!',
-        });
-       
+        message: 'Image not found or you don\'t have a permission!',
+      });
+    }
+    res.send({
+      message: 'Image was deleted successfully!',
+    });
   } catch (err) {
     return res.status(500).send({
       errors: [
         {
-          message: err.message ,
+          message: err.message,
         },
       ],
     });
