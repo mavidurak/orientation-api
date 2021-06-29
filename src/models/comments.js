@@ -40,25 +40,25 @@ const initialize = (models) => {
       as: 'user',
       foreignKey: 'user_id',
     },
-    /* models.content_reviews, {
+    /*  models.content_reviews, {
       as: 'content_review',
       foreignKey: 'content_reviews_id',
     },
     models.discussions, {
       as: 'discussion',
       foreignKey: 'discussions_id',
-    },
+    },  */
     models.comments, {
       as: 'parent',
       foreignKey: 'parent_comment_id',
-    }, */
+    },
   );
-  /* models.comments.hasMany(
+  models.comments.hasMany(
     models.comments, {
       as: 'children',
       foreignKey: 'parent_comment_id',
     },
-  ); */
+  );
 };
 
 export default {

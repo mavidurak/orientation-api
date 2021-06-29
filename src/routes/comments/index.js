@@ -1,4 +1,3 @@
-import { Op } from 'sequelize';
 import Joi from '../../joi';
 
 import models from '../../models';
@@ -30,7 +29,7 @@ const createComment = async (req, res) => {
     return res.send(400, {
       errors: [
         {
-          message: 'There must be only one id',
+          message: 'There must be only one id (content_review_id, discussion_id, parent_comment_id)',
 
         },
       ],
@@ -123,7 +122,9 @@ const deleteComment = async (req, res) => {
       ],
     });
   }
-  return res.send(200, 'Comment `DELETE`d successfully!');
+  return res.send(200, {
+    message: 'Comment `DELETE`d successfully!',
+  });
 };
 
 export default {
