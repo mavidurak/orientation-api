@@ -30,7 +30,6 @@ const createComment = async (req, res) => {
       errors: [
         {
           message: 'There must be only one id (content_review_id, discussion_id, parent_comment_id)',
-
         },
       ],
     });
@@ -122,8 +121,9 @@ const deleteComment = async (req, res) => {
       ],
     });
   }
+
   return res.send(200, {
-    message: 'Comment `DELETE`d successfully!',
+    message: 'Comment deleted successfully!',
   });
 };
 
