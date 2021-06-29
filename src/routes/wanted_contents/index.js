@@ -66,7 +66,7 @@ const updatecont = async (req, res) => {
   }
   const wantedContent = await models.wanted_contents.findOne({
     where: {
-      contentid: req.user.id,
+      contentid: req.params,
     },
   });
   const { status, my_score } = req.body;
@@ -83,7 +83,7 @@ const updatecont = async (req, res) => {
     models.wanted_contents.update({ status, my_score },
       {
         where: {
-          id: wantedContent.id,
+          content_id: wantedContent.content_id,
         },
       });
   } else {
