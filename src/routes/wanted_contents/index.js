@@ -31,13 +31,13 @@ const create = async (req, res) => {
 };
 
 const read = async (req, res) => {
-  const wantedContents = await models.wanted_contents.findAll({
+  const wanted_content = await models.wanted_contents.findAll({
     where: {
       user_id: req.user_id,
     },
   });
-  res.send(wantedContents);
-  if (!wantedContents) {
+  res.send(wanted_content);
+  if (!wanted_content) {
     return res.send(400, {
       errors: [
         {
@@ -47,10 +47,53 @@ const read = async (req, res) => {
     });
   }
 };
+
+const updatecont = async (req, res) => {
+  
+};
+
+const deletecont = async (req, res) => {
+  const { content_id } = req.params;
+  const { user_id } = req.user.id;
+  const wantedcontent = await models.wanted_contents.findOne({
+    where: {
+      id: user_id,
+      content_id,
+    },
+  });
+  if (wantedcontent) {
+    wantedcontent.destroy();
+    res.send({
+      message: 'Content deleted successfully from yours wanted list!',
+    });
+    //  alternative way for destroy
+    /* 
+      models.content_reviews.destroy({
+        where: {
+      id:user_id,
+      content_id:content_id,
+        },
+      });
+      res.send({
+        message: ''Content deleted successfully from yours wanted list!',
+      });
+      */
+  } else {
+    res.status(401).send({
+      errors: [
+        {
+          message: 'Content not found or you don\'t have a permission!',
+        },
+      ],
+    });
+  }
+};
+
 export default {
-  prefix: '/wanted-contents',
+  prefix: '/wanted-list',
   inject: (router) => {
     router.post('', create);
     router.get('', read);
+    router.put('/:contentId', deletecont);
   },
 };
