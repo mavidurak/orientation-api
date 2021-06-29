@@ -64,13 +64,14 @@ const updatecont = async (req, res) => {
       errors: error.details,
     });
   }
-  const wantedContent = await models.wanted_contents.findOne({
+  const wanted_content = await models.wanted_contents.findOne({
     where: {
-      contentid: req.params,
+      contentid: req.params.contentId,
+      user_id:req.user.id
     },
   });
   const { status, my_score } = req.body;
-  if (!wantedContent) {
+  if (!wanted_content) {
     return res.send({
       errors: [
         {
@@ -79,52 +80,27 @@ const updatecont = async (req, res) => {
       ],
     });
   }
-  if (wantedContent.user_id === req.user.id) {
+  else{
     models.wanted_contents.update({ status, my_score },
       {
         where: {
-          content_id: wantedContent.content_id,
+          content_id: wanted_content.content_id,
         },
       });
-  } else {
-    res.status(403).send({
-      errors: [
-        {
-          message: 'Content not found or you don\'t have a permission!',
-        },
-      ],
-    });
   }
 };
 
 const deletecont = async (req, res) => {
-  const { content_id } = req.params;
-  const { user_id } = req.user.id;
-  const wantedcontent = await models.wanted_contents.findOne({
+  const { contentId } = req.params;
+  const  id  = req.user.id;
+  const wantedContent = await models.wanted_contents.findOne({
     where: {
-      id: user_id,
-      content_id,
+      user_id: id,
+      content_id:contentId,
     },
   });
-  if (wantedcontent) {
-    wantedcontent.destroy();
-    res.send({
-      message: 'Content deleted successfully from yours wanted list!',
-    });
-    //  alternative way for destroy
-    /*
-      models.content_reviews.destroy({
-        where: {
-      id:user_id,
-      content_id:content_id,
-        },
-      });
-      res.send({
-        message: ''Content deleted successfully from yours wanted list!',
-      });
-      */
-  } else {
-    res.status(401).send({
+  if (!wantedContent) {
+    return res.status(401).send({
       errors: [
         {
           message: 'Content not found or you don\'t have a permission!',
@@ -132,6 +108,10 @@ const deletecont = async (req, res) => {
       ],
     });
   }
+  await wantedContent.destroy();
+    res.send({
+      message: 'Content deleted successfully from yours wanted list!',
+    });
 };
 
 export default {
