@@ -40,14 +40,20 @@ const initialize = (models) => {
       as: 'user',
       foreignKey: 'user_id',
     },
-    /*  models.content_reviews, {
+  );
+  /*  models.comments.belongsTo(
+    models.content_reviews, {
       as: 'content_review',
       foreignKey: 'content_reviews_id',
     },
+  );
+  models.comments.belongsTo(
     models.discussions, {
       as: 'discussion',
       foreignKey: 'discussions_id',
-    },  */
+    },
+  );  */
+  models.comments.belongsTo(
     models.comments, {
       as: 'parent',
       foreignKey: 'parent_comment_id',
