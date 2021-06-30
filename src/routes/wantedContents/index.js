@@ -86,7 +86,9 @@ const updatecont = async (req, res) => {
         content_id: wantedList.content_id,
       },
     });
-  return res.send(200, { message: 'Content updated succesfully!' });
+  return res.send(200, { 
+    message: 'Content updated succesfully!' 
+  });
 };
 
 const deletecont = async (req, res) => {
