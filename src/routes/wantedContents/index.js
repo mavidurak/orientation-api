@@ -66,8 +66,8 @@ const updatecont = async (req, res) => {
   }
   const wanted_content = await models.wanted_contents.findOne({
     where: {
-      contentid: req.params.contentId,
-      user_id:req.user.id
+      contentId: req.params.contentId,
+      user_id: req.user.id,
     },
   });
   const { status, my_score } = req.body;
@@ -80,23 +80,22 @@ const updatecont = async (req, res) => {
       ],
     });
   }
-  else{
-    models.wanted_contents.update({ status, my_score },
-      {
-        where: {
-          content_id: wanted_content.content_id,
-        },
-      });
-  }
+  models.wanted_contents.update({ status, my_score },
+    {
+      where: {
+        content_id: wanted_content.content_id,
+      },
+    });
+  return res.send(200, 'Content updated succesfully!');
 };
 
 const deletecont = async (req, res) => {
   const { contentId } = req.params;
-  const  id  = req.user.id;
+  const { id } = req.user;
   const wantedContent = await models.wanted_contents.findOne({
     where: {
       user_id: id,
-      content_id:contentId,
+      content_id: contentId,
     },
   });
   if (!wantedContent) {
@@ -109,9 +108,9 @@ const deletecont = async (req, res) => {
     });
   }
   await wantedContent.destroy();
-    res.send({
-      message: 'Content deleted successfully from yours wanted list!',
-    });
+  res.send({
+    message: 'Content deleted successfully from yours wanted list!',
+  });
 };
 
 export default {

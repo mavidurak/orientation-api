@@ -12,7 +12,6 @@ const wanted_contents = Sequelize.define('wanted_contents',
     },
     user_id: {
       type: DataTypes.INTEGER,
-      unique: true,
       allowNull: false,
     },
     content_id: {
