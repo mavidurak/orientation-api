@@ -30,23 +30,23 @@ const create = async (req, res) => {
     });
   }
   const { content_id, status, my_score } = req.body;
-  const wanted_contents = await models.wanted_contents.create({
+  const wantedList = await models.wanted_contents.create({
     user_id: req.user.id,
     content_id,
     status,
     my_score,
   });
-  return res.send(201, wanted_contents);
+  return res.send(201, wantedList);
 };
 
 const read = async (req, res) => {
-  const wanted_content = await models.wanted_contents.findAll({
+  const wantedList = await models.wanted_contents.findAll({
     where: {
       user_id: req.user.id,
     },
   });
-  res.send(wanted_content);
-  if (!wanted_content) {
+  res.send(wantedList);
+  if (!wantedList) {
     return res.send(400, {
       errors: [
         {
@@ -64,14 +64,14 @@ const updatecont = async (req, res) => {
       errors: error.details,
     });
   }
-  const wanted_content = await models.wanted_contents.findOne({
+  const wantedList = await models.wanted_contents.findOne({
     where: {
       contentId: req.params.contentId,
       user_id: req.user.id,
     },
   });
   const { status, my_score } = req.body;
-  if (!wanted_content) {
+  if (!wantedList) {
     return res.send({
       errors: [
         {
