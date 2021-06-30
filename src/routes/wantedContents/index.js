@@ -45,7 +45,7 @@ const read = async (req, res) => {
       user_id: req.user.id,
     },
   });
-  res.send(wantedList);
+  res.send({ wantedList });
   if (!wantedList) {
     return res.send(400, {
       errors: [
@@ -66,7 +66,7 @@ const updatecont = async (req, res) => {
   }
   const wantedList = await models.wanted_contents.findOne({
     where: {
-      contentId: req.params.contentId,
+      content_id: req.params.contentId,
       user_id: req.user.id,
     },
   });
@@ -80,13 +80,13 @@ const updatecont = async (req, res) => {
       ],
     });
   }
-  models.wanted_contents.update({ status, my_score },
+  await models.wanted_contents.update({ status, my_score },
     {
       where: {
-        content_id: wanted_content.content_id,
+        content_id: wantedList.content_id,
       },
     });
-  return res.send(200, 'Content updated succesfully!');
+  return res.send(200, { message: 'Content updated succesfully!' });
 };
 
 const deletecont = async (req, res) => {
