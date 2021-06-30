@@ -91,25 +91,19 @@ const create_validation = {
         ],
       });
     }
-    const { header,text,is_private} =req.body;
-    discussion.header=header;
-    discussion.text=text;
-    discussion.is_private=is_private;
+   const { header, text, is_private } = req.body;
+    const updated = await models.discussions.update({ header, text, is_private },
+      {
+        where: {
+          id: discussion.id,
+        },
+      });
 
-    const updated=await models.discussions.update({
-      header,text,is_private
-    },
-    {
-      where:{
-        id:discussion.id,
-      },
-    });
-
-    if(!updated){
+    if (!updated) {
       return res.send({
         errors: [
           {
-            message: 'Discussion not found or you don\'t have a permission!',
+            message: 'Some error occurred while updating discussions.',
           },
         ],
       });
