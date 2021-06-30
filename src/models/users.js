@@ -48,6 +48,12 @@ const initialize = (models) => {
     },
   );
   models.users.hasMany(
+    models.comments, {
+      as: 'comment',
+      foreignKey: 'user_id',
+    },
+  );
+  models.users.hasMany(
     models.content_reviews, {
       as: 'user_content_reviews',
       foreignKey: 'user_id',
