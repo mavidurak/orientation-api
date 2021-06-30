@@ -1,19 +1,10 @@
 module.exports = {
   up(queryInterface, Sequelize) {
-    return queryInterface.createTable('discussions', {
+    return queryInterface.createTable('content_reviews', {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
-        allowNull: false,
-      },
-      header: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      text: {
-        type: Sequelize.STRING,
-        allowNull: false,
       },
       user_id: {
         type: Sequelize.INTEGER,
@@ -25,16 +16,27 @@ module.exports = {
         onUpdate: 'cascade',
         onDelete: 'cascade',
       },
-      is_private: {
+      // content_id: {
+      //   type: Sequelize.INTEGER,
+      //   allowNull: false,
+      // },
+      text: {
+        type: Sequelize.STRING,
+      },
+      score: {
+        type: Sequelize.INTEGER,
+        default: null,
+        allowNull: true,
+      },
+      is_spoiler: {
         type: Sequelize.BOOLEAN,
-        defaultValue: false,
+        default: false,
+        allowNull: true,
       },
       created_at: {
-        allowNull: false,
         type: Sequelize.DATE,
       },
       updated_at: {
-        allowNull: false,
         type: Sequelize.DATE,
       },
       deleted_at: {
@@ -43,6 +45,6 @@ module.exports = {
     });
   },
   down(queryInterface) {
-    return queryInterface.dropTable('discussions');
+    return queryInterface.dropTable('content_reviews');
   },
 };

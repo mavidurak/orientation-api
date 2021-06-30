@@ -1,22 +1,15 @@
 module.exports = {
   up(queryInterface, Sequelize) {
-    return queryInterface.createTable('discussions', {
+    return queryInterface.createTable('wanted_contents', {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
         allowNull: false,
       },
-      header: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      text: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
       user_id: {
         type: Sequelize.INTEGER,
+        unique: true,
         allowNull: false,
         references: {
           model: 'users',
@@ -25,9 +18,18 @@ module.exports = {
         onUpdate: 'cascade',
         onDelete: 'cascade',
       },
-      is_private: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
+      content_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      status: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      my_score: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        defaultValue: null,
       },
       created_at: {
         allowNull: false,
@@ -43,6 +45,6 @@ module.exports = {
     });
   },
   down(queryInterface) {
-    return queryInterface.dropTable('discussions');
+    return queryInterface.dropTable('wanted_contents');
   },
 };

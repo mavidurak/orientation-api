@@ -14,7 +14,7 @@ const discussions = Sequelize.define('discussions',
     },
     is_private: {
       type: DataTypes.BOOLEAN,
-      default: 0,
+      defaultValue: false,
     },
   },
   {
