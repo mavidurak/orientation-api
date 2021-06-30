@@ -46,6 +46,8 @@ const initialize = (models) => {
       foreignKey: 'user_id',
       sourceKey: 'id',
     },
+  );
+  models.users.hasMany(
     models.comments, {
       as: 'comment',
       foreignKey: 'user_id',
