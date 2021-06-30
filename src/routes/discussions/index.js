@@ -10,6 +10,13 @@ const create_validation = {
       is_private: Joi.boolean()
     }),
   };
+const update_validation = {
+  body: Joi.object({
+    header: Joi.string(),
+    text: Joi.string(),
+    is_private: Joi.boolean()
+  }),
+}
 
   const create = async (req,res) => {
     const { error } = create_validation.body.validate(req.body);
@@ -66,7 +73,7 @@ const create_validation = {
   };
 
   const update =async (req,res)=>{
-    const { error } = create_validation.body.validate(req.body);
+    const { error } = update_validation.body.validate(req.body);
 
     if (error) {
       return res.send(400, 
