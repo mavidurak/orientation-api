@@ -1,17 +1,17 @@
 module.exports = {
   up(queryInterface, Sequelize) {
-    return queryInterface.createTable('images', {
+    return queryInterface.createTable('discussions', {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
         allowNull: false,
       },
-      name: {
+      header: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      path: {
+      text: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -24,6 +24,10 @@ module.exports = {
         },
         onUpdate: 'cascade',
         onDelete: 'cascade',
+      },
+      is_private: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
       created_at: {
         allowNull: false,
@@ -39,6 +43,6 @@ module.exports = {
     });
   },
   down(queryInterface) {
-    return queryInterface.dropTable('images');
+    return queryInterface.dropTable('discussions');
   },
 };
