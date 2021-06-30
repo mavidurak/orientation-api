@@ -45,7 +45,6 @@ const read = async (req, res) => {
       user_id: req.user.id,
     },
   });
-  res.send({ wantedList });
   if (!wantedList) {
     return res.send(400, {
       errors: [
@@ -55,6 +54,7 @@ const read = async (req, res) => {
       ],
     });
   }
+  res.send({ wantedList });
 };
 
 const updatecont = async (req, res) => {
@@ -86,8 +86,8 @@ const updatecont = async (req, res) => {
         content_id: wantedList.content_id,
       },
     });
-  return res.send(200, { 
-    message: 'Content updated succesfully!' 
+  return res.send(200, {
+    message: 'Content updated succesfully!',
   });
 };
 
