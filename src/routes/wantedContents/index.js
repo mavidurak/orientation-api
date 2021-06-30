@@ -93,10 +93,10 @@ const updatecont = async (req, res) => {
 
 const deletecont = async (req, res) => {
   const { contentId } = req.params;
-  const { id } = req.user;
+  const { user_id } = req.user;
   const wantedContent = await models.wanted_contents.findOne({
     where: {
-      user_id: id,
+      user_id,
       content_id: contentId,
     },
   });
