@@ -138,13 +138,13 @@ const deleteById = async (req, res) => {
         ],
       });
     }
-    const isdeleted = await models.discussions.destroy({
+    const isDeleted = await models.discussions.destroy({
       where: {
         id,
       },
     });
 
-    if (!isdeleted) {
+    if (!isDeleted) {
       res.send({
         message: 'Discussion not found or you don\'t have a permission!',
       });
