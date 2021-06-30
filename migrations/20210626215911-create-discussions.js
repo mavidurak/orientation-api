@@ -27,7 +27,7 @@ module.exports = {
       },
       is_private: {
         type: Sequelize.BOOLEAN,
-        default: 0,
+        defaultValue: false,
       },
       created_at: {
         allowNull: false,
