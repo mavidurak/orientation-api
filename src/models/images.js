@@ -30,6 +30,13 @@ const initialize = (models) => {
       },
     },
   );
+  models.images.hasOne(
+    models.contents, {
+      as: 'contents_image',
+      foreignKey: 'image_id',
+      sourceKey: 'id',
+    },
+  );
 };
 
 export default {
