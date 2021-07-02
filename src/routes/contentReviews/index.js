@@ -101,10 +101,6 @@ const update = async (req, res) => {
     });
     if (contentReview) {
       const { text, is_spoiler, score } = req.body;
-      contentReview.text = text;
-      contentReview.is_spoiler = is_spoiler;
-      contentReview.score = score;
-
       models.content_reviews.update({ text, is_spoiler, score }, {
         where: {
           id: contentReview.id,
@@ -166,12 +162,12 @@ const deleteById = async (req, res) => {
 const userReviews = async (req, res) => {
   const { userId } = req.params;
   try {
-    const contentReview = await models.content_reviews.findAll({
+    const contentReviews = await models.content_reviews.findAll({
       where: {
         user_id: userId,
       },
     });
-    res.send(contentReview);
+    res.send({ contentReviews });
   } catch (err) {
     return res.status(500).send({
       errors: [

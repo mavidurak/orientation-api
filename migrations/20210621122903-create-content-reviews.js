@@ -30,7 +30,7 @@ module.exports = {
       },
       is_spoiler: {
         type: Sequelize.BOOLEAN,
-        default: false,
+        defaultValue: false,
         allowNull: true,
       },
       created_at: {
