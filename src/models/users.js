@@ -48,12 +48,6 @@ const initialize = (models) => {
     },
   );
   models.users.hasMany(
-    models.comments, {
-      as: 'comment',
-      foreignKey: 'user_id',
-    },
-  );
-  models.users.hasMany(
     models.content_reviews, {
       as: 'user_content_reviews',
       foreignKey: 'user_id',
@@ -68,21 +62,14 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
+  models.users.hasMany(
+    models.contents, {
+      as: 'user_contents',
+      foreignKey: 'user_id',
+      sourceKey: 'id',
+    },
+  );
 
-  models.users.hasMany(
-    models.wanted_contents, {
-      as: 'user_wanted_contents',
-      foreignKey: 'user_id',
-      sourceKey: 'id',
-    },
-  );
-  models.users.hasMany(
-    models.discussions, {
-      as: 'user_discussions',
-      foreignKey: 'user_id',
-      sourceKey: 'id',
-    },
-  );
   models.users.prototype.toJSON = function () {
     const values = { ...this.get() };
 
