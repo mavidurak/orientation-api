@@ -13,7 +13,7 @@ const content_reviews = Sequelize.define('content_reviews',
     },
     is_spoiler: {
       type: DataTypes.BOOLEAN,
-      default: false,
+      defaultValue: false,
     },
   },
   {

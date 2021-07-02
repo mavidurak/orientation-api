@@ -101,17 +101,13 @@ const update = async (req, res) => {
     });
     if (contentReview) {
       const { text, is_spoiler, score } = req.body;
-      contentReview.text = text;
-      contentReview.is_spoiler = is_spoiler;
-      contentReview.score = score;
-
       models.content_reviews.update({ text, is_spoiler, score }, {
         where: {
           id: contentReview.id,
         },
       });
       res.send({
-        message: `Id= ${id} was updated succesfully`,
+        message: 'Content review was updated succesfully',
       });
     } else {
       res.status(403).send({
@@ -163,7 +159,27 @@ const deleteById = async (req, res) => {
   }
 };
 
-export default {
+const userReviews = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const reviews = await models.content_reviews.findAll({
+      where: {
+        user_id: userId,
+      },
+    });
+    res.send({ reviews , count: reviews.length,});
+  } catch (err) {
+    return res.status(500).send({
+      errors: [
+        {
+          message: err.message,
+        },
+      ],
+    });
+  }
+};
+
+export default [{
   prefix: '/reviews',
   inject: (router) => {
     router.post('/', create);
@@ -171,4 +187,9 @@ export default {
     router.put('/:id', update);
     router.delete('/:id', deleteById);
   },
-};
+}, {
+  prefix: '/users',
+  inject: (router) => {
+    router.get('/:userId/reviews', userReviews);
+  },
+}];
