@@ -143,7 +143,10 @@ const getAllComments = async (req, res) => {
       ],
     });
   }
-  res.send({ comments });
+  res.send({
+    comments,
+    count: comments.length,
+  });
 };
 
 const getCommentById = async (req, res) => {
