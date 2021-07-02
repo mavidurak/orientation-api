@@ -93,7 +93,7 @@ const updatecont = async (req, res) => {
 
 const deletecont = async (req, res) => {
   const { contentId } = req.params;
-  const  user_id  = req.user.id;
+  const user_id = req.user.id;
   const wantedContent = await models.wanted_contents.findOne({
     where: {
       user_id,
@@ -115,14 +115,14 @@ const deletecont = async (req, res) => {
   });
 };
 
-const read = async (req, res) => {
-  const userId=req.params;
-  const wantedLists = await models.wanted_contents.findAndCountAll({
+const getUserWantedList = async (req, res) => {
+  const userId = req.params;
+  const wantedLists = await models.wanted_contents.findAll({
     where: {
       user_id: userId,
     },
   });
-  if (!comments) {
+  if (!wantedLists) {
     return res.send(400, {
       errors: [
         {
@@ -131,7 +131,11 @@ const read = async (req, res) => {
       ],
     });
   }
-  res.send({ wantedLists, count });
+  res.send({
+    wantedLists,
+    count: wantedLists.length,
+  });
+};
 
 export default [{
   prefix: '/wanted-list',
@@ -146,4 +150,4 @@ export default [{
   inject: (router) => {
     router.get('/:userId/wanted-list', getUserWantedList);
   },
-}]};
+}];
