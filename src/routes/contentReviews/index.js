@@ -164,11 +164,11 @@ const deleteById = async (req, res) => {
 };
 
 const userReviews = async (req, res) => {
-  const { user_id } = req.params;
+  const { userId } = req.params;
   try {
     const contentReview = await models.content_reviews.findAll({
       where: {
-        user_id,
+        user_id: userId,
       },
     });
     res.send(contentReview);
@@ -194,6 +194,6 @@ export default [{
 }, {
   prefix: '/users',
   inject: (router) => {
-    router.get('/:user_id/reviews', userReviews);
+    router.get('/:userId/reviews', userReviews);
   },
 }];
