@@ -127,11 +127,59 @@ const deleteComment = async (req, res) => {
   });
 };
 
-export default {
+const getAllComments = async (req, res) => {
+  const { userId } = req.params;
+  const comments = await models.comments.findAll({
+    where: {
+      user_id: userId,
+    },
+  });
+  if (!comments) {
+    return res.send(400, {
+      errors: [
+        {
+          message: 'Comment not found or you don\'t have a permission!',
+        },
+      ],
+    });
+  }
+  res.send({
+    comments,
+    count: comments.length,
+  });
+};
+
+const getCommentById = async (req, res) => {
+  const { userId, id } = req.params;
+  const comment = await models.comments.findOne({
+    where: {
+      user_id: userId,
+      id,
+    },
+  });
+  if (!comment) {
+    return res.send(400, {
+      errors: [
+        {
+          message: 'Comment not found or you don\'t have a permission!',
+        },
+      ],
+    });
+  }
+  res.send({ comment });
+};
+
+export default [{
   prefix: '/comments',
   inject: (router) => {
     router.post('', createComment);
     router.put('/:id', updateComment);
     router.delete('/:id', deleteComment);
   },
-};
+}, {
+  prefix: '/users',
+  inject: (router) => {
+    router.get('/:userId/comments', getAllComments);
+    router.get('/:userId/comments/:id', getCommentById);
+  },
+}];
