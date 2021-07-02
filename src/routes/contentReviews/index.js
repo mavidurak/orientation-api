@@ -107,7 +107,7 @@ const update = async (req, res) => {
         },
       });
       res.send({
-        message: `Id= ${id} was updated succesfully`,
+        message: 'Content review was updated succesfully',
       });
     } else {
       res.status(403).send({
