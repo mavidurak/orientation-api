@@ -115,7 +115,29 @@ const deletecont = async (req, res) => {
   });
 };
 
-export default {
+const getUserWantedList = async (req, res) => {
+  const userId = req.params;
+  const wantedLists = await models.wanted_contents.findAll({
+    where: {
+      user_id: userId,
+    },
+  });
+  if (!wantedLists) {
+    return res.send(400, {
+      errors: [
+        {
+          message: 'Comment not found or you don\'t have a permission!',
+        },
+      ],
+    });
+  }
+  res.send({
+    wantedLists,
+    count: wantedLists.length,
+  });
+};
+
+export default [{
   prefix: '/wanted-list',
   inject: (router) => {
     router.post('', create);
@@ -123,4 +145,9 @@ export default {
     router.put('/:contentId', updatecont);
     router.delete('/:contentId', deletecont);
   },
-};
+}, {
+  prefix: '/users',
+  inject: (router) => {
+    router.get('/:userId/wanted-list', getUserWantedList);
+  },
+}];
