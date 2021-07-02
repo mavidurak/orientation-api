@@ -6,7 +6,8 @@ const createContentSchema = {
     name: Joi.string()
       .max(50)
       .required(),
-    type: Joi.string(),
+    type: Joi.string()
+      .required(),
     description: Joi.string()
       .max(250)
       .required(),
@@ -25,7 +26,6 @@ const updateContentSchema = {
       .max(250),
     image_path: Joi.string()
       .max(250)
-      .required(),
   }),
 };
 
@@ -130,7 +130,7 @@ const update = async (req, res) => {
       },
     });
     res.send({
-      message: `Id= ${id} was updated succesfully`,
+      message: `Content was updated succesfully`,
     });
   } catch (err) {
     res.status(500).send({
@@ -161,7 +161,7 @@ const deleteContent = async (req, res) => {
       ],
     });
   }
-  models.contents.destroy({
+ await models.contents.destroy({
     where: {
       id,
     },
