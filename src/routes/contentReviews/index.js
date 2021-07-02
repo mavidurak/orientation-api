@@ -167,7 +167,7 @@ const userReviews = async (req, res) => {
         user_id: userId,
       },
     });
-    res.send({ reviews });
+    res.send({ reviews , count: reviews.length,});
   } catch (err) {
     return res.status(500).send({
       errors: [
