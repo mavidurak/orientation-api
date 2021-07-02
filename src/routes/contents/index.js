@@ -56,128 +56,127 @@ const create = async (req, res) => {
   });
 };
 
-// const detail = async (req, res) => {
-//   const { id } = req.params;
-//   try {
-//     const contentReview = await models.content_reviews.findOne({
-//       where: {
-//         id,
-//       },
-//     });
+const detail = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const content = await models.contents.findOne({
+      where: {
+        id,
+      },
+    });
 
-//     if (!contentReview) {
-//       return res.send({
-//         errors: [
-//           {
-//             message: 'Review not found or you don\'t have a permission!',
-//           },
-//         ],
-//       });
-//     }
+    if (!content) {
+      return res.send({
+        errors: [
+          {
+            message: 'Content not found or you don\'t have a permission!',
+          },
+        ],
+      });
+    }
+    content.views+=1;
+    await content.save();
+    return res.send(content);
+  } catch (err) {
+    return res.status(500).send({
+      errors: [
+        {
+          message: err.message,
+        },
+      ],
+    });
+  }
+};
 
-//     return res.send(contentReview);
-//   } catch (err) {
-//     return res.status(500).send({
-//       errors: [
-//         {
-//           message: err.message,
-//         },
-//       ],
-//     });
-//   }
-// };
+const update = async (req, res) => {
+  const { error } = updateContentSchema.body.validate(req.body);
+  if (error) {
+    return res.status(400).send({
+      errors: error.details,
+    });
+  }
+  const { id } = req.params;
+  try {
+    const content = await models.contents.findOne({
+      where: {
+        id,
+      },
+      include: {
+        model: models.users,
+        as: 'user',
+        where: {
+          id: req.user.id,
+        },
+      },
+    });
+    if (!content) {
+      return res.status(403).send({
+        errors: [
+          {
+            message: 'Content not found or you don\'t have a permission!',
+          },
+        ],
+      });
+    }
 
-// const update = async (req, res) => {
-//   const { error } = updateContentReviewsSchema.body.validate(req.body);
-//   if (error) {
-//     return res.status(400).send({
-//       errors: error.details,
-//     });
-//   }
-//   const { id } = req.params;
-//   try {
-//     const contentReview = await models.content_reviews.findOne({
-//       where: {
-//         id,
-//       },
-//       include: {
-//         model: models.users,
-//         as: 'user',
-//         where: {
-//           id: req.user.id,
-//         },
-//       },
-//     });
-//     if (contentReview) {
-//       const { text, is_spoiler, score } = req.body;
-//       contentReview.text = text;
-//       contentReview.is_spoiler = is_spoiler;
-//       contentReview.score = score;
+    const {
+      name, type, description, image_path,
+    } = req.body;
+    models.contents.update({
+      name, type, description, image_path,
+    }, {
+      where: {
+        id: content.id,
+      },
+    });
+    res.send({
+      message: `Id= ${id} was updated succesfully`,
+    });
+  } catch (err) {
+    res.status(500).send({
+      errors: [
+        {
+          message: err.message,
+        },
+      ],
+    });
+  }
+};
 
-//       models.content_reviews.update({ text, is_spoiler, score }, {
-//         where: {
-//           id: contentReview.id,
-//         },
-//       });
-//       res.send({
-//         message: `Id= ${id} was updated succesfully`,
-//       });
-//     } else {
-//       res.status(403).send({
-//         errors: [
-//           {
-//             message: 'Review not found or you don\'t have a permission!',
-//           },
-//         ],
-//       });
-//     }
-//   } catch (err) {
-//     res.status(500).send({
-//       errors: [
-//         {
-//           message: err.message,
-//         },
-//       ],
-//     });
-//   }
-// };
-
-// const deleteById = async (req, res) => {
-//   const { id } = req.params;
-//   const user_id = req.user.id;
-//   const contentReview = await models.content_reviews.findOne({
-//     where: {
-//       id,
-//     },
-//   });
-//   if (contentReview) {
-//     if (user_id === contentReview.user_id) {
-//       models.content_reviews.destroy({
-//         where: {
-//           id,
-//         },
-//       });
-//       res.send({
-//         message: 'Data set was delected successfully!',
-//       });
-//     }
-//   } else {
-//     res.status(401).send({
-//       errors: [
-//         {
-//           message: 'Review not found or you don\'t have a permission!',
-//         },
-//       ],
-//     });
-//   }
-// };
+const deleteContent = async (req, res) => {
+  const { id } = req.params;
+  const user_id = req.user.id;
+  const content = await models.contents.findOne({
+    where: {
+      id,
+      user_id,
+    },
+  });
+  if (!content) {
+    res.status(401).send({
+      errors: [
+        {
+          message: 'Content not found or you don\'t have a permission!',
+        },
+      ],
+    });
+  }
+  models.contents.destroy({
+    where: {
+      id,
+    },
+  });
+  res.send({
+    message: 'Content was delected successfully!',
+  });
+};
 
 export default {
   prefix: '/contents',
   inject: (router) => {
     router.post('/', create);
-    // router.get('/:id', detail);
-    // router.put('/:id', update);
-    // router.delete('/:id', deleteById);
+    router.get('/:id', detail);
+    router.put('/:id', update);
+    router.delete('/:id', deleteContent);
   },
 };
