@@ -162,12 +162,12 @@ const deleteById = async (req, res) => {
 const userReviews = async (req, res) => {
   const { userId } = req.params;
   try {
-    const contentReviews = await models.content_reviews.findAll({
+    const reviews = await models.content_reviews.findAll({
       where: {
         user_id: userId,
       },
     });
-    res.send({ contentReviews });
+    res.send({ reviews });
   } catch (err) {
     return res.status(500).send({
       errors: [
