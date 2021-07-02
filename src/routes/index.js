@@ -11,4 +11,11 @@ let routes = fs.readdirSync(__dirname) // read all files and folders into 'src/r
     route !== {} && route !== undefined && route !== null
   );
 
+  routes.forEach((route, index, array) => { // multiple router support
+    if(Array.isArray(route)){
+      route.forEach( r => array.push(r));
+      array.splice(index,1);
+    }
+  });
+
 export default routes

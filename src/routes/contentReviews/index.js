@@ -11,20 +11,19 @@ const createContentReviewsSchema = {
     score: Joi.number()
       .min(0)
       .max(10),
-    is_spoiler: Joi.boolean()
-  })
-}
+    is_spoiler: Joi.boolean(),
+  }),
+};
 const updateContentReviewsSchema = {
   body: Joi.object({
     text: Joi.string()
-      .max(250)
-      .required(),
+      .max(250),
     score: Joi.number()
       .min(0)
       .max(10),
-    is_spoiler: Joi.boolean()
-  })
-}
+    is_spoiler: Joi.boolean(),
+  }),
+};
 
 const create = async (req, res) => {
   const { error } = createContentReviewsSchema.body.validate(req.body);
@@ -33,17 +32,19 @@ const create = async (req, res) => {
       errors: error.details,
     });
   }
-  const { content_id, text, score, is_spoiler } = req.body;
+  const {
+    content_id, text, score, is_spoiler,
+  } = req.body;
   const contentReview = await models.content_reviews.create({
     user_id: req.user.id,
     // content_id,
     text,
     score,
-    is_spoiler
-  })
+    is_spoiler,
+  });
   res.send({
-    contentReview
-  })
+    contentReview,
+  });
 };
 
 const detail = async (req, res) => {
@@ -88,15 +89,15 @@ const update = async (req, res) => {
   try {
     const contentReview = await models.content_reviews.findOne({
       where: {
-        id
+        id,
       },
       include: {
         model: models.users,
-        as: "user",
+        as: 'user',
         where: {
-          id: req.user.id
-        }
-      }
+          id: req.user.id,
+        },
+      },
     });
     if (contentReview) {
       const { text, is_spoiler, score } = req.body;
@@ -104,7 +105,7 @@ const update = async (req, res) => {
       contentReview.is_spoiler = is_spoiler;
       contentReview.score = score;
 
-      models.content_reviews.update(text, is_spoiler, score, {
+      models.content_reviews.update({ text, is_spoiler, score }, {
         where: {
           id: contentReview.id,
         },
@@ -112,7 +113,6 @@ const update = async (req, res) => {
       res.send({
         message: `Id= ${id} was updated succesfully`,
       });
-
     } else {
       res.status(403).send({
         errors: [
@@ -163,7 +163,27 @@ const deleteById = async (req, res) => {
   }
 };
 
-export default {
+const userReviews = async (req, res) => {
+  const { user_id } = req.params;
+  try {
+    const contentReview = await models.content_reviews.findAll({
+      where: {
+        user_id,
+      },
+    });
+    res.send(contentReview);
+  } catch (err) {
+    return res.status(500).send({
+      errors: [
+        {
+          message: err.message,
+        },
+      ],
+    });
+  }
+};
+
+export default [{
   prefix: '/reviews',
   inject: (router) => {
     router.post('/', create);
@@ -171,4 +191,9 @@ export default {
     router.put('/:id', update);
     router.delete('/:id', deleteById);
   },
-};
+}, {
+  prefix: '/users',
+  inject: (router) => {
+    router.get('/:user_id/reviews', userReviews);
+  },
+}];
