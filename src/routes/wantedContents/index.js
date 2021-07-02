@@ -93,7 +93,7 @@ const updatecont = async (req, res) => {
 
 const deletecont = async (req, res) => {
   const { contentId } = req.params;
-  const user_id = req.user.id;
+  const  user_id  = req.user.id;
   const wantedContent = await models.wanted_contents.findOne({
     where: {
       user_id,
@@ -115,7 +115,25 @@ const deletecont = async (req, res) => {
   });
 };
 
-export default {
+const read = async (req, res) => {
+  const userId=req.params;
+  const wantedLists = await models.wanted_contents.findAndCountAll({
+    where: {
+      user_id: userId,
+    },
+  });
+  if (!comments) {
+    return res.send(400, {
+      errors: [
+        {
+          message: 'Comment not found or you don\'t have a permission!',
+        },
+      ],
+    });
+  }
+  res.send({ wantedLists, count });
+
+export default [{
   prefix: '/wanted-list',
   inject: (router) => {
     router.post('', create);
@@ -123,4 +141,9 @@ export default {
     router.put('/:contentId', updatecont);
     router.delete('/:contentId', deletecont);
   },
-};
+}, {
+  prefix: '/users',
+  inject: (router) => {
+    router.get('/:userId/wanted-list', getUserWantedList);
+  },
+}]};
