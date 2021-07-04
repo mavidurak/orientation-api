@@ -107,7 +107,7 @@ const update = async (req, res) => {
         },
       });
       res.send({
-        message: `Id= ${id} was updated succesfully`,
+        message: 'Content review was updated succesfully',
       });
     } else {
       res.status(403).send({
@@ -162,12 +162,12 @@ const deleteById = async (req, res) => {
 const userReviews = async (req, res) => {
   const { userId } = req.params;
   try {
-    const contentReviews = await models.content_reviews.findAll({
+    const reviews = await models.content_reviews.findAll({
       where: {
         user_id: userId,
       },
     });
-    res.send({ contentReviews });
+    res.send({ reviews , count: reviews.length,});
   } catch (err) {
     return res.status(500).send({
       errors: [
