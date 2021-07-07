@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 
 import Sequelize from '../sequelize';
+import { CONTENT_TYPES } from '../constants/content';
 
 const contents = Sequelize.define('contents',
   {
@@ -54,6 +55,7 @@ const initialize = (models) => {
       allowNull: false,
     },
   });
+
   models.contents.belongsTo(models.images, {
     as: 'image',
     foreignKey: {
@@ -61,6 +63,11 @@ const initialize = (models) => {
       allowNull: false,
     },
   });
+
+  models.contents.isSecureContentType = function (type) { // Static method
+    const types = Object.entries(CONTENT_TYPES).map((t) => t[1]);
+    return types.includes(type);
+  };
 };
 
 export default {
