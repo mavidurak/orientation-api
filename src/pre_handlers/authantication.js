@@ -14,7 +14,9 @@ export default async (req, res, next) => {
 
   if (accessToken) {
     const data = await models.tokens.findOne({
-      where: { value: accessToken },
+      where: {
+        value: accessToken,
+      },
       include: [
         {
           model: models.users,
@@ -23,7 +25,7 @@ export default async (req, res, next) => {
       ],
     });
 
-    if (data) {
+    if (data && !data.isExpired()) {
       req.user = data.user.toJSON();
     }
   }
