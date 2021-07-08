@@ -16,10 +16,10 @@ module.exports = {
         onUpdate: 'cascade',
         onDelete: 'cascade',
       },
-      // content_id: {
-      //   type: Sequelize.INTEGER,
-      //   allowNull: false,
-      // },
+      content_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       text: {
         type: Sequelize.STRING,
       },

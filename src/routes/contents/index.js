@@ -25,7 +25,7 @@ const updateContentSchema = {
     description: Joi.string()
       .max(250),
     image_path: Joi.string()
-      .max(250)
+      .max(250),
   }),
 };
 
@@ -74,7 +74,7 @@ const detail = async (req, res) => {
         ],
       });
     }
-    content.views+=1;
+    content.views += 1;
     await content.save();
     return res.send(content);
   } catch (err) {
@@ -130,7 +130,7 @@ const update = async (req, res) => {
       },
     });
     res.send({
-      message: `Content was updated succesfully`,
+      message: 'Content was updated succesfully',
     });
   } catch (err) {
     res.status(500).send({
@@ -161,7 +161,7 @@ const deleteContent = async (req, res) => {
       ],
     });
   }
- await models.contents.destroy({
+  await models.contents.destroy({
     where: {
       id,
     },

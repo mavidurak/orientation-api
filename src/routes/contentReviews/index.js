@@ -3,8 +3,8 @@ import models from '../../models';
 
 const createContentReviewsSchema = {
   body: Joi.object({
-    // content_id: Joi.number()
-    // .required(),
+    content_id: Joi.number()
+      .required(),
     text: Joi.string()
       .max(250)
       .required(),
@@ -37,7 +37,7 @@ const create = async (req, res) => {
   } = req.body;
   const contentReview = await models.content_reviews.create({
     user_id: req.user.id,
-    // content_id,
+    content_id,
     text,
     score,
     is_spoiler,
@@ -161,13 +161,37 @@ const deleteById = async (req, res) => {
 
 const userReviews = async (req, res) => {
   const { userId } = req.params;
+  const { limit } = req.query;
   try {
     const reviews = await models.content_reviews.findAll({
       where: {
         user_id: userId,
       },
+      limit,
     });
-    res.send({ reviews , count: reviews.length,});
+    res.send({ reviews, count: reviews.length });
+  } catch (err) {
+    return res.status(500).send({
+      errors: [
+        {
+          message: err.message,
+        },
+      ],
+    });
+  }
+};
+
+const contentReviews = async (req, res) => {
+  const { contentId } = req.params;
+  const { limit } = req.query;
+  try {
+    const reviews = await models.content_reviews.findAll({
+      where: {
+        content_id: contentId,
+      },
+      limit,
+    });
+    res.send({ reviews, count: reviews.length });
   } catch (err) {
     return res.status(500).send({
       errors: [
@@ -191,5 +215,10 @@ export default [{
   prefix: '/users',
   inject: (router) => {
     router.get('/:userId/reviews', userReviews);
+  },
+}, {
+  prefix: '/contents',
+  inject: (router) => {
+    router.get('/:contentId/reviews', contentReviews);
   },
 }];
