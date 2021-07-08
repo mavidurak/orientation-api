@@ -159,6 +159,17 @@ const deleteById = async (req, res) => {
   }
 };
 
+const getMyReviews = async (req, res) => {
+  const reviews = await models.content_reviews.findAll({
+    where: {
+      user_id: req.user.id,
+    },
+  });
+  return res.send(200, {
+    reviews,
+  });
+};
+
 const userReviews = async (req, res) => {
   const { userId } = req.params;
   const { limit } = req.query;
@@ -207,6 +218,7 @@ export default [{
   prefix: '/reviews',
   inject: (router) => {
     router.post('/', create);
+    router.get('', getMyReviews);
     router.get('/:id', detail);
     router.put('/:id', update);
     router.delete('/:id', deleteById);
