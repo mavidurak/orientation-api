@@ -18,7 +18,7 @@ module.exports = {
       },
       content_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: false, 
       },
       text: {
         type: Sequelize.STRING,
