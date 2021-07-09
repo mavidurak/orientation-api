@@ -4,6 +4,10 @@ import Sequelize from '../sequelize';
 
 const content_reviews = Sequelize.define('content_reviews',
   {
+    content_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     text: {
       type: DataTypes.STRING,
     },
@@ -27,6 +31,14 @@ const initialize = (models) => {
     as: 'user',
     foreignKey: {
       name: 'user_id',
+      allowNull: false,
+    },
+  });
+
+  models.content_reviews.belongsTo(models.contents, {
+    as: 'contents',
+    foreignKey: {
+      name: 'content_id',
       allowNull: false,
     },
   });
