@@ -5,7 +5,7 @@ module.exports = {
     const status = ['Wants to read', 'Read', 'Didn\'t read'];
     for (let statu, myScore, index = 0; index < 6; index++) {
       statu = status[Math.floor(Math.random() * 3)];
-      myScore = Math.floor(Math.random() * 10);
+      myScore = Math.floor(Math.random() * 11);
 
       wantedContents.push({
         user_id: index + 1,
