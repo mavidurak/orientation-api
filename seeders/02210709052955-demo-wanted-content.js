@@ -11,13 +11,16 @@ module.exports = {
         user_id: index + 1,
         status: `${statu}`,
         my_score: myScore,
-        created_at: new Date(),
+        created_at: new Date().setyear(2001),
         updated_at: new Date(),
-
       });
     }
 
     await queryInterface.bulkInsert('wanted_contents', wantedContents);
   },
-
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.bulkDelete('wanted_contents',{
+      created_at: new Date().setyear(2001),
+    });
+  },
 };
