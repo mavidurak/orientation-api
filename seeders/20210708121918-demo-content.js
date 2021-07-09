@@ -16,19 +16,14 @@ module.exports = {
       'Set in a dismal dystopian England, it is the first-person account of a juvenile delinquent who undergoes state-sponsored psychological rehabilitation for his aberrant behaviour.',
       'Finland, the country of white lilies is a journalistic book by Russian priest and social activist Grigory Spiridonovich Petrov.',
     ];
-    const types = ['Game', 'Movie', 'Series', 'Book'];
-    const view = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
-    const rates = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const types = ['GAME', 'MOVIE', 'SERIES', 'BOOK'];
 
     for (let name, description, type, views, rate, index = 0; index < 12; index++) {
       name = names[index];
       description = descriptions[index];
-      if (index < 3)type = types[0];
-      if (index >= 3 && index < 6)type = types[1];
-      if (index >= 6 && index < 9)type = types[2];
-      if (index >= 9 && index < 12)type = types[3];
-      views = view[Math.floor(Math.random() * 10)];
-      rate = rates[Math.floor(Math.random() * 10)];
+      type = types[Math.floor(index / 3)];
+      views = Math.floor(Math.random() * 1001);
+      rate = Math.floor(Math.random() * 11);
 
       contents.push({
         user_id: index + 1,
@@ -36,8 +31,8 @@ module.exports = {
         name: `SD/${name}`,
         description: `${description}`,
         type: `${type}`,
-        views: `${views}`,
-        rate: `${rate}`,
+        views,
+        rate,
         created_at: new Date(),
         updated_at: new Date(),
       });
