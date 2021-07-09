@@ -5,7 +5,7 @@ module.exports = {
     const surnames = ['Smith', 'Johnson', 'Brown', 'Emma', 'Jones', 'Miller', 'Davis', 'Garcia', 'Rodriguez', 'Walker'];
     const domains = ['yahoo', 'gmail', 'hotmail', 'msn', 'live', 'outlook'];
 
-    for (let name, surname, random, domain, index = 0; index < 10; index++) {
+    for (let name, surname, random, domain, index = 0; index < 12; index++) {
       name = names[Math.floor(Math.random() * 10)];
       surname = surnames[Math.floor(Math.random() * 10)];
       domain = domains[Math.floor(Math.random() * 6)];
