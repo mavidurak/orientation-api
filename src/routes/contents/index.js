@@ -88,6 +88,15 @@ const detail = async (req, res) => {
   }
 };
 
+const getContents = async (req, res) => {
+  const { limit } = req.query;
+  const content = await models.contents.findAll({
+    limit,
+  });
+  return res.send({ content, count: content.length });
+
+};
+
 const update = async (req, res) => {
   const { error } = updateContentSchema.body.validate(req.body);
   if (error) {
@@ -174,6 +183,7 @@ const deleteContent = async (req, res) => {
 export default {
   prefix: '/contents',
   inject: (router) => {
+    router.get('', getContents);
     router.post('/', create);
     router.get('/:id', detail);
     router.put('/:id', update);
