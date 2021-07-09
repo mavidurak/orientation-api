@@ -2,7 +2,6 @@ module.exports = {
 
   up: async (queryInterface, Sequelize) => {
     const wantedContents = [];
-    //const status = ['Wants to read', 'Read', 'Didn\'t read'];
     for (let index = 0; index < 12; index++) {
       wantedContents.push({
         user_id: index+1,
