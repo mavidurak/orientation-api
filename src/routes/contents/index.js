@@ -88,6 +88,40 @@ const detail = async (req, res) => {
   }
 };
 
+const content_limit = async (req, res) => {
+  const { id } = req.params;
+  const { limit } = req.query;
+  try {
+    const content = await models.contents.findAll({
+      where: {
+        id,
+      },
+      limit,
+    });
+    return res.send({ content, count: content.length });
+  } catch (err) {
+    return res.status(500).send({
+      errors: [
+        {
+          message: err.message,
+        },
+      ],
+    });
+  }
+};
+
+const get_contents = async (req, res) => {
+  const { id } = req.params;
+  const content = await models.contents.findAll({
+    where: {
+      id,
+    },
+  });
+  return res.send(200, {
+    content,
+  });
+};
+
 const update = async (req, res) => {
   const { error } = updateContentSchema.body.validate(req.body);
   if (error) {
@@ -175,6 +209,7 @@ export default {
   prefix: '/contents',
   inject: (router) => {
     router.post('/', create);
+    router.get('/:id', detail);
     router.get('/:id', detail);
     router.put('/:id', update);
     router.delete('/:id', deleteContent);
