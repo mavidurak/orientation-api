@@ -15,13 +15,11 @@ module.exports = {
     'https://tr.web.img2.acsta.net/pictures/14/10/09/15/52/150664.jpg',
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSW6sTSkb00QsGh5p8RyAlqs7ACzaGuBomuUp3cnqcAHRh5OlVMuSEwwRGzJHMT6TvXwEY&usqp=CAU'];
 
-    for (let name, path, index = 0; index < 12; index++) {
-      name = names[index];
-      path = paths[index];
+    for (let index = 0; index < 12; index++) {
       images.push({
         user_id:index+1,
-        name: `SD/${name}`,
-        path:`${path}`,
+        name: `SD/${names[index]}`,
+        path:paths[index],
         created_at: new Date(),
         updated_at: new Date(),
       });
