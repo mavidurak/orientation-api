@@ -18,7 +18,13 @@ module.exports = {
       },
       content_id: {
         type: Sequelize.INTEGER,
-        allowNull: false, 
+        allowNull: false,
+        references: {
+          model: 'contents',
+          key: 'id',
+        },
+        onUpdate: 'cascade',
+        onDelete: 'cascade',
       },
       text: {
         type: Sequelize.STRING,
