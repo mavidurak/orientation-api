@@ -1,7 +1,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const images = [];
-    const names = ['images1', 'images2', 'images3', 'images4', 'images5', 'images6', 'images7', 'images8', 'images8', 'images9', 'images10', 'images11'];
+    const names = ['the100','the witcher','black mirror','dark','lost in space','snowpiercer','legion','altered carbon','Mr.Nobody','passengers','interstaller','breaking bad'];
     const paths = ['https://tr.web.img4.acsta.net/pictures/14/02/16/23/53/181925.jpg?coixp=50&coiyp=39',
       'https://cdn.dsmcdn.com/mnresize/415/622/ty3/product/media/images/20201013/18/15566034/92933130/1/1_org_zoom.jpg',
       'https://izleryazar.com/wp-content/uploads/2016/10/Black-Mirror-Afi%C5%9F.jpg',
@@ -15,13 +15,11 @@ module.exports = {
       'https://tr.web.img2.acsta.net/pictures/14/10/09/15/52/150664.jpg',
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSW6sTSkb00QsGh5p8RyAlqs7ACzaGuBomuUp3cnqcAHRh5OlVMuSEwwRGzJHMT6TvXwEY&usqp=CAU'];
 
-    for (let name, path, index = 0; index < 12; index++) {
-      name = names[Math.floor(Math.random() * 12)];
-      path = paths[Math.floor(Math.random() * 12)];
+    for (let index = 0; index < 12; index++) {
       images.push({
-        user_id: index + 1,
-        name: `SD/${name}`,
-        path: `${path}`,
+        user_id:index+1,
+        name: `SD/${names[index]}`,
+        path:paths[index],
         created_at: new Date(),
         updated_at: new Date(),
       });

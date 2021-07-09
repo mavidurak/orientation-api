@@ -37,6 +37,26 @@ const loginSchema = {
   }),
 };
 
+const updateSchema = {
+  body: Joi.object({
+    username: Joi.string()
+      .min(2)
+      .max(30),
+    email: Joi.string()
+      .email(),
+    password: Joi.string()
+      .min(8)
+      .max(30)
+      .required(),
+    name: Joi.string()
+      .min(2)
+      .max(30),
+    friends_ids: Joi.array(),
+    new_password: Joi.string().min(8),
+    new_password_again: Joi.string().min(8),
+  }),
+};
+
 const login = async (req, res) => {
   const { error } = loginSchema.body.validate(req.body);
   if (error) {
@@ -123,11 +143,90 @@ const userInfo = async (req, res) => {
   res.send(req.user);
 };
 
+const update = async (req, res) => {
+  const { error, value } = updateSchema.body.validate(req.body);
+  if (error) {
+    return res.status(400).send({
+      errors: error.details,
+    });
+  }
+  const {
+    password, username, email, name, friends_ids, new_password, new_password_again,
+  } = req.body;
+  const user = await models.users.findOne({
+    where: {
+      username: req.user.username,
+    },
+  });
+
+  if (user) {
+    const passwordHash = makeSha512(password, user.password_salt);
+    if (passwordHash !== user.password_hash) {
+      return res.send(403, {
+        errors: [
+          {
+            message: 'password is incorrect please try again ',
+          },
+        ],
+      });
+    }
+    let where = {};
+    if (username || email) {
+      where = username ? { username } : { email };
+      const isExist = await models.users.findOne({
+        where,
+      });
+      if (isExist) {
+        return res.send(403, {
+          errors: [
+            {
+              message: 'E-mail or username is already used!',
+            },
+          ],
+        });
+      }
+    }
+    let passwordValdation = { hash: null, salt: null };
+    if (new_password && new_password_again) {
+      if (new_password !== new_password_again) {
+        return res.send(403, {
+          errors: [
+            {
+              message: 'Passwords must be same!',
+            },
+          ],
+        });
+      }
+      passwordValdation = createSaltHashPassword(new_password);
+    }
+    where = Object.entries({
+      username, email, name, friends_ids, password_hash: passwordValdation.hash, password_salt: passwordValdation.salt,
+    }).reduce((a, [k, v]) => (v == null ? a : (a[k] = v, a)), {});
+    const user2 = await user.update(where);
+    return res.send(user2.toJSON());
+  }
+};
+
+const deleteUser = async (req, res) => {
+  const isDeleted = await models.users.destroy({
+    where: {
+      id: req.user.id,
+    },
+  });
+  if (isDeleted) {
+    res.send(200, {
+      message: 'Successfully deleted',
+    });
+  }
+};
+
 export default {
   prefix: '/authentication',
   inject: (router) => {
     router.post('/register', register);
     router.post('/login', login);
     router.get('/me', userInfo);
+    router.put('/me', update);
+    router.delete('/me', deleteUser);
   },
 };
