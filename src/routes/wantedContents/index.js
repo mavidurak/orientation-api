@@ -40,10 +40,12 @@ const create = async (req, res) => {
 };
 
 const read = async (req, res) => {
+  const { limit } = req.query;
   const wantedList = await models.wanted_contents.findAll({
     where: {
       user_id: req.user.id,
     },
+    limit,
   });
   if (!wantedList) {
     return res.send(400, {

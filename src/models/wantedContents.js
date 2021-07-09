@@ -41,6 +41,13 @@ const initialize = (models) => {
       allowNull: false,
     },
   });
+  models.wanted_contents.belongsTo(models.contents, {
+    as: 'content',
+    foreignKey: {
+      name: 'content_id',
+      allowNull: false,
+    },
+  });
 };
 export default {
   model: wanted_contents,
