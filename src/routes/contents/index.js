@@ -88,6 +88,40 @@ const detail = async (req, res) => {
   }
 };
 
+const getContents = async (req, res) => {
+  const { all } = req.params;
+  const content = await models.contents.findAll({
+    where: {
+      all,
+    },
+  });
+  return res.send(200, {
+    content,
+  });
+};
+
+const contentLimit = async (req, res) => {
+  const { id } = req.params;
+  const { limit } = req.query;
+  try {
+    const content = await models.contents.findAll({
+      where: {
+        id,
+      },
+      limit,
+    });
+    return res.send({ content, count: content.length });
+  } catch (err) {
+    return res.status(500).send({
+      errors: [
+        {
+          message: err.message,
+        },
+      ],
+    });
+  }
+};
+
 const update = async (req, res) => {
   const { error } = updateContentSchema.body.validate(req.body);
   if (error) {
@@ -176,6 +210,8 @@ export default {
   inject: (router) => {
     router.post('/', create);
     router.get('/:id', detail);
+    router.get('/:id/content', contents);
+    router.get('/:all', getContents);
     router.put('/:id', update);
     router.delete('/:id', deleteContent);
   },
