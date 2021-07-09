@@ -47,6 +47,28 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
+  models.users.hasMany(
+    models.content_reviews, {
+      as: 'user_content_reviews',
+      foreignKey: 'user_id',
+      sourceKey: 'id',
+    },
+  );
+
+  models.users.hasMany(
+    models.images, {
+      as: 'user_images',
+      foreignKey: 'user_id',
+      sourceKey: 'id',
+    },
+  );
+  models.users.hasMany(
+    models.contents, {
+      as: 'user_contents',
+      foreignKey: 'user_id',
+      sourceKey: 'id',
+    },
+  );
 
   models.users.prototype.toJSON = function () {
     const values = { ...this.get() };

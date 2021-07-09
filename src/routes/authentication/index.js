@@ -165,7 +165,7 @@ const update = async (req, res) => {
       return res.send(403, {
         errors: [
           {
-            message: 'Şifreyi tekrar deneyiniz',
+            message: 'password is incorrect please try again ',
           },
         ],
       });
@@ -180,28 +180,30 @@ const update = async (req, res) => {
         return res.send(403, {
           errors: [
             {
-              message: 'Bu username veya email kullanılıyor..',
+              message: 'E-mail or username is already used!',
             },
           ],
         });
       }
     }
-    let passwordValdation = { password_hash: null, password_salt: null };
+    let passwordValdation = { hash: null, salt: null };
     if (new_password && new_password_again) {
       if (new_password !== new_password_again) {
         return res.send(403, {
           errors: [
             {
-              message: 'Şifreler aynı olmalı',
+              message: 'Passwords must be same!',
             },
           ],
         });
       }
       passwordValdation = createSaltHashPassword(new_password);
     }
-    // şifre güncelleme olucak
+    console.log({
+      username, email, name, friends_ids, password_hash: passwordValdation.hash, password_salt: passwordValdation.salt,
+    });
     where = Object.entries({
-      username, email, name, friends_ids, password_hash: passwordValdation.password_hash, password_salt: passwordValdation.password_salt,
+      username, email, name, friends_ids, password_hash: passwordValdation.hash, password_salt: passwordValdation.salt,
     }).reduce((a, [k, v]) => (v == null ? a : (a[k] = v, a)), {});
     console.log(where);
     const user2 = await user.update(where);
@@ -216,7 +218,13 @@ const deleteUser = async (req, res) => {
     },
   });
   if (isDeleted) {
-    res.send(200, 'Başarıyla silindi');
+    res.send(200,  {
+          errors: [
+            {
+              message: 'Successfully deleted',
+            },
+          ],
+        });
   }
 };
 

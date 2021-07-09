@@ -19,7 +19,7 @@
 ├── README.md
 ├── sample.env # Sample environment variables file
 ├── seeders
-│   └── <model_name>.js
+│   └── <timestamp-name>.js
 └── src
     ├── config
     │   └── sequelize.js # Database config
@@ -52,6 +52,7 @@ git clone https://github.com/mavidurak/orientation-api.git
 cd orientation-api
 ```
 ## Setup
+Install dependencies
 ```bash
 npm install
 ```
@@ -60,10 +61,15 @@ Copy [sample.env](./sample.env) file then changes values.
 ```bash
 cp sample.env .env
 ```
-## Migration
+## Migrate
 Create database then migrate it
 ```bash
 npm run migrate
+```
+## Seed
+Insert random data into database
+```bash
+npm run seed
 ```
 ## Start
 ```bash
