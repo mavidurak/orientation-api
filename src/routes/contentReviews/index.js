@@ -180,7 +180,7 @@ const userReviews = async (req, res) => {
       },
       limit,
     });
-    res.send({ reviews, count: reviews.length });
+    return res.send({ reviews, count: reviews.length });
   } catch (err) {
     return res.status(500).send({
       errors: [
@@ -202,7 +202,7 @@ const contentReviews = async (req, res) => {
       },
       limit,
     });
-    res.send({ reviews, count: reviews.length });
+    return res.send({ reviews, count: reviews.length });
   } catch (err) {
     return res.status(500).send({
       errors: [
