@@ -199,13 +199,9 @@ const update = async (req, res) => {
       }
       passwordValdation = createSaltHashPassword(new_password);
     }
-    console.log({
-      username, email, name, friends_ids, password_hash: passwordValdation.hash, password_salt: passwordValdation.salt,
-    });
     where = Object.entries({
       username, email, name, friends_ids, password_hash: passwordValdation.hash, password_salt: passwordValdation.salt,
     }).reduce((a, [k, v]) => (v == null ? a : (a[k] = v, a)), {});
-    console.log(where);
     const user2 = await user.update(where);
     return res.send(user2.toJSON());
   }
@@ -218,13 +214,9 @@ const deleteUser = async (req, res) => {
     },
   });
   if (isDeleted) {
-    res.send(200,  {
-          errors: [
-            {
-              message: 'Successfully deleted',
-            },
-          ],
-        });
+    res.send(200, {
+      message: 'Successfully deleted',
+    });
   }
 };
 
