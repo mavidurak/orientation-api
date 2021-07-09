@@ -1,7 +1,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const images = [];
-    const names = ['the100','the witcher','black mirror','dark','lost in space','snowpiercer','legion','altered carbon','Mr.Nobody','passengers','interstaller','breaking bad'];
+    const names = ['the100', 'the witcher', 'black mirror', 'dark', 'lost in space', 'snowpiercer', 'legion', 'altered carbon', 'Mr.Nobody', 'passengers', 'interstaller', 'breaking bad'];
     const paths = ['https://tr.web.img4.acsta.net/pictures/14/02/16/23/53/181925.jpg?coixp=50&coiyp=39',
       'https://cdn.dsmcdn.com/mnresize/415/622/ty3/product/media/images/20201013/18/15566034/92933130/1/1_org_zoom.jpg',
       'https://izleryazar.com/wp-content/uploads/2016/10/Black-Mirror-Afi%C5%9F.jpg',
@@ -17,9 +17,9 @@ module.exports = {
 
     for (let index = 0; index < 12; index++) {
       images.push({
-        user_id:index+1,
+        user_id: index + 1,
         name: `SD/${names[index]}`,
-        path:paths[index],
+        path: paths[index],
         created_at: new Date(),
         updated_at: new Date(),
       });
