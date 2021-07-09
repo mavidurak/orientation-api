@@ -63,6 +63,14 @@ const initialize = (models) => {
       allowNull: false,
     },
   });
+  models.contents.hasMany(
+    models.wanted_contents, {
+      as: 'user_wanted_contents',
+      foreignKey: 'content_id',
+      sourceKey: 'id',
+    },
+  );
+
 
   models.contents.isSecureContentType = function (type) { // Static method
     const types = Object.entries(CONTENT_TYPES).map((t) => t[1]);
