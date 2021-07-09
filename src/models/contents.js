@@ -63,6 +63,14 @@ const initialize = (models) => {
       allowNull: false,
     },
   });
+  models.contents.hasMany(
+    models.wanted_contents, {
+      as: 'user_wanted_contents',
+      foreignKey: 'content_id',
+      sourceKey: 'id',
+    },
+  );
+
 
   models.contents.hasMany(
     models.content_reviews, {

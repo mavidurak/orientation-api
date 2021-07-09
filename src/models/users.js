@@ -69,6 +69,14 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
+  models.users.hasMany(
+    models.wanted_contents, {
+      as: 'user_wanted_contents',
+      foreignKey: 'user_id',
+      sourceKey: 'id',
+    },
+  );
+
 
   models.users.prototype.toJSON = function () {
     const values = { ...this.get() };
