@@ -9,7 +9,7 @@ module.exports = {
         content_id:index+1,
         status: status[Math.floor(Math.random() * 3)],
         my_score: Math.floor(Math.random() * 11),
-        created_at: new Date().setyear(2001),
+        created_at: new Date("2001-07-09T11:00:11.440Z"),
         updated_at: new Date(),
       });
     }
@@ -18,7 +18,7 @@ module.exports = {
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('wanted_contents',{
-      created_at: new Date().setyear(2001),
+      created_at: new Date("2001-07-09T11:00:11.440Z"),
     });
   },
 };
