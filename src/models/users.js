@@ -77,6 +77,13 @@ const initialize = (models) => {
     },
   );
 
+  models.users.hasMany(
+    models.comments, {
+      as: 'comments',
+      foreignKey: 'user_id',
+      sourceKey: 'id',
+    },
+  );
 
   models.users.prototype.toJSON = function () {
     const values = { ...this.get() };

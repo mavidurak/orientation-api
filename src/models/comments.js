@@ -41,7 +41,7 @@ const initialize = (models) => {
       foreignKey: 'user_id',
     },
   );
-  /*  models.comments.belongsTo(
+  models.comments.belongsTo(
     models.content_reviews, {
       as: 'content_review',
       foreignKey: 'content_reviews_id',
@@ -52,7 +52,7 @@ const initialize = (models) => {
       as: 'discussion',
       foreignKey: 'discussions_id',
     },
-  );  */
+  );
   models.comments.belongsTo(
     models.comments, {
       as: 'parent',
