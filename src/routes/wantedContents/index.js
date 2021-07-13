@@ -121,7 +121,7 @@ const getUserWantedList = async (req, res) => {
   const { userId } = req.params;
   const wantedLists = await models.wanted_contents.findAll({
     where: {
-      userId,
+      user_id: userId,
     },
   });
   if (!wantedLists) {
