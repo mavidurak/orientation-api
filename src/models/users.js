@@ -70,20 +70,20 @@ const initialize = (models) => {
     },
   );
   models.users.hasMany(
-    models.wantedContents, {
+    models.wanted_contents, {
       as: 'user_wanted_contents',
       foreignKey: 'user_id',
       sourceKey: 'id',
     },
   );
-  models.users.hasOne(
+  models.users.hasMany(
     models.messages, {
       as: 'user_message_to',
       foreignKey: 'to',
       sourceKy: 'id',
     },
   );
-  models.users.hasOne(
+  models.users.hasMany(
     models.messages, {
       as: 'user_message_from',
       foreignKey: 'from',
