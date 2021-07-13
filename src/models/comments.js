@@ -63,6 +63,7 @@ const initialize = (models) => {
     models.comments, {
       as: 'children',
       foreignKey: 'parent_comment_id',
+      sourceKey: 'id',
     },
   );
 };
