@@ -77,20 +77,19 @@ const initialize = (models) => {
     },
   );
   models.users.hasOne(
-    models.messages,{
-      as:'user_message_to',
-      foreignKey:'to',
-      sourceKy:'id',
-    }
+    models.messages, {
+      as: 'user_message_to',
+      foreignKey: 'to',
+      sourceKy: 'id',
+    },
   );
   models.users.hasOne(
-    models.messages,{
-      as:'user_message_from',
-      foreignKey:'from',
-      sourceKy:'id',
-    }
+    models.messages, {
+      as: 'user_message_from',
+      foreignKey: 'from',
+      sourceKy: 'id',
+    },
   );
-
 
   models.users.prototype.toJSON = function () {
     const values = { ...this.get() };
