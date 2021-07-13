@@ -63,10 +63,10 @@ const read = async (req, res) => {
 };
 
 const deletemessage = async (req, res) => {
-  const { userId } = req.params;
+  const { id } = req.params;
   const messages = await models.messages.findOne({
     where: {
-      id: userId,
+      id,
       from: req.user.id,
     },
   });
