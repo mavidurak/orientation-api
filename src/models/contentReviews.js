@@ -42,6 +42,14 @@ const initialize = (models) => {
       allowNull: false,
     },
   });
+
+  models.content_reviews.hasMany(
+    models.comments, {
+      as: 'comments',
+      foreignKey: 'content_reviews_id',
+      sourceKey: 'id',
+    },
+  );
 };
 export default {
   model: content_reviews,
