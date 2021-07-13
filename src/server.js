@@ -16,7 +16,7 @@ server.use(bodyParser.json());
 pre_handlers.forEach((h) => server.use(h));
 server.use(router);
 
-server.get('/api/health-check', (req, res) => res.status(200).send('OK'));
+server.get('/health-check', (req, res) => res.status(200).send('OK'));
 
 server.listen(PORT, () => {
   console.log(`🚀 Server listening to ${`http://localhost:${PORT}`.green} , NODE_ENV=${`${process.env.NODE_ENV}`.green}`);
