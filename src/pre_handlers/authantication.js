@@ -5,9 +5,9 @@ import {
   WHITE_LIST,
 } from '../constants/api';
 
-export default async (req, res, next) => {
+export default async (req, res, next) => {  
   const is_ignored = WHITE_LIST.findIndex(
-    (path) => path === req.fixed_path,
+    ([method, path]) => path === req.fixed_path && method === req.method,
   ) > -1;
 
   const accessToken = req.get(ACCESS_TOKEN_KEY);
