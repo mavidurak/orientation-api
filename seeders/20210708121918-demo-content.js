@@ -23,7 +23,7 @@ module.exports = {
       description = descriptions[index];
       type = types[Math.floor(index / 3)];
       views = Math.floor(Math.random() * 1001);
-      rate = Math.floor(Math.random() * 11);
+      rate = Number((Math.random() * 10).toFixed(1));
 
       contents.push({
         user_id: index + 1,
