@@ -92,9 +92,12 @@ const getContents = async (req, res) => {
   const { limit } = req.query;
   const content = await models.contents.findAll({
     limit,
+    include: {
+      model: models.images,
+      as: 'image',
+    },
   });
   return res.send({ content, count: content.length });
-
 };
 
 const update = async (req, res) => {
