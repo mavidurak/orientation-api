@@ -33,6 +33,13 @@ const initialize = (models) => {
       },
     },
   );
+  models.discussions.hasMany(
+    models.comments, {
+      as: 'comments',
+      foreignKey: 'discussions_id',
+      sourceKey: 'id',
+    },
+  );
 };
 
 export default {

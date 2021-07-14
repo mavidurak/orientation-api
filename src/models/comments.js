@@ -39,30 +39,35 @@ const initialize = (models) => {
     models.users, {
       as: 'user',
       foreignKey: 'user_id',
+      sourceKey: 'id',
     },
   );
-  /*  models.comments.belongsTo(
+  models.comments.belongsTo(
     models.content_reviews, {
       as: 'content_review',
       foreignKey: 'content_reviews_id',
+      sourceKey: 'id',
     },
   );
   models.comments.belongsTo(
     models.discussions, {
       as: 'discussion',
       foreignKey: 'discussions_id',
+      sourceKey: 'id',
     },
-  );  */
+  );
   models.comments.belongsTo(
     models.comments, {
       as: 'parent',
       foreignKey: 'parent_comment_id',
+      sourceKey: 'id',
     },
   );
   models.comments.hasMany(
     models.comments, {
       as: 'children',
       foreignKey: 'parent_comment_id',
+      sourceKey: 'id',
     },
   );
 };
