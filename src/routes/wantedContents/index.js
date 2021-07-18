@@ -86,6 +86,7 @@ const updatecont = async (req, res) => {
     {
       where: {
         content_id: wantedList.content_id,
+        user_id: req.user.id,
       },
     });
   return res.send(200, {
