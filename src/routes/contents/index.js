@@ -63,6 +63,16 @@ const detail = async (req, res) => {
       where: {
         id,
       },
+      include:[
+        {
+          model: models.images,
+          as: 'image',
+        },
+        {
+          model: models.users,
+          as: 'user',
+        }
+      ],
     });
 
     if (!content) {
