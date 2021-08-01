@@ -63,7 +63,7 @@ const detail = async (req, res) => {
       where: {
         id,
       },
-      include:[
+      include: [
         {
           model: models.images,
           as: 'image',
@@ -71,7 +71,7 @@ const detail = async (req, res) => {
         {
           model: models.users,
           as: 'user',
-        }
+        },
       ],
     });
 
@@ -100,14 +100,14 @@ const detail = async (req, res) => {
 
 const getContents = async (req, res) => {
   const { limit } = req.query;
-  const content = await models.contents.findAll({
+  const contents = await models.contents.findAll({
     limit,
     include: {
       model: models.images,
       as: 'image',
     },
   });
-  return res.send({ content, count: content.length });
+  return res.send({ contents, count: contents.length });
 };
 
 const update = async (req, res) => {
