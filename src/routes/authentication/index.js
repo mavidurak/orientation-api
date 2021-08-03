@@ -1,5 +1,7 @@
 import { Op } from 'sequelize';
 import Joi from '../../joi';
+import { EMAIL_TOKEN_STATUS } from '../../constants/email'
+import { sendEmail } from '../../utils/sendEmail'
 
 import models from '../../models';
 import { createSaltHashPassword, makeSha512 } from '../../utils/encription';
@@ -76,6 +78,15 @@ const login = async (req, res) => {
   if (user) {
     const passwordHash = makeSha512(password, user.password_salt);
     if (passwordHash === user.password_hash) {
+      if(user.is_email_confirmed === false){
+        return res.send({
+          errors: [
+            {
+              message: 'This account has not been confirmed yet.',
+            },
+          ],
+        });
+      }
       const token = await user.createToken(req.headers['x-forwarded-for'] || req.connection.remoteAddress);
 
       return res.send({ token });
@@ -133,6 +144,16 @@ const register = async (req, res) => {
     password_hash,
     password_salt,
   });
+
+  const value = await user.createEmailConfirmationToken();
+
+   if (!process.env.NODE_ENV || process.env.NODE_ENV==='development' || process.env.NODE_ENV === 'test') {
+    user.is_email_confirmed = true;
+    user.save();
+  }  
+  else{
+    await sendEmail(user,value);
+  }
 
   return res.status(201).send({
     user: user.toJSON(),
@@ -220,6 +241,22 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const emailConfirmation = async (req,res) => {
+  const value = req.query.token;
+  const emailConfirmationValue = await models.email_confirmation_tokens.findOne({
+    where: {
+      value,
+      status: EMAIL_TOKEN_STATUS.PENDING,
+    },
+  });
+
+  if(emailConfirmationValue){
+    await emailConfirmationValue.confirmEmail();
+  }
+  
+  return res.redirect(`${process.env.DASHBOARD_UI_PATH}/login`);
+}; 
+
 export default {
   prefix: '/authentication',
   inject: (router) => {
@@ -228,5 +265,6 @@ export default {
     router.get('/me', userInfo);
     router.put('/me', update);
     router.delete('/me', deleteUser);
+    router.get('/email-confirmation',emailConfirmation);
   },
 };

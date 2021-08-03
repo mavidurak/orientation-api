@@ -1,3 +1,5 @@
+const sequelize = require("sequelize");
+
 module.exports = {
   up(queryInterface, Sequelize) {
     return queryInterface.createTable('users', {
@@ -33,6 +35,10 @@ module.exports = {
       password_salt: {
         type: Sequelize.STRING,
         allownull: false,
+      },
+      is_email_confirmed: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
       created_at: {
         allowNull: false,
