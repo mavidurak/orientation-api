@@ -32,7 +32,7 @@ const users = Sequelize.define('users',
       type: DataTypes.STRING,
       allownull: false,
     },
-    is_email_confirmed : {
+    is_email_confirmed: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },

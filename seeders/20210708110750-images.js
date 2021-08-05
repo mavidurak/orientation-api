@@ -14,7 +14,7 @@ module.exports = {
       'https://i.pinimg.com/originals/67/5e/bc/675ebc2fd210a8bd5362928a51514960.jpg',
       'https://anylang.net/sites/default/files/covers/1984.jpg',
       'https://www.penguinsciencefiction.org/images/3219_ANTHONY_BURGESS_A_Clockwork_Orange_1972.jpg',
-      'https://i.dr.com.tr/cache/500x400-0/originals/0001842239001-1.jpg'
+      'https://i.dr.com.tr/cache/500x400-0/originals/0001842239001-1.jpg',
     ];
 
     for (let index = 0; index < 12; index++) {

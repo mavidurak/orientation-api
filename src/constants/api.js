@@ -1,9 +1,9 @@
-export const WHITE_LIST = [ 
+export const WHITE_LIST = [
   // ['METHOD', 'PATH']
   ['GET', '/api/health-check/'],
   ['POST', '/authentication/login/'],
   ['POST', '/authentication/register/'],
-  ['GET', '/authentication/email-confirmation']
+  ['GET', '/authentication/email-confirmation/'],
 ];
 
 export const ACCESS_TOKEN_KEY = 'x-access-token';

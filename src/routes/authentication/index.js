@@ -1,7 +1,7 @@
 import { Op } from 'sequelize';
 import Joi from '../../joi';
-import { EMAIL_TOKEN_STATUS } from '../../constants/email'
-import { sendEmail } from '../../utils/sendEmail'
+import { EMAIL_TOKEN_STATUS } from '../../constants/email';
+import { sendEmail } from '../../utils/sendEmail';
 
 import models from '../../models';
 import { createSaltHashPassword, makeSha512 } from '../../utils/encription';
@@ -78,7 +78,7 @@ const login = async (req, res) => {
   if (user) {
     const passwordHash = makeSha512(password, user.password_salt);
     if (passwordHash === user.password_hash) {
-      if(user.is_email_confirmed === false){
+      if (!user.is_email_confirmed) {
         return res.send({
           errors: [
             {
@@ -146,13 +146,16 @@ const register = async (req, res) => {
   });
 
   const value = await user.createEmailConfirmationToken();
-
-   if (!process.env.NODE_ENV || process.env.NODE_ENV==='development' || process.env.NODE_ENV === 'test') {
+  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
     user.is_email_confirmed = true;
     user.save();
-  }  
-  else{
-    await sendEmail(user,value);
+  } else {
+    await sendEmail(user, {
+      subject: 'Welcome to MaviDurak-IO',
+    }, {
+      username: user.name,
+      href: `${process.env.API_PATH}/authentication/email-confirmation?token=${value}`,
+    });
   }
 
   return res.status(201).send({
@@ -241,7 +244,7 @@ const deleteUser = async (req, res) => {
   }
 };
 
-const emailConfirmation = async (req,res) => {
+const emailConfirmation = async (req, res) => {
   const value = req.query.token;
   const emailConfirmationValue = await models.email_confirmation_tokens.findOne({
     where: {
@@ -250,12 +253,12 @@ const emailConfirmation = async (req,res) => {
     },
   });
 
-  if(emailConfirmationValue){
+  if (emailConfirmationValue) {
     await emailConfirmationValue.confirmEmail();
   }
-  
-  return res.redirect(`${process.env.DASHBOARD_UI_PATH}/login`);
-}; 
+
+  return res.redirect(`${process.env.FRONTEND_PATH}/login`);
+};
 
 export default {
   prefix: '/authentication',
@@ -265,6 +268,6 @@ export default {
     router.get('/me', userInfo);
     router.put('/me', update);
     router.delete('/me', deleteUser);
-    router.get('/email-confirmation',emailConfirmation);
+    router.get('/email-confirmation', emailConfirmation);
   },
 };

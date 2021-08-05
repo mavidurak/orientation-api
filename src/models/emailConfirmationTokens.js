@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { EMAIL_TOKEN_STATUS } from '../constants/email'
-
+import { EMAIL_TOKEN_STATUS } from '../constants/email';
 
 import Sequelize from '../sequelize';
 
@@ -24,14 +23,14 @@ const email_confirmation_tokens = Sequelize.define('email_confirmation_tokens',
 const initialize = (models) => {
   models.email_confirmation_tokens.belongsTo(
     models.users, {
-    as: 'user',
-    foreignKey: {
-      name: 'user_id',
-      allowNull: false,
+      as: 'user',
+      foreignKey: {
+        name: 'user_id',
+        allowNull: false,
+      },
     },
-  },
   );
-  
+
   models.email_confirmation_tokens.prototype.confirmEmail = async function () {
     const user = await models.users.findOne({
       where: {
@@ -39,18 +38,17 @@ const initialize = (models) => {
       },
     });
 
-   if(!user){
-     return false;
-   }
+    if (!user) {
+      return false;
+    }
 
-   user.is_email_confirmed = true;
-   await user.save();
-   this.status = EMAIL_TOKEN_STATUS.CONFIRMED;
-   this.save();
-   return true;
+    user.is_email_confirmed = true;
+    await user.save();
+    this.status = EMAIL_TOKEN_STATUS.CONFIRMED;
+    await this.save();
+    return true;
   };
 };
-
 
 export default {
   model: email_confirmation_tokens,

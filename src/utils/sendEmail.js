@@ -2,17 +2,14 @@ import nodemailer from 'nodemailer';
 import fs from 'fs';
 import handlebars from 'handlebars';
 
-export const sendEmail = async (user,value) => {
-
-  let source ;
+export const sendEmail = async (user, emailInfo, replacements) => {
+  let source;
   let template;
-  let replacements;
-  const email = {
+  const createEmail = {
     sender: process.env.EMAIL_USER,
     to: user.email,
-    subject: 'Welcome to MaviDurak-IO',
-    content: null,
-    href: `${process.env.API_PATH}/authentication/email-confirmation?token=${value}`,
+    subject: emailInfo.subject,
+    html: null,
   };
 
   const transporter = nodemailer.createTransport({
@@ -25,21 +22,11 @@ export const sendEmail = async (user,value) => {
     },
   });
 
-  replacements = {
-    username:user.name,
-    href: email.href,
-  }
-  source = fs.readFileSync('src/templates/emailConfirm.html','utf-8').toString();
-  template= handlebars.compile(source);
-  email.content = template(replacements);
+  source = fs.readFileSync('src/templates/emailConfirm.html', 'utf-8').toString();
+  template = handlebars.compile(source);
+  email.html = template(replacements);
 
-  const info = await transporter.sendMail({
-    sender: email.sender,
-    to: email.to,
-    subject: email.subject,
-    html: email.content,
-  });
-
+  const info = await transporter.sendMail(createEmail);
 };
 
 export default {

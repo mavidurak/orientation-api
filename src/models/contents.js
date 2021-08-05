@@ -71,7 +71,6 @@ const initialize = (models) => {
     },
   );
 
-
   models.contents.hasMany(
     models.content_reviews, {
       as: 'content_content_reviews',
