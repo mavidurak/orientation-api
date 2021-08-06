@@ -1,12 +1,6 @@
 module.exports = {
   up(queryInterface, Sequelize) {
     return queryInterface.createTable('wanted_contents', {
-      id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false,
-      },
       from: {
         type: Sequelize.INTEGER,
         allowNull: false,
