@@ -14,12 +14,12 @@ module.exports = {
       'Why is Myshkin so drawn to suffering people?',
       'Why does Josef K. decide to “play along” with his arrest, even though the men who arrest him never show him any proof of their authority and he thinks it might be a “farce”?',
       'Dr. Harari describes several circumstances where we can see the impact of evolution in current day behaviors. Were any of them particularly surprising, highlighting a connection you hadn’t considered before? Were there any that you disagree with?'];
-    for (let  index = 0; index < 12; index++) {
+    for (let index = 0; index < 12; index++) {
       discussions.push({
         user_id: index + 1,
         header: `SD/${headers[index]}`,
         text: texts[index],
-        is_private:Math.random() > 0.5 ? true :false,
+        is_private: Math.random() > 0.5,
         created_at: new Date(),
         updated_at: new Date(),
       });

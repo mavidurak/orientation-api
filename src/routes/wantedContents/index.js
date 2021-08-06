@@ -119,7 +119,7 @@ const deletecont = async (req, res) => {
 };
 
 const getUserWantedList = async (req, res) => {
-  const userId = req.params;
+  const { userId } = req.params;
   const wantedLists = await models.wanted_contents.findAll({
     where: {
       user_id: userId,
