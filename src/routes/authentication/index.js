@@ -148,7 +148,7 @@ const register = async (req, res) => {
   const value = await user.createEmailConfirmationToken();
   if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
     user.is_email_confirmed = true;
-    user.save();
+    await user.save();
   } else {
     await sendEmail(user, {
       subject: 'Welcome to MaviDurak-IO',

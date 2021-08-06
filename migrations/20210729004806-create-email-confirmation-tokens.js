@@ -1,6 +1,6 @@
 module.exports = {
   up(queryInterface, Sequelize) {
-    return queryInterface.createTable('email_confirmation_tokens', {
+    return Promise.all([queryInterface.createTable('email_confirmation_tokens', {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -36,9 +36,23 @@ module.exports = {
       deleted_at: {
         type: Sequelize.DATE,
       },
-    });
+    }),
+    queryInterface.addColumn(
+      'users',
+      'is_email_confirmed',
+      {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+    )]);
   },
   down(queryInterface) {
-    return queryInterface.dropTable('email_confirmation_tokens');
+    return Promise.all([
+      queryInterface.dropTable('email_confirmation_tokens'),
+      queryInterface.removeColumn(
+        'users',
+        'is_email_confirmed',
+      ),
+    ]);
   },
 };
