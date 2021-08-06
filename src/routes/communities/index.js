@@ -1,65 +1,76 @@
 import Joi from '../../joi';
 import models from '../../models';
 
-const createContentSchema = {
+const createCommunitySchema = {
   body: Joi.object({
+    organizers: Joi.number()
+      .required(),
+    members: Joi.number()
+      .required(),
     name: Joi.string()
       .max(50)
       .required(),
-    type: Joi.string()
+    content_types: Joi.string()
       .required(),
     description: Joi.string()
       .max(250)
       .required(),
-    image_path: Joi.string()
-      .required(),
+    image_path: Joi.string(),
+    tags: Joi.string(),
+    website: Joi.string(),
+    rules: Joi.string(),
   }),
 };
-const updateContentSchema = {
+const updateCommunitySchema = {
   body: Joi.object({
+    members: Joi.number(),
     name: Joi.string()
       .max(50),
-    type: Joi.string()
-      .min(0)
-      .max(10),
+    content_types: Joi.string(),
     description: Joi.string()
       .max(250),
-    image_path: Joi.string()
-      .max(250),
+    image_path: Joi.string(),
+    tags: Joi.string(),
+    website: Joi.string(),
+    rules: Joi.string(),
   }),
 };
 
 const create = async (req, res) => {
-  const { error } = createContentSchema.body.validate(req.body);
+  const { error } = createCommunitySchema.body.validate(req.body);
   if (error) {
     return res.status(400).send({
       errors: error.details,
     });
   }
   const {
-    name, type, description, image_path,
+    members, name, content_types, description, image_path, tags, website, rules,
   } = req.body;
   const image = await models.images.create({
     user_id: req.user.id,
     name: image_path,
     path: image_path,
   });
-  const content = await models.contents.create({
-    user_id: req.user.id,
+  const community = await models.communities.create({
+    organizers: req.user.id,
+    members,
     name,
-    type,
+    content_types,
     description,
     image_id: image.id,
+    tags,
+    website,
+    rules,
   });
   res.send({
-    content,
+    community,
   });
 };
 
 const detail = async (req, res) => {
   const { id } = req.params;
   try {
-    const content = await models.contents.findOne({
+    const community = await models.communities.findOne({
       where: {
         id,
       },
@@ -68,25 +79,19 @@ const detail = async (req, res) => {
           model: models.images,
           as: 'image',
         },
-        {
-          model: models.users,
-          as: 'user',
-        },
       ],
     });
 
-    if (!content) {
+    if (!community) {
       return res.send({
         errors: [
           {
-            message: 'Content not found or you don\'t have a permission!',
+            message: 'Communities not found or you don\'t have a permission!',
           },
         ],
       });
     }
-    content.views += 1;
-    await content.save();
-    return res.send(content);
+    return res.send(community);
   } catch (err) {
     return res.status(500).send({
       errors: [
@@ -98,20 +103,20 @@ const detail = async (req, res) => {
   }
 };
 
-const getContents = async (req, res) => {
+const getCommunities = async (req, res) => {
   const { limit } = req.query;
-  const content = await models.contents.findAll({
+  const community = await models.communities.findAll({
     limit,
     include: {
       model: models.images,
       as: 'image',
     },
   });
-  return res.send({ content, count: content.length });
+  return res.send({ community, count: community.length });
 };
 
 const update = async (req, res) => {
-  const { error } = updateContentSchema.body.validate(req.body);
+  const { error } = updateCommunitySchema.body.validate(req.body);
   if (error) {
     return res.status(400).send({
       errors: error.details,
@@ -119,19 +124,12 @@ const update = async (req, res) => {
   }
   const { id } = req.params;
   try {
-    const content = await models.contents.findOne({
+    const community = await models.communities.findOne({
       where: {
         id,
       },
-      include: {
-        model: models.users,
-        as: 'user',
-        where: {
-          id: req.user.id,
-        },
-      },
     });
-    if (!content) {
+    if (!community) {
       return res.status(403).send({
         errors: [
           {
@@ -142,17 +140,26 @@ const update = async (req, res) => {
     }
 
     const {
-      name, type, description, image_path,
+      members, name, image_path, content_types, description, tags, website, rules,
     } = req.body;
-    models.contents.update({
-      name, type, description, image_path,
+
+    models.communities.update({
+      organizers: req.user.id,
+      name,
+      image_path,
+      members,
+      content_types,
+      description,
+      tags,
+      website,
+      rules,
     }, {
       where: {
-        id: content.id,
+        id: community.id,
       },
     });
     res.send({
-      message: 'Content was updated succesfully',
+      message: 'Community was updated succesfully',
     });
   } catch (err) {
     res.status(500).send({
@@ -165,41 +172,41 @@ const update = async (req, res) => {
   }
 };
 
-const deleteContent = async (req, res) => {
+const deleteCommunity = async (req, res) => {
   const { id } = req.params;
-  const user_id = req.user.id;
-  const content = await models.contents.findOne({
+  const organizers = req.user.id;
+  const community = await models.communities.findOne({
     where: {
       id,
-      user_id,
+      organizers,
     },
   });
-  if (!content) {
+  if (!community) {
     res.status(401).send({
       errors: [
         {
-          message: 'Content not found or you don\'t have a permission!',
+          message: 'Community not found or you don\'t have a permission!',
         },
       ],
     });
   }
-  await models.contents.destroy({
+  await models.communities.destroy({
     where: {
       id,
     },
   });
   res.send({
-    message: 'Content was delected successfully!',
+    message: 'Community was delected successfully!',
   });
 };
 
 export default {
-  prefix: '/contents',
+  prefix: '/communities',
   inject: (router) => {
-    router.get('', getContents);
+    router.get('', getCommunities);
     router.post('/', create);
     router.get('/:id', detail);
     router.put('/:id', update);
-    router.delete('/:id', deleteContent);
+    router.delete('/:id', deleteCommunity);
   },
 };

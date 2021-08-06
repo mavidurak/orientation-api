@@ -145,10 +145,10 @@ const getContentById = async (req, res) => {
     where: {
       user_id: req.user.id,
       content_id: req.params.contentId,
-    }
+    },
   });
 
-  if( !wantedContent ){
+  if (!wantedContent) {
     return res.send(400, {
       errors: [
         {

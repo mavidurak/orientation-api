@@ -54,7 +54,6 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
-
   models.users.hasMany(
     models.images, {
       as: 'user_images',
@@ -76,11 +75,24 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
-
   models.users.hasMany(
     models.comments, {
       as: 'comments',
       foreignKey: 'user_id',
+      sourceKey: 'id',
+    },
+  );
+  models.users.hasMany(
+    models.communities, {
+      as: 'user_communities_organizers',
+      foreignKey: 'organizers',
+      sourceKey: 'id',
+    },
+  );
+  models.users.hasMany(
+    models.communities, {
+      as: 'user_communities_members',
+      foreignKey: 'members',
       sourceKey: 'id',
     },
   );

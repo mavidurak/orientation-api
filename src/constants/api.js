@@ -1,4 +1,4 @@
-export const WHITE_LIST = [ 
+export const WHITE_LIST = [
   // ['METHOD', 'PATH']
   ['GET', '/api/health-check/'],
   ['POST', '/authentication/login/'],
