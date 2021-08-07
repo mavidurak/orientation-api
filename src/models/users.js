@@ -88,7 +88,8 @@ const initialize = (models) => {
       as: 'user_message_from',
       foreignKey: 'from',
       sourceKy: 'id',
-
+    }
+  );
   models.users.hasMany(
     models.comments, {
       as: 'comments',
