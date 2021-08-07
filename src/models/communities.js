@@ -5,11 +5,11 @@ import Sequelize from '../sequelize';
 const communities = Sequelize.define('communities',
   {
     organizers: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
       allowNull: false,
     },
     members: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
       allowNull: false,
     },
     name: {
@@ -29,13 +29,14 @@ const communities = Sequelize.define('communities',
       allowNull: false,
     },
     tags: {
-      type: DataTypes.STRING,
+      type: DataTypes.ARRAY(DataTypes.STRING),
     },
     website: {
       type: DataTypes.STRING,
     },
     rules: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
   },
   {
@@ -45,7 +46,7 @@ const communities = Sequelize.define('communities',
   });
 
 const initialize = (models) => {
-  models.communities.belongsTo(models.images, {
+  models.communities.hasOne(models.images, {
     as: 'image',
     foreignKey: {
       name: 'image_id',
@@ -59,11 +60,8 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
-  models.users.belongsToMany(models.communities, { as: 'userId', through: 'community_user', foreignKey: 'user_id' });
-  models.communities.belongsToMany(models.users, { as: 'organizer', through: 'community_user', foreignKey: 'organizers' });
-
-  models.users.belongsToMany(models.communities, { as: 'user', through: 'user_community', foreignKey: 'user_id' });
-  models.communities.belongsToMany(models.users, { as: 'member', through: 'user_community', foreignKey: 'members' });
+  models.communities.belongsToMany(models.users, { through: 'community_user', foreignKey: 'communityId'});
+  models.communities.belongsToMany(models.users, { through: 'user_community', foreignKey: 'community_id'});
 };
 export default {
   model: communities,

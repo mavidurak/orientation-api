@@ -16,13 +16,15 @@ const createCommunitySchema = {
       .max(250)
       .required(),
     image_path: Joi.string(),
-    tags: Joi.string(),
+    tags: Joi.array(),
     website: Joi.string(),
-    rules: Joi.string(),
+    rules: Joi.string()
+      .required()
   }),
 };
 const updateCommunitySchema = {
   body: Joi.object({
+    organizers: Joi.number(),
     members: Joi.number(),
     name: Joi.string()
       .max(50),
@@ -30,7 +32,7 @@ const updateCommunitySchema = {
     description: Joi.string()
       .max(250),
     image_path: Joi.string(),
-    tags: Joi.string(),
+    tags: Joi.array(),
     website: Joi.string(),
     rules: Joi.string(),
   }),
@@ -44,7 +46,7 @@ const create = async (req, res) => {
     });
   }
   const {
-    members, name, content_types, description, image_path, tags, website, rules,
+    name, content_types, description, image_path, tags, website, rules,
   } = req.body;
   const image = await models.images.create({
     user_id: req.user.id,
@@ -53,7 +55,7 @@ const create = async (req, res) => {
   });
   const community = await models.communities.create({
     organizers: req.user.id,
-    members,
+    members: req.user.id,
     name,
     content_types,
     description,
@@ -86,7 +88,7 @@ const detail = async (req, res) => {
       return res.send({
         errors: [
           {
-            message: 'Communities not found or you don\'t have a permission!',
+            message: 'Community not found or you don\'t have a permission!',
           },
         ],
       });
@@ -127,24 +129,26 @@ const update = async (req, res) => {
     const community = await models.communities.findOne({
       where: {
         id,
+        organizers
       },
     });
     if (!community) {
       return res.status(403).send({
         errors: [
           {
-            message: 'Content not found or you don\'t have a permission!',
+            message: 'Community not found or you don\'t have a permission!',
           },
         ],
       });
     }
 
     const {
-      members, name, image_path, content_types, description, tags, website, rules,
+      organizers, members, name, image_path, content_types, description, tags, website, rules,
     } = req.body;
 
-    models.communities.update({
+    await models.communities.update({
       organizers: req.user.id,
+      members: req.user.id,
       name,
       image_path,
       members,

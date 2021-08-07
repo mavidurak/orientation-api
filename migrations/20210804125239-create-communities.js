@@ -7,7 +7,7 @@ module.exports = {
         primaryKey: true,
       },
       organizers: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.ARRAY(Sequelize.INTEGER),
         allowNull: false,
         references: {
           model: 'users',
@@ -17,7 +17,7 @@ module.exports = {
         onDelete: 'cascade',
       },
       members: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.ARRAY(Sequelize.INTEGER),
         allowNull: false,
         references: {
           model: 'users',
@@ -49,7 +49,7 @@ module.exports = {
         onDelete: 'cascade',
       },
       tags: {
-        type: Sequelize.STRING,
+        type: Sequelize.ARRAY(Sequelize.STRING),
       },
       website: {
         type: Sequelize.STRING,
