@@ -54,7 +54,6 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
-
   models.users.hasMany(
     models.images, {
       as: 'user_images',
@@ -76,7 +75,6 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
-
   models.users.hasMany(
     models.comments, {
       as: 'comments',
@@ -84,6 +82,15 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
+
+  models.users.belongsToMany(
+    models.communities, { 
+      through: 'community_user' 
+  });
+  models.users.belongsToMany(
+    models.communities, { 
+      through: 'user_community' 
+  });
 
   models.users.prototype.toJSON = function () {
     const values = { ...this.get() };
