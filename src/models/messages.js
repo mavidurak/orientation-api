@@ -26,14 +26,14 @@ const messages = Sequelize.define('messages',
 const initialize = (models) => {
   models.messages.belongsTo(
     models.users, {
-      as: 'to',
-      foreignKey: 'user_id',
+      as: 'message_to',
+      foreignKey: 'to',
     },
   );
   models.messages.belongsTo(
     models.users, {
-      as: 'from',
-      foreignKey: 'user_id',
+      as: 'message_from',
+      foreignKey: 'from',
     },
   );
 };

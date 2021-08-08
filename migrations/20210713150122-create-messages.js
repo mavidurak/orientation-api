@@ -1,6 +1,6 @@
 module.exports = {
   up(queryInterface, Sequelize) {
-    return queryInterface.createTable('wanted_contents', {
+    return queryInterface.createTable('messages', {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
