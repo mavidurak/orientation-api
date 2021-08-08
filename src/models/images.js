@@ -8,7 +8,6 @@ const images = Sequelize.define('images',
       type: DataTypes.STRING,
       allowNull: false,
     },
-
     path: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -33,6 +32,13 @@ const initialize = (models) => {
   models.images.hasOne(
     models.contents, {
       as: 'contents_image',
+      foreignKey: 'image_id',
+      sourceKey: 'id',
+    },
+  );
+  models.images.hasOne(
+    models.communities, {
+      as: 'communities_image',
       foreignKey: 'image_id',
       sourceKey: 'id',
     },
