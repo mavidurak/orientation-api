@@ -4,11 +4,6 @@ import Sequelize from '../sequelize';
 
 const messages = Sequelize.define('messages',
   {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
     from: {
       type: DataTypes.INTEGER,
       allowNull: false,

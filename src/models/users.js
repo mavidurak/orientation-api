@@ -32,6 +32,10 @@ const users = Sequelize.define('users',
       type: DataTypes.STRING,
       allownull: false,
     },
+    is_email_confirmed: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   },
   {
     timestamps: true,
@@ -54,7 +58,6 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
-
   models.users.hasMany(
     models.images, {
       as: 'user_images',
@@ -76,6 +79,7 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
+
   models.users.hasMany(
     models.messages, {
       as: 'user_message_to',
@@ -88,6 +92,8 @@ const initialize = (models) => {
       as: 'user_message_from',
       foreignKey: 'from',
       sourceKy: 'id',
+    }
+  );
 
   models.users.hasMany(
     models.comments, {
@@ -96,7 +102,21 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
-
+  models.users.hasMany(
+    models.email_confirmation_tokens, {
+      as: 'user_email_confirmation_tokens',
+      foreignKey: 'user_id',
+      sourceKey: 'id',
+    },
+  );
+  models.users.belongsToMany(
+    models.communities, { 
+      through: 'community_user' 
+  });
+  models.users.belongsToMany(
+    models.communities, { 
+      through: 'user_community' 
+  });
   models.users.prototype.toJSON = function () {
     const values = { ...this.get() };
 
@@ -120,6 +140,24 @@ const initialize = (models) => {
     });
 
     return token;
+  };
+
+  models.users.prototype.createEmailConfirmationToken = async function () {
+    const key = this.username + this.email + Math.floor(Math.random() * 9999);
+    let key2 = '';
+
+    for (let i = 0; i < key.length; i++) {
+      key2 += key[i] + Math.floor(Math.random() * 9);
+    }
+
+    const value = encrypt(key2);
+
+    const emailConfirmationToken = await models.email_confirmation_tokens.create({
+      value,
+      user_id: this.id,
+    });
+
+    return emailConfirmationToken.value;
   };
 };
 

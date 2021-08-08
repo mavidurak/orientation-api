@@ -84,12 +84,11 @@ const deletemessage = async (req, res) => {
     message: 'Message deleted successfully from yours wanted list!',
   });
 };
-export default [{
+export default {
   prefix: '/messages',
   inject: (router) => {
     router.post('', create);
     router.get('', read);
     router.delete('/:id', deletemessage);
   },
-},
-];
+};
