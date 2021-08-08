@@ -153,7 +153,6 @@ const update = async (req, res) => {
       });
       image_id = image.id;
     }
-    console.log(image_id);
     await models.communities.update({
       organizers,
       members,
