@@ -7,24 +7,22 @@ module.exports = {
         primaryKey: true,
       },
       organizers: {
-        type: Sequelize.ARRAY(Sequelize.INTEGER),
-        allowNull: false,
-        references: {
-          model: 'users',
-          key: 'id',
-        },
-        onUpdate: 'cascade',
-        onDelete: 'cascade',
+        type: Sequelize.ARRAY({
+          type: Sequelize.INTEGER,
+          references: {
+            model: 'users',
+            key: 'id',
+          },
+        }),
       },
       members: {
-        type: Sequelize.ARRAY(Sequelize.INTEGER),
-        allowNull: false,
-        references: {
-          model: 'users',
-          key: 'id',
-        },
-        onUpdate: 'cascade',
-        onDelete: 'cascade',
+        type: Sequelize.ARRAY({
+          type: Sequelize.INTEGER,
+          references: {
+            model: 'users',
+            key: 'id',
+          },
+        }),
       },
       name: {
         type: Sequelize.STRING,

@@ -36,7 +36,7 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
-  models.images.belongsTo(
+  models.images.hasOne(
     models.communities, {
       as: 'communities_image',
       foreignKey: 'image_id',

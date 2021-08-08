@@ -83,8 +83,14 @@ const initialize = (models) => {
     },
   );
 
-  models.users.belongsToMany(models.communities, { through: 'community_user', foreignKey: 'userId'});
-  models.users.belongsToMany(models.communities, { through: 'user_community', foreignKey: 'user_id' });
+  models.users.belongsToMany(
+    models.communities, { 
+      through: 'community_user' 
+  });
+  models.users.belongsToMany(
+    models.communities, { 
+      through: 'user_community' 
+  });
 
   models.users.prototype.toJSON = function () {
     const values = { ...this.get() };

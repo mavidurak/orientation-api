@@ -46,7 +46,7 @@ const communities = Sequelize.define('communities',
   });
 
 const initialize = (models) => {
-  models.communities.hasOne(models.images, {
+  models.communities.belongsTo(models.images, {
     as: 'image',
     foreignKey: {
       name: 'image_id',
@@ -60,8 +60,14 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
-  models.communities.belongsToMany(models.users, { through: 'community_user', foreignKey: 'communityId'});
-  models.communities.belongsToMany(models.users, { through: 'user_community', foreignKey: 'community_id'});
+  models.communities.belongsToMany(
+    models.users, { 
+      through: 'community_user' 
+    });
+  models.communities.belongsToMany(
+    models.users, { 
+      through: 'user_community' 
+    });
 };
 export default {
   model: communities,

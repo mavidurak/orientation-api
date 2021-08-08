@@ -3,9 +3,9 @@ import models from '../../models';
 
 const createCommunitySchema = {
   body: Joi.object({
-    organizers: Joi.number()
+    organizers: Joi.array()
       .required(),
-    members: Joi.number()
+    members: Joi.array()
       .required(),
     name: Joi.string()
       .max(50)
@@ -19,13 +19,13 @@ const createCommunitySchema = {
     tags: Joi.array(),
     website: Joi.string(),
     rules: Joi.string()
-      .required()
+      .required(),
   }),
 };
 const updateCommunitySchema = {
   body: Joi.object({
-    organizers: Joi.number(),
-    members: Joi.number(),
+    organizers: Joi.array(),
+    members: Joi.array(),
     name: Joi.string()
       .max(50),
     content_types: Joi.string(),
@@ -46,7 +46,7 @@ const create = async (req, res) => {
     });
   }
   const {
-    name, content_types, description, image_path, tags, website, rules,
+    organizers, members, name, content_types, description, image_path, tags, website, rules,
   } = req.body;
   const image = await models.images.create({
     user_id: req.user.id,
@@ -54,8 +54,8 @@ const create = async (req, res) => {
     path: image_path,
   });
   const community = await models.communities.create({
-    organizers: req.user.id,
-    members: req.user.id,
+    organizers,
+    members,
     name,
     content_types,
     description,
@@ -129,10 +129,9 @@ const update = async (req, res) => {
     const community = await models.communities.findOne({
       where: {
         id,
-        organizers
       },
     });
-    if (!community) {
+    if (!community || !community.organizers.includes(req.user.id)) {
       return res.status(403).send({
         errors: [
           {
@@ -145,12 +144,21 @@ const update = async (req, res) => {
     const {
       organizers, members, name, image_path, content_types, description, tags, website, rules,
     } = req.body;
-
+    let image_id;
+    if (image_path) {
+      const image = await models.images.create({
+        user_id: req.user.id,
+        name: image_path,
+        path: image_path,
+      });
+      image_id = image.id;
+    }
+    console.log(image_id);
     await models.communities.update({
-      organizers: req.user.id,
-      members: req.user.id,
+      organizers,
+      members,
       name,
-      image_path,
+      image_id,
       members,
       content_types,
       description,
@@ -178,15 +186,13 @@ const update = async (req, res) => {
 
 const deleteCommunity = async (req, res) => {
   const { id } = req.params;
-  const organizers = req.user.id;
   const community = await models.communities.findOne({
     where: {
       id,
-      organizers,
     },
   });
-  if (!community) {
-    res.status(401).send({
+  if (!community || !community.organizers.includes(req.user.id)) {
+    return res.status(401).send({
       errors: [
         {
           message: 'Community not found or you don\'t have a permission!',

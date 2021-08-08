@@ -27,9 +27,31 @@ module.exports = {
     ];
 
     for (let index = 0; index < 12; index++) {
+      const organizers = []; let members = [];
+      const organizersLenght = Math.floor(Math.random() * 10) + 1;
+      const membersLenght = Math.floor(Math.random() * 12) + 1; 
+      let id;
+
+      for (let a = 0; a < organizersLenght; a++) {
+        id = Math.floor(Math.random() * 12) + 1;
+        if (!organizers.includes(id)) {
+          organizers[a] = id;
+        } else {
+          a--;
+        }
+      }
+      for (let a = 0; a < membersLenght; a++) {
+        id = Math.floor(Math.random() * 12) + 1;
+        if (!members.includes(id)) {
+          members[a] = id;
+        } else {
+          a--;
+        }
+      }
+      members = [...new Set(members.concat(organizers))];
       communities.push({
-        organizers: index + 1,
-        members: index + 1,
+        organizers,
+        members,
         image_id: index + 13,
         name: `SD/${names[index]}`,
         description: descriptions[index],
