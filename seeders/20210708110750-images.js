@@ -1,25 +1,42 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const images = [];
-    const names = ['the100', 'the witcher', 'black mirror', 'dark', 'lost in space', 'snowpiercer', 'legion', 'altered carbon', 'Mr.Nobody', 'passengers', 'interstaller', 'breaking bad'];
-    const paths = ['https://tr.web.img4.acsta.net/pictures/14/02/16/23/53/181925.jpg?coixp=50&coiyp=39',
-      'https://cdn.dsmcdn.com/mnresize/415/622/ty3/product/media/images/20201013/18/15566034/92933130/1/1_org_zoom.jpg',
-      'https://izleryazar.com/wp-content/uploads/2016/10/Black-Mirror-Afi%C5%9F.jpg',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRf7YfvSOtuOAKXiAC3AxssnJq2ShPo4JrGHzM6xu1ocn2xyaVPL6c4nqIuQ7Cbw8-dnlA&usqp=CAU',
-      'https://images-na.ssl-images-amazon.com/images/I/51Dw5rhu-PL._AC_SY780_.jpg',
-      'https://matyafilm.com/wp-content/uploads/2020/02/Snowpiercer-630x910-1.jpg',
-      'https://cdn.dsmcdn.com/mnresize/415/622/ty15/product/media/images/20201014/18/15778201/93357171/1/1_org_zoom.jpg',
-      'https://mcdn01.gittigidiyor.net/57957/579571889_0.jpg',
-      'https://i.pinimg.com/originals/75/8b/5c/758b5c23950ae3ee6a432a6bdbdb5091.jpg',
-      'https://cdn.dsmcdn.com/mnresize/415/622/ty8/product/media/images/20201016/15/16482756/94048189/1/1_org_zoom.jpg',
-      'https://tr.web.img2.acsta.net/pictures/14/10/09/15/52/150664.jpg',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSW6sTSkb00QsGh5p8RyAlqs7ACzaGuBomuUp3cnqcAHRh5OlVMuSEwwRGzJHMT6TvXwEY&usqp=CAU'];
+    const names = [
+      'League of Legends', 'Valorant', 'Counter-Strike: Global Offensive', 'Pianist', 'The Matrix', 'Inception', '11.22.63', 'Friends', 'Dark', '1984', 'A Clockwork Orange', 'The Land of the White Lilies',
+      'CSGODose', 'PC Gamer', 'RustyPOt', 'STAR WARS', 'Anime Fan Club', 'Movie Nights', 'Marvel Series', 'Sitcom Valley', 'Series', 'Book Lovers', 'What is the Name of That Book?', 'Poem In Street',
+    ];
+    const paths = [
+      'https://m.media-amazon.com/images/M/MV5BYjM2NmU3YmEtZDI1OC00NTQ5LWJmOGMtYmZmNGUyMWRlODBmXkEyXkFqcGdeQXVyNjU1OTg4OTM@._V1_.jpg',
+      'https://cdnb.artstation.com/p/assets/images/images/027/875/935/large/pham-linh-artboard-1.jpg?1592832337',
+      'https://cdn.shopify.com/s/files/1/0747/3829/products/mL3927_1024x1024.jpg?v=1574110221',
+      'https://i.pinimg.com/originals/36/f3/f2/36f3f227e37e81c57d1df99f9e4c3a5b.jpg',
+      'https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg',
+      'https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg',
+      'https://i.pinimg.com/originals/1e/5b/e3/1e5be3033b78c4928dce71947ddb09a2.jpg',
+      'https://cdn.europosters.eu/image/1300/posters/friends-tv-series-i104626.jpg',
+      'https://i.pinimg.com/originals/67/5e/bc/675ebc2fd210a8bd5362928a51514960.jpg',
+      'https://anylang.net/sites/default/files/covers/1984.jpg',
+      'https://www.penguinsciencefiction.org/images/3219_ANTHONY_BURGESS_A_Clockwork_Orange_1972.jpg',
+      'https://i.dr.com.tr/cache/500x400-0/originals/0001842239001-1.jpg',
+      'https://seeklogo.com/images/C/csgo-logo-CAA0A4D48A-seeklogo.com.png',
+      'https://pbs.twimg.com/profile_images/300829764/pc-gamer-avatar.jpg',
+      'https://rustypot.com/cfRedTEST.png',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYxHGp6xY6HMuNBudpY0kcbMZc2LVHJ4cHZA&usqp=CAU',
+      'https://turbologo.com/tr/logo-tasarim/templates/4551835-goz-anime-logosu',
+      'https://images.all-free-download.com/images/graphicthumb/movie_logo_design_text_reel_filmstrip_icons_decoration_6829232.jpg',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWIez0587W6EK7tbrAcSrFZ_scXbvIc4eGLg&usqp=CAU',
+      'https://pbs.twimg.com/profile_images/852122370785652738/JxA333Bv_400x400.jpg',
+      'https://cdn.mos.cms.futurecdn.net/X8s6YEfHapNfAGsNxjdaN5.jpg',
+      'https://i.pinimg.com/originals/dd/64/da/dd64da585bc57cb05e5fd4d8ce873f57.png',
+      'https://cdn5.vectorstock.com/i/1000x1000/72/39/logo-character-with-headphones-reading-a-book-vector-4227239.jpg',
+      'https://images-platform.99static.com//JYSIbUIVMlm6k85wKxblbowVVB4=/265x256:934x925/fit-in/590x590/99designs-contests-attachments/107/107137/attachment_107137321',
+    ];
 
-    for (let index = 0; index < 12; index++) {
+    for (let index = 1; index < 25; index++) {
       images.push({
-        user_id: index + 1,
-        name: `SD/${names[index]}`,
-        path: paths[index],
+        user_id: Math.floor((index + 1) / 2),
+        name: `SD/${names[index - 1]}`,
+        path: paths[index - 1],
         created_at: new Date(),
         updated_at: new Date(),
       });

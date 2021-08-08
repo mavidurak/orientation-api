@@ -86,6 +86,7 @@ const updatecont = async (req, res) => {
     {
       where: {
         content_id: wantedList.content_id,
+        user_id: req.user.id,
       },
     });
   return res.send(200, {
@@ -128,7 +129,7 @@ const getUserWantedList = async (req, res) => {
     return res.send(400, {
       errors: [
         {
-          message: 'Comment not found or you don\'t have a permission!',
+          message: 'Content not found or you don\'t have a permission!',
         },
       ],
     });
@@ -139,11 +140,33 @@ const getUserWantedList = async (req, res) => {
   });
 };
 
+const getContentById = async (req, res) => {
+  const wantedContent = await models.wanted_contents.findOne({
+    where: {
+      user_id: req.user.id,
+      content_id: req.params.contentId,
+    },
+  });
+
+  if (!wantedContent) {
+    return res.send(400, {
+      errors: [
+        {
+          message: 'Content not found or you don\'t have a permission!',
+        },
+      ],
+    });
+  }
+
+  return res.send(200, wantedContent);
+};
+
 export default [{
   prefix: '/wanted-list',
   inject: (router) => {
-    router.post('', create);
     router.get('', read);
+    router.post('', create);
+    router.get('/:contentId', getContentById);
     router.put('/:contentId', updatecont);
     router.delete('/:contentId', deletecont);
   },

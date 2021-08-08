@@ -55,7 +55,6 @@ const initialize = (models) => {
       allowNull: false,
     },
   });
-
   models.contents.belongsTo(models.images, {
     as: 'image',
     foreignKey: {
