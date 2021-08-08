@@ -69,6 +69,7 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
+
   models.contents.hasMany(
     models.content_reviews, {
       as: 'content_content_reviews',

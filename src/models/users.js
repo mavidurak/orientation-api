@@ -79,6 +79,22 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
+
+  models.users.hasMany(
+    models.messages, {
+      as: 'user_message_to',
+      foreignKey: 'to',
+      sourceKy: 'id',
+    },
+  );
+  models.users.hasMany(
+    models.messages, {
+      as: 'user_message_from',
+      foreignKey: 'from',
+      sourceKy: 'id',
+    }
+  );
+
   models.users.hasMany(
     models.comments, {
       as: 'comments',
