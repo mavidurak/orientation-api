@@ -101,7 +101,6 @@ const initialize = (models) => {
     models.communities, { 
       through: 'user_community' 
   });
-
   models.users.prototype.toJSON = function () {
     const values = { ...this.get() };
 
