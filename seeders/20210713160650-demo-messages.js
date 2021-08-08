@@ -18,10 +18,10 @@ module.exports = {
 
     ];
     for (let index = 0; index < 12; index++) {
-      discussions.push({
+      messages.push({
         from: index + 1,
-        to: index + 2,
-        texts: `SD/${texts[index]}`,
+        to: Math.floor(Math.random() * 13),
+        text: `SD/${texts[index]}`,
         created_at: new Date(),
         updated_at: new Date(),
       });
@@ -32,7 +32,7 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('messages', {
-      texts: {
+      text: {
         [Sequelize.Op.startsWith]: 'SD/',
       },
     });
