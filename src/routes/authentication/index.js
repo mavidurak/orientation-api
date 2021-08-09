@@ -79,7 +79,7 @@ const login = async (req, res) => {
     const passwordHash = makeSha512(password, user.password_salt);
     if (passwordHash === user.password_hash) {
       if (!user.is_email_confirmed) {
-        return res.send({
+        return res.send(401,{
           errors: [
             {
               message: 'This account has not been confirmed yet.',

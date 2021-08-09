@@ -24,7 +24,7 @@ export const sendEmail = async (user, emailInfo, replacements) => {
 
   source = fs.readFileSync('src/templates/emailConfirm.html', 'utf-8').toString();
   template = handlebars.compile(source);
-  email.html = template(replacements);
+  createEmail.html = template(replacements);
 
   const info = await transporter.sendMail(createEmail);
 };
