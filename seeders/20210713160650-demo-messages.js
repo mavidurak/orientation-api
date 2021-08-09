@@ -20,7 +20,7 @@ module.exports = {
     for (let index = 0; index < 12; index++) {
       messages.push({
         from: index + 1,
-        to: Math.floor(Math.random() * 13),
+        to: Math.floor(Math.random() * 12) + 1,
         text: `SD/${texts[index]}`,
         created_at: new Date(),
         updated_at: new Date(),
