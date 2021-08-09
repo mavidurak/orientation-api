@@ -1,6 +1,6 @@
 export const WHITE_LIST = [
   // ['METHOD', 'PATH']
-  ['GET', '/api/health-check/'],
+  ['GET', '/health-check/'],
   ['POST', '/authentication/login/'],
   ['POST', '/authentication/register/'],
   ['GET', '/authentication/email-confirmation/'],
