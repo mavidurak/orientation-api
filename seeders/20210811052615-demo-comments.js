@@ -14,35 +14,26 @@ module.exports = {
       'repudiandae repellat quia\nsequi est dolore explicabo nihil et\net sit et\net praesentium iste atque asperiores tenetur',
       'quia incidunt ut\naliquid est ut rerum deleniti iure est\nipsum quia ea sint et\nvoluptatem quaerat eaque repudiandae eveniet aut',
       'fugit harum quae vero\nlibero unde tempore\nsoluta eaque culpa sequi quibusdam nulla id\net et necessitatibus'];
+
     const types = [
       'content_review_id',
       'discussion_id',
       'parent_comment_id'];
 
-    for (let type, content_review_id, discussion_id, parent_comment_id,
+    for (let ids,
       index = 0; index < 12; index++) {
-      type = types[Math.floor(Math.random() * 3)];
-      if (type === 'content_review_id') {
-        content_review_id = Math.floor(Math.random() * 12) + 1;
-        discussion_id = null;
-        parent_comment_id = null;
-      } else if (type === 'discussion_id') {
-        discussion_id = Math.floor(Math.random() * 12) + 1;
-        content_review_id = null;
-        parent_comment_id = null;
-      } else {
-        parent_comment_id = Math.floor(Math.random() * 12) + 1;
-        discussion_id = null;
-        content_review_id = null;
-      }
+      ids = {
+        content_review_id: null,
+        discussion_id: null,
+        parent_comment_id: null,
+      };
 
+      ids[types[Math.floor(Math.random() * 3)]] = Math.floor(Math.random() * 12) + 1;
       comments.push({
         user_id: index + 1,
         text: texts[index],
-        is_spoiler: Math.random() > 0.5 ? true :false,
-        content_review_id,
-        discussion_id,
-        parent_comment_id,
+        is_spoiler: Math.random() > 0.5,
+        ...ids,
         created_at: new Date(),
         updated_at: new Date(),
       });
