@@ -4,6 +4,10 @@ import Sequelize from '../sequelize';
 
 const discussions = Sequelize.define('discussions',
   {
+    community_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     header: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -40,6 +44,13 @@ const initialize = (models) => {
       sourceKey: 'id',
     },
   );
+  models.discussions.belongsTo(models.communities, {
+    as: 'communities',
+    foreignKey: {
+      name: 'community_id',
+      allowNull: false,
+    },
+  });
 };
 
 export default {

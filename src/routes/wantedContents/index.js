@@ -119,7 +119,7 @@ const deletecont = async (req, res) => {
 };
 
 const getUserWantedList = async (req, res) => {
-  const userId = req.params;
+  const { userId } = req.params;
   const wantedLists = await models.wanted_contents.findAll({
     where: {
       user_id: userId,
@@ -145,10 +145,10 @@ const getContentById = async (req, res) => {
     where: {
       user_id: req.user.id,
       content_id: req.params.contentId,
-    }
+    },
   });
 
-  if( !wantedContent ){
+  if (!wantedContent) {
     return res.send(400, {
       errors: [
         {
