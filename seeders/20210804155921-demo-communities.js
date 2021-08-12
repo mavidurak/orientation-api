@@ -29,7 +29,7 @@ module.exports = {
     for (let index = 0; index < 12; index++) {
       const organizers = []; let members = [];
       const organizersLenght = Math.floor(Math.random() * 10) + 1;
-      const membersLenght = Math.floor(Math.random() * 12) + 1; 
+      const membersLenght = Math.floor(Math.random() * 12) + 1;
       let id;
 
       for (let a = 0; a < organizersLenght; a++) {

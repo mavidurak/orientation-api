@@ -61,13 +61,15 @@ const initialize = (models) => {
     },
   );
   models.communities.belongsToMany(
-    models.users, { 
-      through: 'community_user' 
-    });
+    models.users, {
+      through: 'community_user',
+    },
+  );
   models.communities.belongsToMany(
-    models.users, { 
-      through: 'user_community' 
-    });
+    models.users, {
+      through: 'user_community',
+    },
+  );
 };
 export default {
   model: communities,
