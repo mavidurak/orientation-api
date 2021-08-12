@@ -40,7 +40,7 @@ const initialize = (models) => {
   models.discussions.hasMany(
     models.comments, {
       as: 'comments',
-      foreignKey: 'discussions_id',
+      foreignKey: 'discussion_id',
       sourceKey: 'id',
     },
   );

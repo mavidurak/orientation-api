@@ -46,7 +46,7 @@ const initialize = (models) => {
   models.content_reviews.hasMany(
     models.comments, {
       as: 'comments',
-      foreignKey: 'content_reviews_id',
+      foreignKey: 'content_review_id',
       sourceKey: 'id',
     },
   );

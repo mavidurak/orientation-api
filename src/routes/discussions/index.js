@@ -3,6 +3,8 @@ import Joi from '../../joi';
 
 const create_validation = {
   body: Joi.object({
+    community_id: Joi.number()
+      .required(),
     header: Joi.string()
       .required(),
     text: Joi.string()
@@ -28,12 +30,13 @@ const create = async (req, res) => {
       });
   }
 
-  const { header, text, is_private } = req.body;
+  const { header, text, is_private, community_id } = req.body;
   const discussion = await models.discussions.create({
     header,
     text,
     is_private,
     user_id: req.user.id,
+    community_id,
   });
   return res.status(201).send({
     discussion,
@@ -163,6 +166,37 @@ const deleteById = async (req, res) => {
   }
 };
 
+const getCommentsById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const comments = await models.comments.findAll({
+      where: {
+        discussion_id: id,
+      }
+    });
+
+    if (comments.length == 0) {
+      return res.send({
+        errors: [
+          {
+            message: 'Comments not found or you don\'t have a permission!',
+          },
+        ],
+      });
+    }
+    return res.send(comments)
+
+  } catch (error) {
+    return res.send({
+      errors: [
+        {
+          message: error.message,
+        },
+      ],
+    });
+  }
+};
+
 export default {
   prefix: '/discussions',
   inject: (router) => {
@@ -170,5 +204,6 @@ export default {
     router.get('/:id', detail);
     router.put('/:id', update);
     router.delete('/:id', deleteById);
+    router.get('/:id/comments', getCommentsById)
   },
 };
