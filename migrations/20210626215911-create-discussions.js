@@ -25,16 +25,6 @@ module.exports = {
         onUpdate: 'cascade',
         onDelete: 'cascade',
       },
-      community_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'communities',
-          key: 'id',
-        },
-        onUpdate: 'cascade',
-        onDelete: 'cascade',
-      },
       is_private: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,

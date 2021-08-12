@@ -4,10 +4,6 @@ import Sequelize from '../sequelize';
 
 const discussions = Sequelize.define('discussions',
   {
-    community_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     header: {
       type: DataTypes.STRING,
       allowNull: false,
