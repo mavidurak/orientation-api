@@ -55,7 +55,7 @@ const create = async (req, res) => {
       id: content_id,
     },
   });
-  content.rate = (Number(content.rate) +  ((Number(score*2) - (Number(content.rate)))/count)).toFixed(2);
+  content.rate = (Number(content.rate) +  ((Number(score*2) - (Number(content.rate)))/count));
   await content.save();
   res.send({
     contentReview,
