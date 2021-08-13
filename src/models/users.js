@@ -92,7 +92,7 @@ const initialize = (models) => {
       as: 'user_message_from',
       foreignKey: 'from',
       sourceKy: 'id',
-    }
+    },
   );
 
   models.users.hasMany(
@@ -110,13 +110,15 @@ const initialize = (models) => {
     },
   );
   models.users.belongsToMany(
-    models.communities, { 
-      through: 'community_user' 
-  });
+    models.communities, {
+      through: 'community_user',
+    },
+  );
   models.users.belongsToMany(
-    models.communities, { 
-      through: 'user_community' 
-  });
+    models.communities, {
+      through: 'user_community',
+    },
+  );
   models.users.prototype.toJSON = function () {
     const values = { ...this.get() };
 
@@ -142,7 +144,7 @@ const initialize = (models) => {
     return token;
   };
 
-  models.users.prototype.createEmailConfirmationToken = async function () {
+  models.users.prototype.createEmailConfirmationToken = async function (emailType) {
     const key = this.username + this.email + Math.floor(Math.random() * 9999);
     let key2 = '';
 
@@ -155,6 +157,7 @@ const initialize = (models) => {
     const emailConfirmationToken = await models.email_confirmation_tokens.create({
       value,
       user_id: this.id,
+      type: emailType,
     });
 
     return emailConfirmationToken.value;

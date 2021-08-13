@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { EMAIL_TOKEN_STATUS } from '../constants/email';
+import { EMAIL_TOKEN_STATUS, EMAIL_TYPES } from '../constants/email';
 
 import Sequelize from '../sequelize';
 
@@ -12,6 +12,9 @@ const email_confirmation_tokens = Sequelize.define('email_confirmation_tokens',
     status: {
       type: DataTypes.STRING,
       defaultValue: EMAIL_TOKEN_STATUS.PENDING,
+    },
+    type: {
+      type: DataTypes.STRING,
     },
   },
   {

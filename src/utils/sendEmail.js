@@ -1,8 +1,10 @@
 import nodemailer from 'nodemailer';
 import fs from 'fs';
 import handlebars from 'handlebars';
+import { EMAIL_TYPES } from '../constants/email';
 
 export const sendEmail = async (user, emailInfo, replacements) => {
+  const { emailType } = emailInfo;
   let source;
   let template;
   const createEmail = {
@@ -22,11 +24,23 @@ export const sendEmail = async (user, emailInfo, replacements) => {
     },
   });
 
-  source = fs.readFileSync('src/templates/emailConfirm.html', 'utf-8').toString();
+  switch (emailType) {
+  case EMAIL_TYPES.EMAIL_VALIDATION:
+    source = fs.readFileSync('src/templates/emailConfirm.html', 'utf-8').toString();
+    break;
+
+  case EMAIL_TYPES.FORGOT_PASSWORD:
+    source = fs.readFileSync('src/templates/forgotPassword.html', 'utf-8').toString();
+    break;
+
+  default:
+    break;
+  }
+
   template = handlebars.compile(source);
   createEmail.html = template(replacements);
 
-  const info = await transporter.sendMail(createEmail);
+  await transporter.sendMail(createEmail);
 };
 
 export default {

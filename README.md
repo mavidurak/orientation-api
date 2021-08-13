@@ -41,7 +41,11 @@
     ├── sequelize.js # Database connection
     ├── server.js # Server start point
     └── utils
-        └── encription.js
+        ├── encription.js
+        ├── generateSlug.js
+        └── sendEmail.js
+
+        
 
 ```
 
@@ -61,6 +65,24 @@ Copy [sample.env](./sample.env) file then changes values.
 ```bash
 cp sample.env .env
 ```
+```
+APP_PORT=4000
+DATABASE=mavidurak
+TEST_DATABASE=mavidurak_test
+DATABASE_USERNAME=root
+DATABASE_PASSWORD=
+DATABASE_HOST=localhost
+API_PATH=http://localhost:4000
+DASHBOARD_UI_PATH=http://localhost:8080
+EMAIL_HOST=
+EMAIL_PORT=
+EMAIL_SECURE=
+EMAIL_USER=
+EMAIL_PASSWORD=
+```
+
+[Send mail with smtp.gmail](https://support.google.com/mail/answer/7126229?visit_id=637363760481005370-2213185597&hl=tr&rd=1).If you use smtp.google, ```EMAIL_SECURE=```is mast be ```true```
+
 ## Migrate
 Create database then migrate it
 ```bash
