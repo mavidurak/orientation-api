@@ -7,7 +7,7 @@ const generateSlug = (string) => {
 
   // remove accents, swap ñ for n, etc
   const from = 'àáäâèéëêìíïîıòóöôùúüûñçğş·/_,:;&#';
-  const to =   'aaaaeeeeiiiiioooouuuuncgs--------';
+  const to = 'aaaaeeeeiiiiioooouuuuncgs--------';
   for (let i = 0, l = from.length; i < l; i++) {
     string = string.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
   }

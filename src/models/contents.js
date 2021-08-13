@@ -37,7 +37,7 @@ const contents = Sequelize.define('contents',
       defaultValue: 0,
     },
     rate: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL,
       defaultValue: null,
     },
   },
