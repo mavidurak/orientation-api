@@ -12,7 +12,7 @@ const content_reviews = Sequelize.define('content_reviews',
       type: DataTypes.STRING,
     },
     score: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.DECIMAL,
       default: null,
     },
     is_spoiler: {

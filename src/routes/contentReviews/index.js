@@ -42,6 +42,21 @@ const create = async (req, res) => {
     score,
     is_spoiler,
   });
+  const count = await models.content_reviews.count(
+    {
+      where: {
+        content_id,
+      },
+    },
+  );
+
+  const content = await models.contents.findOne({
+    where: {
+      id: content_id,
+    },
+  });
+  content.rate = Number(content.rate) +  ((Number(score*2) - (Number(content.rate)))/count);
+  await content.save();
   res.send({
     contentReview,
   });
