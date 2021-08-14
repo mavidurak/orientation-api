@@ -59,6 +59,15 @@ const updateSchema = {
   }),
 };
 
+const resetPasswordSchema = {
+  body: Joi.object({
+    password: Joi.string()
+      .min(8)
+      .max(30)
+      .required(),
+  }),
+};
+
 const login = async (req, res) => {
   const { error } = loginSchema.body.validate(req.body);
   if (error) {
@@ -267,19 +276,35 @@ const sendForgotPasswordEmail = async (req, res) => {
       email: req.body.email,
     },
   });
-  const value = await user.createEmailConfirmationToken(EMAIL_TYPES.FORGOT_PASSWORD);
 
-  await sendEmail(user, {
-    subject: 'Reset your password',
-    emailType: EMAIL_TYPES.FORGOT_PASSWORD,
-  }, {
-    username: user.name,
-    href: `${process.env.FRONTEND_PATH}/reset-password?token=${value}`,
-  });
-  res.send(200);
+  if (user) {
+    const value = await user.createEmailConfirmationToken(EMAIL_TYPES.FORGOT_PASSWORD);
+    await sendEmail(user, {
+      subject: 'Reset your password',
+      emailType: EMAIL_TYPES.FORGOT_PASSWORD,
+    }, {
+      username: user.name,
+      href: `${process.env.FRONTEND_PATH}/reset-password?token=${value}`,
+    });
+    res.send(200);
+  } else {
+    return res.send(401, {
+      errors: [
+        {
+          message: 'User not found!',
+        },
+      ],
+    });
+  }
 };
 
 const resetPassword = async (req, res) => {
+  const { error } = resetPasswordSchema.body.validate(req.body);
+  if (error) {
+    return res.status(400).send({
+      errors: error.details,
+    });
+  }
   const value = req.query.token;
   const resetPasswordValue = await models.email_confirmation_tokens.findOne({
     where: {
@@ -291,7 +316,6 @@ const resetPassword = async (req, res) => {
 
   if (resetPasswordValue) {
     const { password } = req.body;
-
     const {
       hash: password_hash,
       salt: password_salt,
@@ -305,9 +329,20 @@ const resetPassword = async (req, res) => {
         id: resetPasswordValue.user_id,
       },
     });
+
     await resetPasswordValue.confirmToken();
+
+    return res.send(200, {
+      message: 'Your password has been successfully changed.',
+    });
   }
-  return res.send(200);
+  return res.send(401, {
+    errors: [
+      {
+        message: 'You do not have permission to change password!',
+      },
+    ],
+  });
 };
 
 export default {
