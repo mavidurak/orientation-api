@@ -8,4 +8,10 @@ module.exports = {
       },
     );
   },
+  down: function (queryInterface, Sequelize) {
+    return queryInterface.removeColumn(
+      'email_confirmation_tokens',
+      'type',
+    );
+  }
 };

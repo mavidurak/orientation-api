@@ -83,6 +83,7 @@ EMAIL_PASSWORD=
 ```
 
 [Send mail with smtp.gmail](https://support.google.com/mail/answer/7126229?visit_id=637363760481005370-2213185597&hl=tr&rd=1). If you use smtp.google, ```EMAIL_SECURE=```is must be ```true```,
+
 [Send mail with smtp.office365.com](https://support.microsoft.com/tr-tr/office/pop-imap-ve-smtp-ayarlar%C4%B1-8361e398-8af4-4e97-b147-6c6c4ac95353). If you use smtp.office365.com, ```EMAIL_SECURE=```leave blank.
 
 ## Migrate

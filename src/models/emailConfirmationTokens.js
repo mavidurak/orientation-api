@@ -34,7 +34,7 @@ const initialize = (models) => {
     },
   );
 
-  models.email_confirmation_tokens.prototype.cancelToken = async function () {
+  models.email_confirmation_tokens.prototype.cancelOtherTokens = async function () {
     const token = await models.email_confirmation_tokens.findAll({
       where: {
         type: this.type,
@@ -64,8 +64,7 @@ const initialize = (models) => {
     await user.save();
     this.status = EMAIL_TOKEN_STATUS.CONFIRMED;
     await this.save();
-    this.cancelToken();
-    await this.save();
+    this.cancelOtherTokens();
     return true;
   };
 };

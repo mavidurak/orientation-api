@@ -277,17 +277,7 @@ const sendForgotPasswordEmail = async (req, res) => {
     },
   });
 
-  if (user) {
-    const value = await user.createEmailConfirmationToken(EMAIL_TYPES.FORGOT_PASSWORD);
-    await sendEmail(user, {
-      subject: 'Reset your password',
-      emailType: EMAIL_TYPES.FORGOT_PASSWORD,
-    }, {
-      username: user.name,
-      href: `${process.env.FRONTEND_PATH}/reset-password?token=${value}`,
-    });
-    res.send(200);
-  } else {
+  if(!user) {
     return res.send(401, {
       errors: [
         {
@@ -296,6 +286,16 @@ const sendForgotPasswordEmail = async (req, res) => {
       ],
     });
   }
+  const value = await user.createEmailConfirmationToken(EMAIL_TYPES.FORGOT_PASSWORD);
+  await sendEmail(user, {
+    subject: 'Reset your password',
+    emailType: EMAIL_TYPES.FORGOT_PASSWORD,
+  }, {
+    username: user.name,
+    href: `${process.env.FRONTEND_PATH}/reset-password?token=${value}`,
+  });
+  res.send(200);
+    
 };
 
 const resetPassword = async (req, res) => {
