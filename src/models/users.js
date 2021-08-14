@@ -144,7 +144,7 @@ const initialize = (models) => {
     return token;
   };
 
-  models.users.prototype.createEmailConfirmationToken = async function () {
+  models.users.prototype.createEmailConfirmationToken = async function (emailType) {
     const key = this.username + this.email + Math.floor(Math.random() * 9999);
     let key2 = '';
 
@@ -157,6 +157,7 @@ const initialize = (models) => {
     const emailConfirmationToken = await models.email_confirmation_tokens.create({
       value,
       user_id: this.id,
+      type: emailType,
     });
 
     return emailConfirmationToken.value;

@@ -4,6 +4,8 @@ export const WHITE_LIST = [
   ['POST', '/authentication/login/'],
   ['POST', '/authentication/register/'],
   ['GET', '/authentication/email-confirmation/'],
+  ['POST', '/authentication/forgot-password/'],
+  ['POST', '/authentication/reset-password/'],
 ];
 
 export const ACCESS_TOKEN_KEY = 'x-access-token';

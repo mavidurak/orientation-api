@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
 import Joi from '../../joi';
-import { EMAIL_TOKEN_STATUS } from '../../constants/email';
+import { EMAIL_TOKEN_STATUS, EMAIL_TYPES } from '../../constants/email';
 import { sendEmail } from '../../utils/sendEmail';
 
 import models from '../../models';
@@ -56,6 +56,15 @@ const updateSchema = {
     friends_ids: Joi.array(),
     new_password: Joi.string().min(8),
     new_password_again: Joi.string().min(8),
+  }),
+};
+
+const resetPasswordSchema = {
+  body: Joi.object({
+    password: Joi.string()
+      .min(8)
+      .max(30)
+      .required(),
   }),
 };
 
@@ -145,13 +154,14 @@ const register = async (req, res) => {
     password_salt,
   });
 
-  const value = await user.createEmailConfirmationToken();
+  const value = await user.createEmailConfirmationToken(EMAIL_TYPES.EMAIL_VALIDATION);
   if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
     user.is_email_confirmed = true;
     await user.save();
   } else {
     await sendEmail(user, {
       subject: 'Welcome to MaviDurak-IO',
+      emailType: EMAIL_TYPES.EMAIL_VALIDATION,
     }, {
       username: user.name,
       href: `${process.env.API_PATH}/authentication/email-confirmation?token=${value}`,
@@ -254,10 +264,85 @@ const emailConfirmation = async (req, res) => {
   });
 
   if (emailConfirmationValue) {
-    await emailConfirmationValue.confirmEmail();
+    await emailConfirmationValue.confirmToken();
   }
 
   return res.redirect(`${process.env.FRONTEND_PATH}/login`);
+};
+
+const sendForgotPasswordEmail = async (req, res) => {
+  const user = await models.users.findOne({
+    where: {
+      email: req.body.email,
+    },
+  });
+
+  if(!user) {
+    return res.send(401, {
+      errors: [
+        {
+          message: 'User not found!',
+        },
+      ],
+    });
+  }
+  const value = await user.createEmailConfirmationToken(EMAIL_TYPES.FORGOT_PASSWORD);
+  await sendEmail(user, {
+    subject: 'Reset your password',
+    emailType: EMAIL_TYPES.FORGOT_PASSWORD,
+  }, {
+    username: user.name,
+    href: `${process.env.FRONTEND_PATH}/reset-password?token=${value}`,
+  });
+  res.send(200);
+    
+};
+
+const resetPassword = async (req, res) => {
+  const { error } = resetPasswordSchema.body.validate(req.body);
+  if (error) {
+    return res.status(400).send({
+      errors: error.details,
+    });
+  }
+  const value = req.query.token;
+  const resetPasswordValue = await models.email_confirmation_tokens.findOne({
+    where: {
+      value,
+      type: EMAIL_TYPES.FORGOT_PASSWORD,
+      status: EMAIL_TOKEN_STATUS.PENDING,
+    },
+  });
+
+  if (resetPasswordValue) {
+    const { password } = req.body;
+    const {
+      hash: password_hash,
+      salt: password_salt,
+    } = createSaltHashPassword(password);
+
+    await models.users.update({
+      password_hash,
+      password_salt,
+    }, {
+      where: {
+        id: resetPasswordValue.user_id,
+      },
+    });
+
+    await resetPasswordValue.confirmToken();
+
+    return res.send(200, {
+      message: 'Your password has been successfully changed.',
+    });
+  }
+  return res.send(401, {
+    errors: [
+      {
+        message: 'You do not have permission to change password!',
+      },
+    ],
+  });
 };
 
 export default {
@@ -269,5 +354,7 @@ export default {
     router.put('/me', update);
     router.delete('/me', deleteUser);
     router.get('/email-confirmation', emailConfirmation);
+    router.post('/forgot-password', sendForgotPasswordEmail);
+    router.post('/reset-password', resetPassword);
   },
 };
