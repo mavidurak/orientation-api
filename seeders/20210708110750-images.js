@@ -22,7 +22,7 @@ module.exports = {
       'https://pbs.twimg.com/profile_images/300829764/pc-gamer-avatar.jpg',
       'https://rustypot.com/cfRedTEST.png',
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYxHGp6xY6HMuNBudpY0kcbMZc2LVHJ4cHZA&usqp=CAU',
-      'https://turbologo.com/tr/logo-tasarim/templates/4551835-goz-anime-logosu',
+      'https://uploads.turbologo.com/uploads/design/hq_preview_image/4551835/draw_svg20210723-16163-14u5kc3.svg.png',
       'https://images.all-free-download.com/images/graphicthumb/movie_logo_design_text_reel_filmstrip_icons_decoration_6829232.jpg',
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWIez0587W6EK7tbrAcSrFZ_scXbvIc4eGLg&usqp=CAU',
       'https://pbs.twimg.com/profile_images/852122370785652738/JxA333Bv_400x400.jpg',
