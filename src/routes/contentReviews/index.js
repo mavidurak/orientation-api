@@ -1,5 +1,6 @@
 import Joi from '../../joi';
 import models from '../../models';
+import contents from '../contents';
 
 const createContentReviewsSchema = {
   body: Joi.object({
@@ -55,7 +56,7 @@ const create = async (req, res) => {
       id: content_id,
     },
   });
-  content.rate = (Number(content.rate) +  ((Number(score*2) - (Number(content.rate)))/count));
+  content.rate = (Number(content.rate) + ((Number(score * 2) - (Number(content.rate))) / count));
   await content.save();
   res.send({
     contentReview,
@@ -178,6 +179,14 @@ const getMyReviews = async (req, res) => {
   const reviews = await models.content_reviews.findAll({
     where: {
       user_id: req.user.id,
+    },
+    include: {
+      model: models.contents,
+      as: 'contents',
+      include:{
+        model:models.images,
+        as:'image',
+      }
     },
   });
   return res.send(200, {
