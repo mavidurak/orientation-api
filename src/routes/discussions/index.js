@@ -1,5 +1,6 @@
 import models from '../../models';
 import Joi from '../../joi';
+import { Op } from 'sequelize'
 
 const create_validation = {
   body: Joi.object({
@@ -10,7 +11,7 @@ const create_validation = {
     text: Joi.string()
       .required(),
     is_private: Joi.boolean(),
-  }),
+  }), 
 };
 const update_validation = {
   body: Joi.object({
@@ -30,7 +31,9 @@ const create = async (req, res) => {
       });
   }
 
-  const { header, text, is_private, community_id } = req.body;
+  const {
+    header, text, is_private, community_id,
+  } = req.body;
   const discussion = await models.discussions.create({
     header,
     text,
@@ -169,23 +172,129 @@ const deleteById = async (req, res) => {
 const getCommentsById = async (req, res) => {
   const { id } = req.params;
   try {
-    const comments = await models.comments.findAll({
+    const parents = await models.comments.findAll({
       where: {
         discussion_id: id,
+      },
+      include: {
+        model:models.users,
+        as:'user'
+      },
+    });
+  
+    let isLastStep = false, childs = await models.comments.findAll({
+      where: {
+        parent_comment_id: {
+          [Op.or]: parents.map(c => c.id),
+        }
+      },
+      include: {
+        model:models.users,
+        as:'user'
+      },
+    });
+    
+    // get all comment's comments
+    let newComments = childs;
+  
+    while(!isLastStep){
+      newComments = await models.comments.findAll({
+        where: {
+          parent_comment_id: {
+            [Op.or]: newComments.map(c => c.id),
+          }
+        },
+        include: {
+          model:models.users,
+          as:'user'
+        },
+      });
+  
+      if( newComments.length === 0 ){
+        isLastStep = true
+      }else {
+        childs= [ ...childs, ...newComments ];
+      }
+    }
+  
+    // sort nested comments
+    let comments = [...parents, ...childs]
+    comments.forEach(c => c.dataValues.comments = []);
+  
+    childs.forEach(child => {
+      for (let index = 0; index < comments.length; index++) {
+        const element = comments[index];
+        if (element.id === child.parent_comment_id) {
+          comments[index].dataValues.comments.push(child);
+          break;
+        }
       }
     });
+  
+    comments = comments.filter(c => !(childs.map(ch => ch.id).includes(c.id)))
+  
+    res.send(200, { comments });
+  } catch (error) {
+    return res.send({
+      errors: [
+        {
+          message: error.message,
+        },
+      ],
+    });
+  }
+};
 
-    if (comments.length == 0) {
-      return res.send({
-        errors: [
-          {
-            message: 'Comments not found or you don\'t have a permission!',
-          },
-        ],
+const getDiscussionById = async (req, res) => {
+  try {
+    const { communityId } = req.params;
+    const discussion = await models.discussions.findAll({
+      where: {
+        community_id: communityId,
+      },
+    });
+    if (discussion.length == 0) {
+      res.send({
+        message: 'Discussion not found or you don\'t have a permission!',
       });
     }
-    return res.send(comments)
 
+    res.send(discussion);
+  } catch (error) {
+    return res.send({
+      errors: [
+        {
+          message: error.message,
+        },
+      ],
+    });
+  }
+};
+
+const getCommunityById = async (req, res) => {
+  try {
+    const { communityId, discussionId } = req.params;
+    const discussion = await models.discussions.findOne({
+      where: {
+        id: discussionId,
+        community_id: communityId,
+      },
+      include: [{
+        model: models.communities,
+        as: 'communities',
+      },
+      {
+        model: models.users,
+        as: 'user',
+      }],
+    });
+    if (!discussion) {
+      res.send({
+        message: 'Discussion not found or you don\'t have a permission!',
+      });
+    }
+
+    res.send(discussion);
   } catch (error) {
     return res.send({
       errors: [
@@ -204,6 +313,8 @@ export default {
     router.get('/:id', detail);
     router.put('/:id', update);
     router.delete('/:id', deleteById);
-    router.get('/:id/comments', getCommentsById)
+    router.get('/:id/comments', getCommentsById);
+    router.get('/:communityId/discussion', getDiscussionById);
+    router.get('/:communityId/:discussionId', getCommunityById);
   },
 };

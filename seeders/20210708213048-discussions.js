@@ -17,7 +17,7 @@ module.exports = {
     for (let index = 0; index < 12; index++) {
       discussions.push({
         user_id: index + 1,
-        community_id: index+1,
+        community_id: index + 1,
         header: `SD/${headers[index]}`,
         text: texts[index],
         is_private: Math.random() > 0.5,

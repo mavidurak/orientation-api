@@ -1,5 +1,5 @@
 module.exports = {
-  up: function (queryInterface, Sequelize) {
+  up(queryInterface, Sequelize) {
     return queryInterface.addColumn(
       'discussions',
       'community_id',
@@ -12,15 +12,14 @@ module.exports = {
         },
         onUpdate: 'cascade',
         onDelete: 'cascade',
-      }
+      },
     );
-
   },
 
-  down: function (queryInterface, Sequelize) {
+  down(queryInterface, Sequelize) {
     return queryInterface.removeColumn(
       'discussions',
       'community_id',
     );
-  }
-}
+  },
+};
