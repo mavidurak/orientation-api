@@ -3,10 +3,6 @@ import models from '../../models';
 
 const createCommunitySchema = {
   body: Joi.object({
-    organizers: Joi.array()
-      .required(),
-    members: Joi.array()
-      .required(),
     name: Joi.string()
       .max(50)
       .required(),
@@ -46,7 +42,7 @@ const create = async (req, res) => {
     });
   }
   const {
-    organizers, members, name, content_types, description, image_path, tags, website, rules,
+    name, content_types, description, image_path, tags, website, rules,
   } = req.body;
   const image = await models.images.create({
     user_id: req.user.id,
@@ -54,8 +50,8 @@ const create = async (req, res) => {
     path: image_path,
   });
   const community = await models.communities.create({
-    organizers,
-    members,
+    organizers: [req.user.id],
+    members: [req.user.id],
     name,
     content_types,
     description,
@@ -158,7 +154,6 @@ const update = async (req, res) => {
       members,
       name,
       image_id,
-      members,
       content_types,
       description,
       tags,
