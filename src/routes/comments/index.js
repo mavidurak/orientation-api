@@ -169,22 +169,12 @@ const getCommentById = async (req, res) => {
   res.send({ comment });
 };
 
-const parentComment = async (req, res) => {
-  const { id } = req.params;
-  const comments = await models.comments.findAll({
-    where: {
-      parent_comment_id: id,
-    },
-  });
-};
-
 export default [{
   prefix: '/comments',
   inject: (router) => {
     router.post('', createComment);
     router.put('/:id', updateComment);
     router.delete('/:id', deleteComment);
-    router.get('/:id/parent_comment', parentComment);
   },
 }, {
   prefix: '/users',

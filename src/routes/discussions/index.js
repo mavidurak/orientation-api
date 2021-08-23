@@ -245,7 +245,7 @@ const getCommentsById = async (req, res) => {
   }
 };
 
-const getDiscussionById = async (req, res) => {
+const getCommunityDiscussions = async (req, res) => {
   try {
     const { communityId } = req.params;
     const discussion = await models.discussions.findAll({
@@ -253,13 +253,17 @@ const getDiscussionById = async (req, res) => {
         community_id: communityId,
       },
     });
-    if (discussion.length == 0) {
-      res.send({
-        message: 'Discussion not found or you don\'t have a permission!',
+    if (discussion.length === 0) {
+      return res.send(403, {
+        errors: [
+          {
+            message: 'Discussion not found or you don\'t have a permission!',
+          },
+        ],
       });
     }
 
-    res.send(discussion);
+    return res.send(discussion);
   } catch (error) {
     return res.send({
       errors: [
@@ -271,7 +275,7 @@ const getDiscussionById = async (req, res) => {
   }
 };
 
-const getCommunityById = async (req, res) => {
+const getDiscussionByCommunityId = async (req, res) => {
   try {
     const { communityId, discussionId } = req.params;
     const discussion = await models.discussions.findOne({
@@ -289,7 +293,7 @@ const getCommunityById = async (req, res) => {
       }],
     });
     if (!discussion) {
-      res.send({
+      return res.send({
         message: 'Discussion not found or you don\'t have a permission!',
       });
     }
@@ -306,7 +310,7 @@ const getCommunityById = async (req, res) => {
   }
 };
 
-export default {
+export default [{
   prefix: '/discussions',
   inject: (router) => {
     router.post('', create);
@@ -314,7 +318,12 @@ export default {
     router.put('/:id', update);
     router.delete('/:id', deleteById);
     router.get('/:id/comments', getCommentsById);
-    router.get('/:communityId/discussion', getDiscussionById);
-    router.get('/:communityId/:discussionId', getCommunityById);
   },
-};
+},
+{
+  prefix: '/communites',
+  inject: (router) => {
+    router.get('/:communityId/discussions', getCommunityDiscussions);
+    router.get('/:communityId/:discussionId', getDiscussionByCommunityId);
+  },
+}];
