@@ -14,7 +14,7 @@ const connection = new Sequelize(
 
 connection.authenticate()
   .then(() => {
-    console.log(`🔗 ${`${dbConfig.dialect.toLocaleUpperCase()}/${dbConfig.database}`.green} connection success`);
+    console.log(`🔗 ${`${dbConfig.dialect}://${dbConfig.username}:${connection.config.port}/${dbConfig.database}`.green} connection success`);
   })
   .catch((err) => {
     console.log(`❌ ${err}`.red);

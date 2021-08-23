@@ -9,7 +9,8 @@
     "lint": "eslint . --fix",
     "build": "babel --config-file=./.babelrc ./src -d ./dist",
     "migrate": "sequelize db:migrate",
-    "seed": "sequelize db:seed:all"
+    "seed": "sequelize db:seed:all",
+    "start:production": "NODE_ENV=production npm start"
   },
   "repository": {
     "type": "git",
