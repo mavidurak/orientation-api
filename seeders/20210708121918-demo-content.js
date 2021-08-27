@@ -17,13 +17,16 @@ module.exports = {
       'Finland, the country of white lilies is a journalistic book by Russian priest and social activist Grigory Spiridonovich Petrov.',
     ];
     const types = ['GAME', 'MOVIE', 'SERIES', 'BOOK'];
+    const sluges = ['sd-league-of-legends-1cbaaa94', 'sd-valorant-b91adf16', 'sd-counter-strike-global-offensive-c526ffcd', 'sd-pianist-5ce6f238', 'sd-the-matrix-642f5ae8', 'sd-inception-f11b0d97', 'sd-112263-c0300ede',
+      'sd-friends-2c214074', 'sd-dark-53336bf1', 'sd-1984-f403a659', 'sd-a-clockwork-orange-ea5ddddf', 'sd-the-land-of-the-white-lilies-1185991b'];
 
-    for (let name, description, type, views, rate, index = 0; index < 12; index++) {
+    for (let name, description, type, views, rate, slug, index = 0; index < 12; index++) {
       name = names[index];
       description = descriptions[index];
       type = types[Math.floor(index / 3)];
       views = Math.floor(Math.random() * 1001);
       rate = Number((Math.random() * 10).toFixed(1));
+      slug = sluges[index];
 
       contents.push({
         user_id: index + 1,
@@ -33,6 +36,7 @@ module.exports = {
         type,
         views,
         rate,
+        slug,
         created_at: new Date(),
         updated_at: new Date(),
       });

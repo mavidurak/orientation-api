@@ -2,6 +2,7 @@ import { DataTypes } from 'sequelize';
 
 import Sequelize from '../sequelize';
 import { CONTENT_TYPES } from '../constants/content';
+import generateSlug from '../utils/generateSlug';
 
 const contents = Sequelize.define('contents',
   {
@@ -40,11 +41,21 @@ const contents = Sequelize.define('contents',
       type: DataTypes.DECIMAL,
       defaultValue: null,
     },
+    slug: {
+      type: DataTypes.STRING,
+      unique: true,
+      primaryKey: true,
+    },
   },
   {
     timestamps: true,
     paranoid: true,
     underscored: true,
+    hooks: {
+      beforeCreate(content, options) {
+        content.slug = generateSlug(content.name);
+      },
+    },
   });
 
 const initialize = (models) => {
