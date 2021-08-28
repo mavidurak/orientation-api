@@ -1,6 +1,5 @@
 import Joi from '../../joi';
 import models from '../../models';
-import contents from '../contents';
 
 const createContentReviewsSchema = {
   body: Joi.object({
