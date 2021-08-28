@@ -277,7 +277,7 @@ const sendForgotPasswordEmail = async (req, res) => {
     },
   });
 
-  if(!user) {
+  if (!user) {
     return res.send(401, {
       errors: [
         {
@@ -295,7 +295,6 @@ const sendForgotPasswordEmail = async (req, res) => {
     href: `${process.env.FRONTEND_PATH}/reset-password?token=${value}`,
   });
   res.send(200);
-    
 };
 
 const resetPassword = async (req, res) => {

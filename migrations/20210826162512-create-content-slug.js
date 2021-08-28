@@ -1,17 +1,19 @@
 module.exports = {
   up(queryInterface, Sequelize) {
     return queryInterface.addColumn(
-      'email_confirmation_tokens',
-      'type',
+      'contents',
+      'slug',
       {
         type: Sequelize.STRING,
+        primaryKey: true,
+        unique: true,
       },
     );
   },
   down(queryInterface, Sequelize) {
     return queryInterface.removeColumn(
-      'email_confirmation_tokens',
-      'type',
+      'contents',
+      'slug',
     );
   },
 };

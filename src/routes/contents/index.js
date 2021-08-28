@@ -57,11 +57,11 @@ const create = async (req, res) => {
 };
 
 const detail = async (req, res) => {
-  const { id } = req.params;
+  const { slug } = req.params;
   try {
     const content = await models.contents.findOne({
       where: {
-        id,
+        slug,
       },
       include: [
         {
@@ -117,11 +117,11 @@ const update = async (req, res) => {
       errors: error.details,
     });
   }
-  const { id } = req.params;
+  const { slug } = req.params;
   try {
     const content = await models.contents.findOne({
       where: {
-        id,
+        slug,
       },
       include: {
         model: models.users,
@@ -148,7 +148,7 @@ const update = async (req, res) => {
       name, type, description, image_path,
     }, {
       where: {
-        id: content.id,
+        slug,
       },
     });
     res.send({
@@ -166,11 +166,11 @@ const update = async (req, res) => {
 };
 
 const deleteContent = async (req, res) => {
-  const { id } = req.params;
+  const { slug } = req.params;
   const user_id = req.user.id;
   const content = await models.contents.findOne({
     where: {
-      id,
+      slug,
       user_id,
     },
   });
@@ -185,7 +185,7 @@ const deleteContent = async (req, res) => {
   }
   await models.contents.destroy({
     where: {
-      id,
+      slug,
     },
   });
   res.send({
@@ -198,8 +198,8 @@ export default {
   inject: (router) => {
     router.get('', getContents);
     router.post('/', create);
-    router.get('/:id', detail);
-    router.put('/:id', update);
-    router.delete('/:id', deleteContent);
+    router.get('/:slug', detail);
+    router.put('/:slug', update);
+    router.delete('/:slug', deleteContent);
   },
 };
