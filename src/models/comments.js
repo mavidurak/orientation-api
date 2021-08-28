@@ -45,14 +45,14 @@ const initialize = (models) => {
   models.comments.belongsTo(
     models.content_reviews, {
       as: 'content_review',
-      foreignKey: 'content_reviews_id',
+      foreignKey: 'content_review_id',
       sourceKey: 'id',
     },
   );
   models.comments.belongsTo(
     models.discussions, {
       as: 'discussion',
-      foreignKey: 'discussions_id',
+      foreignKey: 'discussion_id',
       sourceKey: 'id',
     },
   );

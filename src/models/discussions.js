@@ -4,10 +4,6 @@ import Sequelize from '../sequelize';
 
 const discussions = Sequelize.define('discussions',
   {
-    community_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     header: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -40,7 +36,7 @@ const initialize = (models) => {
   models.discussions.hasMany(
     models.comments, {
       as: 'comments',
-      foreignKey: 'discussions_id',
+      foreignKey: 'discussion_id',
       sourceKey: 'id',
     },
   );

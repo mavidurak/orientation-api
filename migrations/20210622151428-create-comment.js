@@ -19,10 +19,22 @@ module.exports = {
     content_review_id: {
       type: Sequelize.INTEGER,
       defaultValue: null,
+      references: {
+        model: 'content_reviews',
+        key: 'id',
+      },
+      onUpdate: 'cascade',
+      onDelete: 'cascade',
     },
     discussion_id: {
       type: Sequelize.INTEGER,
       defaultValue: null,
+      references: {
+        model: 'discussions',
+        key: 'id',
+      },
+      onUpdate: 'cascade',
+      onDelete: 'cascade',
     },
     parent_comment_id: {
       type: Sequelize.INTEGER,
