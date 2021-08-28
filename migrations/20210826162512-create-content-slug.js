@@ -6,6 +6,7 @@ module.exports = {
       {
         type: Sequelize.STRING,
         primaryKey: true,
+        unique: true,
       },
     );
   },
