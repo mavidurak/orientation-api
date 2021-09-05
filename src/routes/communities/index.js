@@ -66,11 +66,11 @@ const create = async (req, res) => {
 };
 
 const detail = async (req, res) => {
-  const { id } = req.params;
+  const { slug } = req.params;
   try {
     const community = await models.communities.findOne({
       where: {
-        id,
+        slug,
       },
       include: [
         {
@@ -79,7 +79,6 @@ const detail = async (req, res) => {
         },
       ],
     });
-
     if (!community) {
       return res.send({
         errors: [
@@ -120,11 +119,11 @@ const update = async (req, res) => {
       errors: error.details,
     });
   }
-  const { id } = req.params;
+  const { slug } = req.params;
   try {
     const community = await models.communities.findOne({
       where: {
-        id,
+        slug,
       },
     });
     if (!community || !community.organizers.includes(req.user.id)) {
@@ -161,7 +160,7 @@ const update = async (req, res) => {
       rules,
     }, {
       where: {
-        id: community.id,
+        slug,
       },
     });
     res.send({
@@ -179,10 +178,10 @@ const update = async (req, res) => {
 };
 
 const deleteCommunity = async (req, res) => {
-  const { id } = req.params;
+  const { slug } = req.params;
   const community = await models.communities.findOne({
     where: {
-      id,
+      slug,
     },
   });
   if (!community || !community.organizers.includes(req.user.id)) {
@@ -196,7 +195,7 @@ const deleteCommunity = async (req, res) => {
   }
   await models.communities.destroy({
     where: {
-      id,
+      slug,
     },
   });
   res.send({
@@ -209,8 +208,8 @@ export default {
   inject: (router) => {
     router.get('', getCommunities);
     router.post('/', create);
-    router.get('/:id', detail);
-    router.put('/:id', update);
-    router.delete('/:id', deleteCommunity);
+    router.get('/:slug', detail);
+    router.put('/:slug', update);
+    router.delete('/:slug', deleteCommunity);
   },
 };
