@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 
 import Sequelize from '../sequelize';
+import generateSlug from '../utils/generateSlug';
 
 const communities = Sequelize.define('communities',
   {
@@ -38,11 +39,19 @@ const communities = Sequelize.define('communities',
       type: DataTypes.STRING,
       allowNull: false,
     },
+    slug: {
+      type: DataTypes.STRING,
+    }
   },
   {
     timestamps: true,
     paranoid: true,
     underscored: true,
+    hooks: {
+      beforeCreate(community, options) {
+        community.slug = generateSlug(community.name);
+      },
+    },
   });
 
 const initialize = (models) => {
