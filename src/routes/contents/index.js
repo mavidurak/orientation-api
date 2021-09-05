@@ -74,7 +74,7 @@ const detail = async (req, res) => {
         },
       ],
     });
-    
+
     if (!content) {
       return res.send({
         errors: [
