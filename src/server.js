@@ -7,6 +7,7 @@ import cors from 'cors';
 
 import router from './router';
 import pre_handlers from './pre_handlers';
+import errorHandler from './exceptions/errorHandler';
 
 const server = express();
 const { PORT } = process.env;
@@ -15,6 +16,7 @@ server.use(cors());
 server.use(bodyParser.json());
 pre_handlers.forEach((h) => server.use(h));
 server.use(router);
+server.use(errorHandler);
 
 server.get('/health-check', (req, res) => res.status(200).send('OK'));
 

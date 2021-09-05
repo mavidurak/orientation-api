@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { EMAIL_TOKEN_STATUS, EMAIL_TYPES } from '../constants/email';
+import { EMAIL_TOKEN_STATUS } from '../constants/email';
 
 import Sequelize from '../sequelize';
 

@@ -6,7 +6,6 @@ import { EMAIL_TYPES } from '../constants/email';
 export const sendEmail = async (user, emailInfo, replacements) => {
   const { emailType } = emailInfo;
   let source;
-  let template;
   const createEmail = {
     sender: process.env.EMAIL_USER,
     to: user.email,
@@ -37,7 +36,7 @@ export const sendEmail = async (user, emailInfo, replacements) => {
     break;
   }
 
-  template = handlebars.compile(source);
+  const template = handlebars.compile(source);
   createEmail.html = template(replacements);
 
   await transporter.sendMail(createEmail);

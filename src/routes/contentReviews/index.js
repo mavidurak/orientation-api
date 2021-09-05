@@ -182,10 +182,10 @@ const getMyReviews = async (req, res) => {
     include: {
       model: models.contents,
       as: 'contents',
-      include:{
-        model:models.images,
-        as:'image',
-      }
+      include: {
+        model: models.images,
+        as: 'image',
+      },
     },
   });
   return res.send(200, {

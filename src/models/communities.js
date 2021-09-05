@@ -41,7 +41,7 @@ const communities = Sequelize.define('communities',
     },
     slug: {
       type: DataTypes.STRING,
-    }
+    },
   },
   {
     timestamps: true,

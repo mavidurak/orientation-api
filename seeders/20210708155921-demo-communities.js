@@ -25,8 +25,8 @@ module.exports = {
       'Cheating is prohibited', 'NO RULES', 'Everything is free with respect. Have fun!', 'Profanity and insults are reason for ban', 'NO SPOILERS', 'Swearing and spoilers are not allowed',
       'Insult is a reason for ban', 'NO RULES HAVE FUN!', 'Swearing is forbidden', 'Profanity and insults are reason for ban', 'Cursing and insults are prohibited', 'Insults are prohibited',
     ];
-    const sluges = ['csgodose-2da1b6d1','pc-gamer-68a0295a','rustypot-a6b6892f','star-wars-5011f733','anime-fan-club-c477f1bf','movie-nights-51c3bd2d','marvel-series-1b275181','sitcom-valley-7f7fa23d','series-e72204a6',
-    'book-lovers-06282c18','what-is-the-name-of-that-book-350405af','poem-in-street-1d741d5d'];
+    const sluges = ['csgodose-2da1b6d1', 'pc-gamer-68a0295a', 'rustypot-a6b6892f', 'star-wars-5011f733', 'anime-fan-club-c477f1bf', 'movie-nights-51c3bd2d', 'marvel-series-1b275181', 'sitcom-valley-7f7fa23d', 'series-e72204a6',
+      'book-lovers-06282c18', 'what-is-the-name-of-that-book-350405af', 'poem-in-street-1d741d5d'];
 
     for (let index = 0; index < 12; index++) {
       const organizers = []; let members = [];
