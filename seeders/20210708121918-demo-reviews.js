@@ -35,7 +35,7 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('content_reviews', {
-      created_at: new Date('2012-12-21')
+      created_at: new Date('2012-12-21'),
     });
   },
 };

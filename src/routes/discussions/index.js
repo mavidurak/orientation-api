@@ -1,6 +1,6 @@
+import { Op } from 'sequelize';
 import models from '../../models';
 import Joi from '../../joi';
-import { Op } from 'sequelize'
 
 const create_validation = {
   body: Joi.object({
@@ -11,7 +11,7 @@ const create_validation = {
     text: Joi.string()
       .required(),
     is_private: Joi.boolean(),
-  }), 
+  }),
 };
 const update_validation = {
   body: Joi.object({
@@ -177,51 +177,53 @@ const getCommentsById = async (req, res) => {
         discussion_id: id,
       },
       include: {
-        model:models.users,
-        as:'user'
+        model: models.users,
+        as: 'user',
       },
     });
-  
-    let isLastStep = false, childs = await models.comments.findAll({
-      where: {
-        parent_comment_id: {
-          [Op.or]: parents.map(c => c.id),
-        }
-      },
-      include: {
-        model:models.users,
-        as:'user'
-      },
-    });
-    
+
+    let isLastStep = false; let
+      childs = await models.comments.findAll({
+        where: {
+          parent_comment_id: {
+            [Op.or]: parents.map((c) => c.id),
+          },
+        },
+        include: {
+          model: models.users,
+          as: 'user',
+        },
+      });
+
     // get all comment's comments
     let newComments = childs;
-  
-    while(!isLastStep){
+
+    while (!isLastStep) {
       newComments = await models.comments.findAll({
         where: {
           parent_comment_id: {
-            [Op.or]: newComments.map(c => c.id),
-          }
+            [Op.or]: newComments.map((c) => c.id),
+          },
         },
         include: {
-          model:models.users,
-          as:'user'
+          model: models.users,
+          as: 'user',
         },
       });
-  
-      if( newComments.length === 0 ){
-        isLastStep = true
-      }else {
-        childs= [ ...childs, ...newComments ];
+
+      if (newComments.length === 0) {
+        isLastStep = true;
+      } else {
+        childs = [...childs, ...newComments];
       }
     }
-  
+
     // sort nested comments
-    let comments = [...parents, ...childs]
-    comments.forEach(c => c.dataValues.comments = []);
-  
-    childs.forEach(child => {
+    let comments = [...parents, ...childs];
+    /* eslint-disable-next-line no-return-assign */
+    comments.forEach((c) => c.dataValues.comments = []);
+
+    childs.forEach((child) => {
       for (let index = 0; index < comments.length; index++) {
         const element = comments[index];
         if (element.id === child.parent_comment_id) {
@@ -230,9 +232,9 @@ const getCommentsById = async (req, res) => {
         }
       }
     });
-  
-    comments = comments.filter(c => !(childs.map(ch => ch.id).includes(c.id)))
-  
+
+    comments = comments.filter((c) => !(childs.map((ch) => ch.id).includes(c.id)));
+
     res.send(200, { comments });
   } catch (error) {
     return res.send({

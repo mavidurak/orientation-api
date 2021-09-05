@@ -178,7 +178,7 @@ const userInfo = async (req, res) => {
 };
 
 const update = async (req, res) => {
-  const { error, value } = updateSchema.body.validate(req.body);
+  const { error } = updateSchema.body.validate(req.body);
   if (error) {
     return res.status(400).send({
       errors: error.details,
