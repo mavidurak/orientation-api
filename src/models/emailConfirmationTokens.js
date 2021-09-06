@@ -1,7 +1,8 @@
 import { DataTypes } from 'sequelize';
-import { EMAIL_TOKEN_STATUS } from '../constants/email';
-
 import Sequelize from '../sequelize';
+import UserService from '../services/user';
+
+import { EMAIL_TOKEN_STATUS } from '../constants/email';
 
 const email_confirmation_tokens = Sequelize.define('email_confirmation_tokens',
   {
@@ -52,11 +53,7 @@ const initialize = (models) => {
   };
 
   models.email_confirmation_tokens.prototype.confirmToken = async function () {
-    const user = await models.users.findOne({
-      where: {
-        id: this.user_id,
-      },
-    });
+    const user = await UserService.getUser(this.user_id);
     if (!user) {
       return false;
     }
