@@ -8,16 +8,16 @@
 ├── CONTRIBUTING.md 
 ├── docs
 │   └── ...
-├── hooks // Git hooks
+├── hooks # Git hooks
 │   └── pre-commit
 ├── LICENSE
-├── migrations
-│   └── <timestamp-name>.js
 ├── nodemon.json # Nodemon config
 ├── package.json
 ├── package-lock.json
 ├── README.md
 ├── sample.env # Sample environment variables file
+├── migrations
+│   └── <timestamp-name>.js
 ├── seeders
 │   └── <timestamp-name>.js
 └── src
@@ -25,19 +25,24 @@
     │   └── sequelize.js # Database config
     ├── constants
     │   └── api.js
-    ├── joi.js # For Joi multiple error
-    ├── models
-    │   ├── index.js
-    │   └── <modelName>.js
     ├── pre_handlers
     │   ├── authantication.js
     │   ├── complatePath.js
     │   └── index.js
-    ├── router.js
+│   ├── exceptions
+│   │   ├── errorHandler.js
+│   │   └── HTTPError.js # Custom HTTP error
+    ├── models
+    │   ├── index.js
+    │   └── <modelName>.js
+    ├── services
+    │   └── <serviceName>.js
     ├── routes
     │   ├── <routeName>
     │   │   └── index.js
     │   └── index.js
+    ├── joi.js # For Joi multiple error
+    ├── router.js
     ├── sequelize.js # Database connection
     ├── server.js # Server start point
     └── utils
