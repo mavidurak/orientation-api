@@ -249,10 +249,10 @@ const getCommentsById = async (req, res) => {
 
 const getCommunityDiscussions = async (req, res) => {
   try {
-    const { communityId } = req.params;
+    const { slug } = req.params;
     const discussion = await models.discussions.findAll({
       where: {
-        community_id: communityId,
+        slug,
       },
     });
     if (discussion.length === 0) {
@@ -319,7 +319,7 @@ export default [{
     router.get('/:slug', detail);
     router.put('/:slug', update);
     router.delete('/:slug', deleteById);
-    router.get('/:id/comments', getCommentsById);
+    router.get('/:slug/comments', getCommentsById);
   },
 },
 {
