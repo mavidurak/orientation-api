@@ -12,9 +12,7 @@ const uploadFile = async (file) => {
     }
   });
   return path;
-}
-
-
+};
 
 const getImageByPath = async (path) => {
   const file = await models.images.findOne({
@@ -27,7 +25,7 @@ const getImageByPath = async (path) => {
     throw new HTTPError('Image not found or you don\'t have a permission!', 404);
   }
   return file;
-}
+};
 
 const getImageById = async (id) => {
   const file = await models.images.findOne({
@@ -40,7 +38,8 @@ const getImageById = async (id) => {
     throw new HTTPError('Image not found or you don\'t have a permission!', 404);
   }
   return file;
-}
+};
+
 const createImage = async ({ user_id, name, path }) => {
 
   const image = await models.images.create({
@@ -50,12 +49,13 @@ const createImage = async ({ user_id, name, path }) => {
   });
   return image;
 };
+
 const updateImage = async ({ name }, user_id) => {
   const image = await getImageByPath(path);
   const updatedImage = await image.update({ name });
   return updatedImage;
+};
 
-}
 const deleteImage = async (id, user_id) => {
   const isdeleted = await models.images.destroy({
     where: {
@@ -64,7 +64,7 @@ const deleteImage = async (id, user_id) => {
     },
   });
   return isdeleted;
-}
+};
 
 const ImageService = {
   uploadFile,
