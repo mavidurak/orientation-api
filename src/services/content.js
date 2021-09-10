@@ -99,10 +99,11 @@ const updateContent = async (
   return content;
 };
 
-const deleteContent = async (id) => {
+const deleteContent = async (slug, user_id) => {
+  await ContentService.getContentByUserId(slug, user_id);
   const isDeleted = await models.contents.destroy({
     where: {
-      id,
+      slug,
     },
   });
 

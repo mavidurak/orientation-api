@@ -77,8 +77,7 @@ const update = async (req, res, next) => {
 const deleteContent = async (req, res, next) => {
   try {
     const { slug } = req.params;
-    const content = await ContentService.getContentByUserId(slug, req.user.id);
-    await ContentService.deleteContent(content.id);
+    await ContentService.deleteContent(slug, req.user.id);
     return res.send(200, {
       message: 'Content deleted successfully!',
     });
