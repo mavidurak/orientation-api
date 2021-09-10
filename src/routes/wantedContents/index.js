@@ -23,7 +23,7 @@ const updateWantedContentsSchema = {
   }),
 };
 
-const create = async (req, res, next) => {
+const createWantedContent = async (req, res, next) => {
   const { error } = wantedContentsSchema.body.validate(req.body);
   if (error) {
     return res.status(400).send({
@@ -32,24 +32,15 @@ const create = async (req, res, next) => {
   }
   const { content_id, status, my_score } = req.body;
   try {
-    const wantedList = WantedContentService.create({ content_id, status, my_score }, req.user.id);
+    const wantedList = WantedContentService.createWantedContent({ content_id, status, my_score }, req.user.id);
     return res.send(201, wantedList);
   } catch (err) {
     next(err);
   }
 };
 
-const read = async (req, res, next) => {
-  try {
-    const { limit } = req.query;
-    const wantedList = await WantedContentService.read(limit, req.user.id);
-    return res.send(201, wantedList);
-  } catch (err) {
-    next(err);
-  }
-};
 
-const updatecont = async (req, res, next) => {
+const updateWantedContent = async (req, res, next) => {
   const { error } = await updateWantedContentsSchema.body.validate(req.body);
   if (error) {
     return res.status(400).send({
@@ -58,7 +49,7 @@ const updatecont = async (req, res, next) => {
   }
   try {
     const { status, my_score } = req.body;
-    const wantedList = await WantedContentService.updatecont(req.params.contentId, { status, my_score },
+    const wantedList = await WantedContentService.updateWantedContent(req.params.contentId, { status, my_score },
       req.user.id);
     return res.send(201, wantedList);
   } catch (err) {
@@ -66,19 +57,19 @@ const updatecont = async (req, res, next) => {
   }
 };
 
-const deletecont = async (req, res, next) => {
+const deleteWantedContent = async (req, res, next) => {
   try {
     const { contentId } = req.params;
-    await WantedContentService.deletecont(contentId, req.user.id);
+    await WantedContentService.deleteWantedContent(contentId, req.user.id);
   } catch (err) {
     next(err);
   }
 };
 
-const getUserWantedList = async (req, res, next) => {
+const getWantedList = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const wantedLists = await WantedContentService.getUserWantedList(userId);
+    const wantedLists = await WantedContentService.getWantedList(userId);
     res.send(200, {
       wantedLists,
       count: wantedLists.length,
@@ -88,11 +79,11 @@ const getUserWantedList = async (req, res, next) => {
   }
 };
 
-const getContentById = async (req, res,next) => {
+const getWantedContentByContentId = async (req, res,next) => {
 
   const content_id=req.params.contenId;
   try{
-    const wantedContent=await WantedContentService.getContentById(req.user.id,content_id);
+    const wantedContent=await WantedContentService.getWantedContentByContentId(req.user.id,content_id);
     return res.send( wantedContent);
   }catch(err){
     next(err);
@@ -102,15 +93,14 @@ const getContentById = async (req, res,next) => {
 export default [{
   prefix: '/wanted-list',
   inject: (router) => {
-    router.get('', read);
-    router.post('', create);
-    router.get('/:contentId', getContentById);
-    router.put('/:contentId', updatecont);
-    router.delete('/:contentId', deletecont);
+    router.post('', createWantedContent);
+    router.get('/:contentId', getWantedContentByContentId);
+    router.put('/:contentId', updateWantedContent);
+    router.delete('/:contentId', deleteWantedContent);
   },
 }, {
   prefix: '/users',
   inject: (router) => {
-    router.get('/:userId/wanted-list', getUserWantedList);
+    router.get('/:userId/wanted-list', getWantedList);
   },
 }];

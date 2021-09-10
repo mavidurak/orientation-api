@@ -1,7 +1,7 @@
 import models from '../models';
 import HTTPError from '../exceptions/HTTPError';
 
-const create = async ({ content_id, status, my_score }, user_id) => {
+const createWantedContent = async ({ content_id, status, my_score }, user_id) => {
   const wantedList = await models.wanted_contents.create({
     user_id,
     content_id,
@@ -10,20 +10,8 @@ const create = async ({ content_id, status, my_score }, user_id) => {
   });
   return wantedList;
 };
-const read = async (limit, user_id) => {
-  const wantedList = await models.wanted_contents.findAll({
-    where: {
-      user_id,
-    },
-    limit,
-  });
-  if (!wantedList) {
-    throw new HTTPError('Wanted content not found or you don\'t have a permission', 404);
-  }
-  return  wantedList ;
-};
 
-const updatecont = async (content_id, { status, my_score }, user_id) => {
+const updateWantedContent = async (content_id, { status, my_score }, user_id) => {
   const wantedList = await models.wanted_contents.findOne({
     where: {
       content_id,
@@ -43,7 +31,7 @@ const updatecont = async (content_id, { status, my_score }, user_id) => {
   throw new HTTPError('Content updated succesfully', 200);
 };
 
-const deletecont = async (contentId, user_id) => {
+const deleteWantedContent = async (contentId, user_id) => {
   const wantedContent = await models.wanted_contents.findOne({
     where: {
       user_id,
@@ -57,7 +45,7 @@ const deletecont = async (contentId, user_id) => {
   throw new HTTPError('Content deleted successfully from yours wanted list!', 200);
 };
 
-const getUserWantedList = async (user_id) => {
+const getWantedList = async (user_id) => {
   const wantedLists = await models.wanted_contents.findAll({
     where: {
       user_id,
@@ -69,7 +57,7 @@ const getUserWantedList = async (user_id) => {
   return wantedLists;
 };
 
-const getContentById = async (user_id,content_id) => {
+const getWantedContentByContentId = async (user_id,content_id) => {
   const wantedContent = await models.wanted_contents.findOne({
     where: {
       user_id,
@@ -83,12 +71,11 @@ const getContentById = async (user_id,content_id) => {
 };
 
 const WantedContentService = {
-  create,
-  read,
-  updatecont,
-  deletecont,
-  getUserWantedList,
-  getContentById,
+  createWantedContent,
+  updateWantedContent,
+  deleteWantedContent,
+  getWantedList,
+  getWantedContentByContentId,
 };
 
 export default WantedContentService;
