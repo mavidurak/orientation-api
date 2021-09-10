@@ -1,7 +1,7 @@
 import models from '../models';
 import HTTPError from '../exceptions/HTTPError';
 
-const createComment = async (text, content_review_id, discussion_id, parent_comment_id, is_spoiler, user_id) => {
+const createComment = async ({text, content_review_id, discussion_id, parent_comment_id, is_spoiler}, user_id) => {
   if ([content_review_id, discussion_id, parent_comment_id].filter((e) => e).length !== 1) {
     throw new HTTPError('There must be only one id (content_review_id, discussion_id, parent_comment_id)', 400);
   }
@@ -17,7 +17,7 @@ const createComment = async (text, content_review_id, discussion_id, parent_comm
   return comment;
 };
 
-const updateComment = async (id, user_id, text, is_spoiler) => {
+const getCommentById = async (id) => {
   const comment = await models.comments.findOne({
     where: {
       id,
@@ -25,42 +25,40 @@ const updateComment = async (id, user_id, text, is_spoiler) => {
     include: {
       model: models.users,
       as: 'user',
-      where: {
-        id: user_id,
-      },
     },
   });
-
   if (!comment) {
-    throw new HTTPError('Comment not found or you don\'t have a permission!', 403);
+    throw new HTTPError('Comment not found or you don\'t have a permission!', 400);
   }
-  comment.text = text;
-  comment.is_spoiler = is_spoiler;
-  await comment.save();
-
   return comment;
 };
 
-const deleteComment = async (id, user_id) => {
-  const comment = await models.comments.findOne({
-    where: {
-      id,
-    },
-    include: {
-      model: models.users,
-      as: 'user',
-      where: {
-        id: user_id,
-      },
-    },
-  });
-
+const updateComment = async (id, user_id, text, is_spoiler) => {
+  const comment = await getCommentById(id);
   if (!comment) {
     throw new HTTPError('Comment not found or you don\'t have a permission!', 403);
   }
+  const update = await models.comments.update({text,is_spoiler},
+    {
+      where: {
+        user_id: user_id,
+        id: id,
+      }
+    });
+  if(!update) {
+    throw new HTTPError('Some error occurred while updating comment.', 403);
+  }
+  return update;
+};
 
+const deleteComment = async (id, user_id) => {
+  const comment = await getCommentById(id);
+  if (!comment) {
+    throw new HTTPError('Comment not found or you don\'t have a permission!', 403);
+  }
   const isDeleted = await models.comments.destroy({
     where: {
+      user_id: user_id,
       id,
     },
   });
@@ -82,19 +80,6 @@ const getAllComments = async (user_id) => {
     throw new HTTPError('Comment not found or you don\'t have a permission!', 400);
   }
   return comments;
-};
-
-const getCommentById = async (user_id, id) => {
-  const comment = await models.comments.findOne({
-    where: {
-      user_id,
-      id,
-    },
-  });
-  if (!comment) {
-    throw new HTTPError('Comment not found or you don\'t have a permission!', 400);
-  }
-  return comment;
 };
 
 const CommentService = {

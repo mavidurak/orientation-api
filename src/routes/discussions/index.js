@@ -182,8 +182,7 @@ const getCommentsById = async (req, res) => {
       },
     });
 
-    let isLastStep = false; let
-      childs = await models.comments.findAll({
+    let isLastStep = false, childs = await models.comments.findAll({
         where: {
           parent_comment_id: {
             [Op.or]: parents.map((c) => c.id),
@@ -234,7 +233,6 @@ const getCommentsById = async (req, res) => {
     });
 
     comments = comments.filter((c) => !(childs.map((ch) => ch.id).includes(c.id)));
-
     res.send(200, { comments });
   } catch (error) {
     return res.send({

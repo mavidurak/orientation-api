@@ -25,14 +25,14 @@ const createComment = async (req, res, next) => {
   try {
     const {
       text, content_review_id, discussion_id, parent_comment_id, is_spoiler,
-    } = req.body;
-    const comment = await CommentService.createComment(text, content_review_id, discussion_id, parent_comment_id, is_spoiler, req.user.id);
+    } = req.body; 
+    const comment = await CommentService.createComment({text, content_review_id, discussion_id, parent_comment_id, is_spoiler}, req.user.id);
 
     res.send({
       comment,
     });
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -41,9 +41,11 @@ const updateComment = async (req, res, next) => {
     const { id } = req.params;
     const { text, is_spoiler } = req.body;
     const comment = await CommentService.updateComment(id, req.user.id, text, is_spoiler);
-    res.send({ comment });
-  } catch (error) {
-    next(error);
+    res.send({
+      message: 'Comment updated successfully!',
+    });
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -54,8 +56,8 @@ const deleteComment = async (req, res, next) => {
     return res.send(200, {
       message: 'Comment deleted successfully!',
     });
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -67,18 +69,21 @@ const getAllComments = async (req, res, next) => {
       comments,
       count: comments.length,
     });
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
 const getCommentById = async (req, res, next) => {
   try {
     const { userId, id } = req.params;
-    const comment = await CommentService.getCommentById(userId, id);
+    if(req.user.id !== userId){
+      throw new HTTPError('Comment not found or you don\'t have a permission!', 400);
+    }
+    const comment = await CommentService.getCommentById(id);
     res.send({ comment });
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
