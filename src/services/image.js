@@ -75,6 +75,4 @@ const ImageService = {
   updateImage,
 };
 
-
-
 export default ImageService;
