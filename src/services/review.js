@@ -1,7 +1,6 @@
 import HTTPError from '../exceptions/HTTPError';
 import models from '../models';
 
-
 const getReview = async (id) => {
   const contentReview = await models.content_reviews.findOne({
     where: {
@@ -91,7 +90,6 @@ const deleteReview = async (id) => {
   }
   return isDelete;
 };
-
 
 const ReviewService = {
   createReview,
