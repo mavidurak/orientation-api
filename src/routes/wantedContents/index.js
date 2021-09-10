@@ -1,5 +1,6 @@
 import Joi from '../../joi';
 import models from '../../models';
+import WantedContentService from '../../services/wantedcontent';
 
 const wantedContentsSchema = {
   body: Joi.object({
@@ -22,7 +23,7 @@ const updateWantedContentsSchema = {
   }),
 };
 
-const create = async (req, res) => {
+const create = async (req, res, next) => {
   const { error } = wantedContentsSchema.body.validate(req.body);
   if (error) {
     return res.status(400).send({
@@ -30,135 +31,72 @@ const create = async (req, res) => {
     });
   }
   const { content_id, status, my_score } = req.body;
-  const wantedList = await models.wanted_contents.create({
-    user_id: req.user.id,
-    content_id,
-    status,
-    my_score,
-  });
-  return res.send(201, wantedList);
-};
-
-const read = async (req, res) => {
-  const { limit } = req.query;
-  const wantedList = await models.wanted_contents.findAll({
-    where: {
-      user_id: req.user.id,
-    },
-    limit,
-  });
-  if (!wantedList) {
-    return res.send(400, {
-      errors: [
-        {
-          message: 'Wanted content not found or you don\'t have a permission!',
-        },
-      ],
-    });
+  try {
+    const wantedList = WantedContentService.create({ content_id, status, my_score }, req.user.id);
+    return res.send(201, wantedList);
+  } catch (err) {
+    next(err);
   }
-  res.send({ wantedList });
 };
 
-const updatecont = async (req, res) => {
+const read = async (req, res, next) => {
+  try {
+    const { limit } = req.query;
+    const wantedList = WantedContentService.read(limit, req.user.id);
+    return res.send(201, wantedList);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const updatecont = async (req, res, next) => {
   const { error } = updateWantedContentsSchema.body.validate(req.body);
   if (error) {
     return res.status(400).send({
       errors: error.details,
     });
   }
-  const wantedList = await models.wanted_contents.findOne({
-    where: {
-      content_id: req.params.contentId,
-      user_id: req.user.id,
-    },
-  });
-  const { status, my_score } = req.body;
-  if (!wantedList) {
-    return res.send({
-      errors: [
-        {
-          message: 'Content not found or you don\'t have a permission!',
-        },
-      ],
-    });
+  try {
+    const { status, my_score } = req.body;
+    const wantedList = WantedContentService.updatecont(req.params.contentId, { status, my_score },
+      req.user.id);
+    return res.send(201, wantedList);
+  } catch (err) {
+    next(err);
   }
-  await models.wanted_contents.update({ status, my_score },
-    {
-      where: {
-        content_id: wantedList.content_id,
-        user_id: req.user.id,
-      },
-    });
-  return res.send(200, {
-    message: 'Content updated succesfully!',
-  });
 };
 
-const deletecont = async (req, res) => {
-  const { contentId } = req.params;
-  const user_id = req.user.id;
-  const wantedContent = await models.wanted_contents.findOne({
-    where: {
-      user_id,
-      content_id: contentId,
-    },
-  });
-  if (!wantedContent) {
-    return res.status(401).send({
-      errors: [
-        {
-          message: 'Content not found or you don\'t have a permission!',
-        },
-      ],
-    });
+const deletecont = async (req, res, next) => {
+  try {
+    const { contentId } = req.params;
+    WantedContentService.deletecont(contentId, req.user.id);
+  } catch (err) {
+    next(err);
   }
-  await wantedContent.destroy();
-  res.send({
-    message: 'Content deleted successfully from yours wanted list!',
-  });
 };
 
-const getUserWantedList = async (req, res) => {
-  const { userId } = req.params;
-  const wantedLists = await models.wanted_contents.findAll({
-    where: {
-      user_id: userId,
-    },
-  });
-  if (!wantedLists) {
-    return res.send(400, {
-      errors: [
-        {
-          message: 'Content not found or you don\'t have a permission!',
-        },
-      ],
+const getUserWantedList = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const wantedLists = WantedContentService.getUserWantedList(userId);
+    res.send(200, {
+      wantedLists,
+      count: wantedLists.length,
     });
+  } catch (err) {
+    next(err);
   }
-  res.send({
-    wantedLists,
-    count: wantedLists.length,
-  });
 };
 
-const getContentById = async (req, res) => {
-  const wantedContent = await models.wanted_contents.findOne({
-    where: {
-      user_id: req.user.id,
-      content_id: req.params.contentId,
-    },
-  });
+const getContentById = async (req, res,next) => {
 
-  if (!wantedContent) {
-    return res.send(400, {
-      errors: [
-        {
-          message: 'Content not found or you don\'t have a permission!',
-        },
-      ],
-    });
+  const content_id=req.params.contenId;
+  try{
+    const wantedContent=WantedContentService.getContentById(req.user.id,content_id);
+    return res.send( wantedContent);
+  }catch(err){
+    next(err);
   }
-
-  return res.send(200, wantedContent);
 };
 
 export default [{
