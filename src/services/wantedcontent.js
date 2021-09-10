@@ -20,7 +20,7 @@ const read = async (limit, user_id) => {
   if (!wantedList) {
     throw new HTTPError('Wanted content not found or you don\'t have a permission', 404);
   }
-  return { wantedList };
+  return  wantedList ;
 };
 
 const updatecont = async (content_id, { status, my_score }, user_id) => {
