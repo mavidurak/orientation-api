@@ -1,5 +1,7 @@
+import HTTPError from '../../exceptions/HTTPError';
 import Joi from '../../joi';
 import models from '../../models';
+import ReviewService from '../../services/review';
 
 const createContentReviewsSchema = {
   body: Joi.object({
@@ -25,7 +27,7 @@ const updateContentReviewsSchema = {
   }),
 };
 
-const create = async (req, res) => {
+const create = async (req, res, next) => {
   const { error } = createContentReviewsSchema.body.validate(req.body);
   if (error) {
     return res.status(400).send({
@@ -35,65 +37,28 @@ const create = async (req, res) => {
   const {
     content_id, text, score, is_spoiler,
   } = req.body;
-  const contentReview = await models.content_reviews.create({
-    user_id: req.user.id,
-    content_id,
-    text,
-    score,
-    is_spoiler,
-  });
-  const count = await models.content_reviews.count(
-    {
-      where: {
-        content_id,
-      },
-    },
-  );
-
-  const content = await models.contents.findOne({
-    where: {
-      id: content_id,
-    },
-  });
-  content.rate = (Number(content.rate) + ((Number(score * 2) - (Number(content.rate))) / count));
-  await content.save();
-  res.send({
-    contentReview,
-  });
-};
-
-const detail = async (req, res) => {
-  const { id } = req.params;
   try {
-    const contentReview = await models.content_reviews.findOne({
-      where: {
-        id,
-      },
+    const contentReview = await ReviewService.createReview({ content_id, text, score, is_spoiler }, req.user.id)
+
+    res.send({
+      contentReview,
     });
-
-    if (!contentReview) {
-      return res.send({
-        errors: [
-          {
-            message: 'Review not found or you don\'t have a permission!',
-          },
-        ],
-      });
-    }
-
-    return res.send(contentReview);
   } catch (err) {
-    return res.status(500).send({
-      errors: [
-        {
-          message: err.message,
-        },
-      ],
-    });
+    next(err);
   }
 };
 
-const update = async (req, res) => {
+const detail = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const contentReview = await ReviewService.getReview(id);
+    return res.send(contentReview);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const update = async (req, res, next) => {
   const { error } = updateContentReviewsSchema.body.validate(req.body);
   if (error) {
     return res.status(400).send({
@@ -102,120 +67,62 @@ const update = async (req, res) => {
   }
   const { id } = req.params;
   try {
-    const contentReview = await models.content_reviews.findOne({
+    const contentReview = await ReviewService.getReview(id);
+
+    const { text, is_spoiler, score } = req.body;
+    models.content_reviews.update({ text, is_spoiler, score }, {
       where: {
-        id,
-      },
-      include: {
-        model: models.users,
-        as: 'user',
-        where: {
-          id: req.user.id,
-        },
+        id: contentReview.id,
       },
     });
-    if (contentReview) {
-      const { text, is_spoiler, score } = req.body;
-      models.content_reviews.update({ text, is_spoiler, score }, {
-        where: {
-          id: contentReview.id,
-        },
-      });
-      res.send({
-        message: 'Content review was updated succesfully',
-      });
-    } else {
-      res.status(403).send({
-        errors: [
-          {
-            message: 'Review not found or you don\'t have a permission!',
-          },
-        ],
-      });
-    }
+    return res.send({
+      message: 'Content review was updated succesfully',
+    });
   } catch (err) {
-    res.status(500).send({
-      errors: [
-        {
-          message: err.message,
-        },
-      ],
-    });
+    next(err);
   }
 };
 
-const deleteById = async (req, res) => {
+const deleteById = async (req, res, next) => {
   const { id } = req.params;
   const user_id = req.user.id;
-  const contentReview = await models.content_reviews.findOne({
-    where: {
-      id,
-    },
-  });
-  if (contentReview) {
-    if (user_id === contentReview.user_id) {
-      models.content_reviews.destroy({
-        where: {
-          id,
-        },
-      });
-      res.send({
-        message: 'Data set was delected successfully!',
-      });
+  try {
+    const contentReview = await ReviewService.getReview(id);
+    if (user_id !== contentReview.user_id) {
+      throw new HTTPError('you don\'t have permission ', 404);
     }
-  } else {
-    res.status(401).send({
-      errors: [
-        {
-          message: 'Review not found or you don\'t have a permission!',
-        },
-      ],
+    await ReviewService.deleteReview(id);
+    return res.send({
+      message: 'Data set was delected successfully!',
     });
+  } catch (err) {
+    next(err);
   }
 };
 
-const getMyReviews = async (req, res) => {
-  const reviews = await models.content_reviews.findAll({
-    where: {
-      user_id: req.user.id,
-    },
-    include: {
-      model: models.contents,
-      as: 'contents',
-      include: {
-        model: models.images,
-        as: 'image',
-      },
-    },
-  });
-  return res.send(200, {
-    reviews,
-  });
+const getMyReviews = async (req, res, next) => {
+  try {
+    const reviews = await ReviewService.getUserReviews(req.user.id);
+    res.send(200, {
+      reviews,
+    })
+  } catch (err) {
+    next(err);
+  }
 };
 
-const userReviews = async (req, res) => {
+const userReviews = async (req, res, next) => {
   const { userId } = req.params;
   const { limit } = req.query;
   try {
-    const reviews = await models.content_reviews.findAll({
-      where: {
-        user_id: userId,
-      },
-      limit,
-    });
+    const reviews = await ReviewService.getUserReviews(userId);
     return res.send({ reviews, count: reviews.length });
   } catch (err) {
-    return res.status(500).send({
-      errors: [
-        {
-          message: err.message,
-        },
-      ],
-    });
+    next(err);
   }
 };
 
-const contentReviews = async (req, res) => {
+const contentReviews = async (req, res, next) => {
   const { contentId } = req.params;
   const { limit } = req.query;
   try {
@@ -227,13 +134,7 @@ const contentReviews = async (req, res) => {
     });
     return res.send({ reviews, count: reviews.length });
   } catch (err) {
-    return res.status(500).send({
-      errors: [
-        {
-          message: err.message,
-        },
-      ],
-    });
+    next(err);
   }
 };
 
