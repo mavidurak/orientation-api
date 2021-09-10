@@ -70,7 +70,7 @@ const createReview = async ({ content_id, text, score, is_spoiler }, user_id) =>
   return contentReview;
 };
 
-const updateReview = async ({ text, is_spoiler, score }, id) => {
+await ReviewService.updateReview ({ text, is_spoiler, score }, id) => {
   const review = await models.content_reviews.update({ text, is_spoiler, score }, {
     where: {
       id,
