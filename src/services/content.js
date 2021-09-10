@@ -98,9 +98,6 @@ const updateContent = async (
 const deleteContent = async (slug, user_id) => {
   let content = await ContentService.getContentByUserId(slug, user_id);
   const isDeleted = await content.destroy({
-    where: {
-      slug,
-    },
   });
 
   if (!isDeleted) {
