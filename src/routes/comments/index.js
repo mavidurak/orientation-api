@@ -77,10 +77,10 @@ const getAllComments = async (req, res, next) => {
 const getCommentById = async (req, res, next) => {
   try {
     const { userId, id } = req.params;
-    if(req.user.id !== userId){
+    const comment = await CommentService.getCommentById(id);
+    if(comment.user_id !== userId){
       throw new HTTPError('Comment not found or you don\'t have a permission!', 400);
     }
-    const comment = await CommentService.getCommentById(id);
     res.send({ comment });
   } catch (err) {
     next(err);
