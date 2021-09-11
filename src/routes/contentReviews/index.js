@@ -70,7 +70,7 @@ const update = async (req, res, next) => {
     const contentReview = await ReviewService.getReview(id);
 
     const { text, is_spoiler, score } = req.body;
-    models.content_reviews.update({ text, is_spoiler, score }, {
+    await ReviewService.updateReview({ text, is_spoiler, score }, {
       where: {
         id: contentReview.id,
       },
