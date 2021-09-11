@@ -176,6 +176,7 @@ const getCommunityDiscussions = async (req, res, next) => {
 const getDiscussionByCommunityId = async (req, res, next) => {
   try {
     const { communityId, discussionId } = req.params;
+    // eslint-disable-next-line max-len
     const discussion = await DiscussionService.getDiscussionByCommunityId(communityId, discussionId);
     res.send({ discussion });
   } catch (err) {
@@ -194,7 +195,7 @@ export default [{
   },
 },
 {
-  prefix: '/communites',
+  prefix: '/communities',
   inject: (router) => {
     router.get('/:communityId/discussions', getCommunityDiscussions);
     router.get('/:communityId/:discussionId', getDiscussionByCommunityId);

@@ -22,6 +22,14 @@ const getDiscussion = async (id) => {
     where: {
       id,
     },
+    include: [{
+      model: models.communities,
+      as: 'communities',
+    },
+    {
+      model: models.users,
+      as: 'user',
+    }],
   });
   if (!discussion) {
     throw new HTTPError('Discussion not found or you don\'t have a permission!', 403);
@@ -47,32 +55,14 @@ const getDiscussionByUserId = async (id, user_id) => {
   }
   return discussion;
 };
-
-const getDiscussionByCommunityId = async (communityId, discussionId) => {
-  const discussion = await models.discussions.findOne({
-    where: {
-      id: discussionId,
-      community_id: communityId,
-    },
-    include: [{
-      model: models.communities,
-      as: 'communities',
-    },
-    {
-      model: models.users,
-      as: 'user',
-    }],
-  });
-  if (!discussion) {
-    throw new HTTPError('Discussion not found or you don\'t have a permission!', 403);
-  }
-  return discussion;
-};
-
-const getCommunityDiscussions = async (communityId) => {
+const getCommunityDiscussions = async (community_id) => {
   const discussions = await models.discussions.findAll({
     where: {
-      community_id: communityId,
+      community_id,
+    },
+    include: {
+      model: models.communities,
+      as: 'communities',
     },
   });
   if (!discussions || discussions.length === 0) {
@@ -81,21 +71,30 @@ const getCommunityDiscussions = async (communityId) => {
   return discussions;
 };
 
+const getDiscussionByCommunityId = async (communityId, discussionId) => {
+  communityId = Number(communityId);
+  const discussion = await getDiscussion(discussionId);
+  if (discussion.community_id !== communityId) {
+    throw new HTTPError('Discussion not found or you don\'t have a permission!', 403);
+  }
+  return discussion;
+};
+
 const updateDiscussion = async (
   { header, text, is_private }, id, user_id,
 ) => {
   const discussion = await getDiscussionByUserId(id, user_id);
 
-  if (!discussion) {
-    throw new HTTPError('Discussion not found or you don\'t have a permission!', 403);
+  const update = await discussion.update({
+    header, text, is_private,
+  }, {
+
+  });
+
+  if (!update) {
+    throw new HTTPError('Discussion update failed!', 403);
   }
-
-  discussion.header = header;
-  discussion.text = text;
-  discussion.is_private = is_private;
-  await discussion.save();
-
-  return discussion;
+  return update;
 };
 
 const deleteDiscussion = async (id, user_id) => {
