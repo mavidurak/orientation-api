@@ -49,8 +49,8 @@ const create = async (req, res, next) => {
 
 const detail = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const discussion = await DiscussionService.getDiscussion(id);
+    const { slug } = req.params;
+    const discussion = await DiscussionService.getDiscussion(slug);
     res.send({ discussion });
   } catch (err) {
     next(err);
@@ -64,9 +64,9 @@ const update = async (req, res, next) => {
       errors: error.details,
     });
   }
-  const { id } = req.params;
+  const { slug } = req.params;
   try {
-    const discussion = await DiscussionService.updateDiscussion({ ...req.body }, id, req.user.id);
+    const discussion = await DiscussionService.updateDiscussion({ ...req.body }, slug, req.user.id);
     res.status(200).send({ discussion });
   } catch (err) {
     next(err);
@@ -75,8 +75,8 @@ const update = async (req, res, next) => {
 
 const deleteById = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    await DiscussionService.deleteDiscussion(id, req.user.id);
+    const { slug } = req.params;
+    await DiscussionService.deleteDiscussion(slug, req.user.id);
     return res.send(200, {
       message: 'Discussion deleted successfully!',
     });
@@ -175,9 +175,9 @@ const getCommunityDiscussions = async (req, res, next) => {
 
 const getDiscussionByCommunityId = async (req, res, next) => {
   try {
-    const { communityId, discussionId } = req.params;
+    const { communityId, slug } = req.params;
     // eslint-disable-next-line max-len
-    const discussion = await DiscussionService.getDiscussionByCommunityId(communityId, discussionId);
+    const discussion = await DiscussionService.getDiscussionByCommunityId(communityId, slug);
     res.send({ discussion });
   } catch (err) {
     next(err);
@@ -188,16 +188,16 @@ export default [{
   prefix: '/discussions',
   inject: (router) => {
     router.post('', create);
-    router.get('/:id', detail);
-    router.put('/:id', update);
-    router.delete('/:id', deleteById);
-    router.get('/:id/comments', getCommentsById);
+    router.get('/:slug', detail);
+    router.put('/:slug', update);
+    router.delete('/:slug', deleteById);
+    router.get('/:slug/comments', getCommentsById);
   },
 },
 {
   prefix: '/communities',
   inject: (router) => {
     router.get('/:communityId/discussions', getCommunityDiscussions);
-    router.get('/:communityId/:discussionId', getDiscussionByCommunityId);
+    router.get('/:communityId/:slug', getDiscussionByCommunityId);
   },
 }];

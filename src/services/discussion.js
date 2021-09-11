@@ -17,10 +17,10 @@ const createDiscussion = async (
   return discussion;
 };
 
-const getDiscussion = async (id) => {
+const getDiscussion = async (slug) => {
   const discussion = await models.discussions.findOne({
     where: {
-      id,
+      slug,
     },
     include: [{
       model: models.communities,
@@ -37,10 +37,10 @@ const getDiscussion = async (id) => {
   return discussion;
 };
 
-const getDiscussionByUserId = async (id, user_id) => {
+const getDiscussionByUserId = async (slug, user_id) => {
   const discussion = await models.discussions.findOne({
     where: {
-      id,
+      slug,
     },
     include: {
       model: models.users,
@@ -81,9 +81,9 @@ const getDiscussionByCommunityId = async (communityId, discussionId) => {
 };
 
 const updateDiscussion = async (
-  { header, text, is_private }, id, user_id,
+  { header, text, is_private }, slug, user_id,
 ) => {
-  const discussion = await getDiscussionByUserId(id, user_id);
+  const discussion = await getDiscussionByUserId(slug, user_id);
 
   const update = await discussion.update({
     header, text, is_private,
@@ -97,8 +97,8 @@ const updateDiscussion = async (
   return update;
 };
 
-const deleteDiscussion = async (id, user_id) => {
-  const discussion = await getDiscussionByUserId(id, user_id);
+const deleteDiscussion = async (slug, user_id) => {
+  const discussion = await getDiscussionByUserId(slug, user_id);
 
   if (!discussion) {
     throw new HTTPError('Discussion not found or you don\'t have a permission!', 403);
@@ -106,7 +106,7 @@ const deleteDiscussion = async (id, user_id) => {
 
   const isDeleted = await models.discussions.destroy({
     where: {
-      id,
+      slug,
     },
   });
 
