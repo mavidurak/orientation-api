@@ -80,8 +80,8 @@ const updateUser = async ({
       password_hash: passwordValdation.hash,
       password_salt: passwordValdation.salt,
     }).reduce((a, [k, v]) => (v == null ? a : (a[k] = v, a)), {});
-    const user2 = await user.update(where);
-    return user2.toJSON();
+    const updatedUser = await user.update(where);
+    return updatedUser.toJSON();
   }
 };
 
