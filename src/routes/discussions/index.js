@@ -101,7 +101,7 @@ const getCommentsById = async (req, res) => {
     });
 
     if (parents.length === 0) {
-      return res.send({ comment: [] });
+      return res.send({ comments: [] });
     }
 
     let isLastStep = false;
