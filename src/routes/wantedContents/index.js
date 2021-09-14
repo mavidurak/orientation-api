@@ -41,7 +41,7 @@ const createWantedContent = async (req, res, next) => {
 
 
 const updateWantedContent = async (req, res, next) => {
-  const { error } = await updateWantedContentsSchema.body.validate(req.body);
+  const { error } = updateWantedContentsSchema.body.validate(req.body);
   if (error) {
     return res.status(400).send({
       errors: error.details,
@@ -49,7 +49,7 @@ const updateWantedContent = async (req, res, next) => {
   }
   try {
     const { status, my_score } = req.body;
-    const wantedList = await WantedContentService.updateWantedContent(req.params.contentId, { status, my_score },
+    const wantedList = await WantedContentService.updateWantedContent( { status, my_score },req.params.contentId,
       req.user.id);
     return res.send(201, wantedList);
   } catch (err) {

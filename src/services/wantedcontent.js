@@ -11,7 +11,7 @@ const createWantedContent = async ({ content_id, status, my_score }, user_id) =>
   return wantedList;
 };
 
-const updateWantedContent = async (content_id, { status, my_score }, user_id) => {
+const updateWantedContent = async ({ status, my_score },content_id, user_id) => {
   const wantedList = await models.wanted_contents.findOne({
     where: {
       content_id,
@@ -28,7 +28,6 @@ const updateWantedContent = async (content_id, { status, my_score }, user_id) =>
         user_id,
       },
     });
-  throw new HTTPError('Content updated succesfully', 200);
 };
 
 const deleteWantedContent = async (contentId, user_id) => {
@@ -42,7 +41,6 @@ const deleteWantedContent = async (contentId, user_id) => {
     throw new HTTPError('Content not found or you don\'t have a permission!', 401);
   }
   await wantedContent.destroy();
-  throw new HTTPError('Content deleted successfully from yours wanted list!', 200);
 };
 
 const getWantedList = async (user_id) => {
