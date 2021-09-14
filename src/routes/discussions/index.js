@@ -101,13 +101,7 @@ const getCommentsById = async (req, res) => {
     });
 
     if (parents.length === 0) {
-      return res.send({
-        errors: [
-          {
-            message: 'Comment not found!',
-          },
-        ],
-      });
+      return res.send({ comment: [] });
     }
 
     let isLastStep = false;
