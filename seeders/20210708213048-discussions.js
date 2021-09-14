@@ -14,7 +14,7 @@ module.exports = {
       'Why is Myshkin so drawn to suffering people?',
       'Why does Josef K. decide to “play along” with his arrest, even though the men who arrest him never show him any proof of their authority and he thinks it might be a “farce”?',
       'Dr. Harari describes several circumstances where we can see the impact of evolution in current day behaviors. Were any of them particularly surprising, highlighting a connection you hadn’t considered before? Were there any that you disagree with?'];
-    const slugs = ['sd-1984-e64ce247', 'sd-nausea-fde4e066', 'sd-fahrenheit-451-0ee5eea5','sd-blindness-0ee5eeb5', 'sd-crime-and-punishment-d7f88687', 'sd-the-awakening-4e59d1d0', 'sd-madame-bovary-d3f13862', 'sd-white-nights-2246929f',
+    const slugs = ['sd-1984-e64ce247', 'sd-nausea-fde4e066', 'sd-fahrenheit-451-0ee5eea5', 'sd-blindness-0ee5eeb5', 'sd-crime-and-punishment-d7f88687', 'sd-the-awakening-4e59d1d0', 'sd-madame-bovary-d3f13862', 'sd-white-nights-2246929f',
       'sd-pride-and-prejudice-649969ce', 'sd-the-idiot-76ba69be', 'sd-trial-8cd05f53', 'sd-sapiens-deda6e04'];
     for (let index = 0; index < 12; index++) {
       discussions.push({

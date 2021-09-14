@@ -71,9 +71,9 @@ const getCommunityDiscussions = async (community_id) => {
   return discussions;
 };
 
-const getDiscussionByCommunityId = async (communityId, discussionId) => {
+const getDiscussionByCommunityId = async (communityId, discussionSlug) => {
   communityId = Number(communityId);
-  const discussion = await getDiscussion(discussionId);
+  const discussion = await getDiscussion(discussionSlug);
   if (discussion.community_id !== communityId) {
     throw new HTTPError('Discussion not found or you don\'t have a permission!', 403);
   }

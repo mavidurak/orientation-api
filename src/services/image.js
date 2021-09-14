@@ -1,12 +1,12 @@
 import models from '../models';
 import HTTPError from '../exceptions/HTTPError';
-import generateSlug from '../utils/generateSlug'
+import generateSlug from '../utils/generateSlug';
 
 const uploadFile = async (file) => {
   let uploadPath;
-  let path = generateSlug(file.name) + file.name;
+  const path = generateSlug(file.name) + file.name;
   uploadPath = __dirname.replace('src/services', 'uploads/') + path;
-  await file.mv(uploadPath, function (err) {
+  await file.mv(uploadPath, (err) => {
     if (err) {
       throw new HTTPError(err.message, 500);
     }
@@ -41,7 +41,6 @@ const getImageById = async (id) => {
 };
 
 const createImage = async ({ user_id, name, path }) => {
-
   const image = await models.images.create({
     user_id,
     name,

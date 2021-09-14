@@ -111,7 +111,7 @@ const getCommunities = async (req, res) => {
       as: 'image',
     },
   });
-  communities.forEach(c => c.dataValues.am_i_member = c.members.includes(req.user.id));
+  communities.forEach((c) => c.dataValues.am_i_member = c.members.includes(req.user.id));
   return res.send({ communities, count: communities.length });
 };
 

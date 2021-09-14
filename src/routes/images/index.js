@@ -36,28 +36,28 @@ const create = async (req, res) => {
 const detail = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const image = await ImageService.getImageById(id)
+    const image = await ImageService.getImageById(id);
 
     return res.send(image);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 
 const deleteById = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const image = await ImageService.getImageById(id)
+    const image = await ImageService.getImageById(id);
 
     if (image.user_id !== req.user.id) {
       throw new HTTPError('Image not found or you don\'t have a permission!', 403);
     }
-    await ImageService.deleteImage(id, req.user.id)
+    await ImageService.deleteImage(id, req.user.id);
     res.send({
       message: 'Image was deleted successfully!',
     });
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 

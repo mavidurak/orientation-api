@@ -25,8 +25,10 @@ const createComment = async (req, res, next) => {
   try {
     const {
       text, content_review_id, discussion_id, parent_comment_id, is_spoiler,
-    } = req.body; 
-    const comment = await CommentService.createComment({text, content_review_id, discussion_id, parent_comment_id, is_spoiler}, req.user.id);
+    } = req.body;
+    const comment = await CommentService.createComment({
+      text, content_review_id, discussion_id, parent_comment_id, is_spoiler,
+    }, req.user.id);
 
     res.send({
       comment,
@@ -78,7 +80,7 @@ const getCommentById = async (req, res, next) => {
   try {
     const { userId, id } = req.params;
     const comment = await CommentService.getCommentById(id);
-    if(comment.user_id !== userId){
+    if (comment.user_id !== userId) {
       throw new HTTPError('Comment not found or you don\'t have a permission!', 400);
     }
     res.send({ comment });
