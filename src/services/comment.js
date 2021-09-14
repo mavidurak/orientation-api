@@ -1,7 +1,9 @@
 import models from '../models';
 import HTTPError from '../exceptions/HTTPError';
 
-const createComment = async ({text, content_review_id, discussion_id, parent_comment_id, is_spoiler}, user_id) => {
+const createComment = async ({
+  text, content_review_id, discussion_id, parent_comment_id, is_spoiler,
+}, user_id) => {
   if ([content_review_id, discussion_id, parent_comment_id].filter((e) => e).length !== 1) {
     throw new HTTPError('There must be only one id (content_review_id, discussion_id, parent_comment_id)', 400);
   }
@@ -38,14 +40,14 @@ const updateComment = async (id, user_id, text, is_spoiler) => {
   if (!comment) {
     throw new HTTPError('Comment not found or you don\'t have a permission!', 403);
   }
-  const update = await models.comments.update({text,is_spoiler},
+  const update = await models.comments.update({ text, is_spoiler },
     {
       where: {
-        user_id: user_id,
-        id: id,
-      }
+        user_id,
+        id,
+      },
     });
-  if(!update) {
+  if (!update) {
     throw new HTTPError('Some error occurred while updating comment.', 403);
   }
   return update;
@@ -58,7 +60,7 @@ const deleteComment = async (id, user_id) => {
   }
   const isDeleted = await models.comments.destroy({
     where: {
-      user_id: user_id,
+      user_id,
       id,
     },
   });

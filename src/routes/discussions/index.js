@@ -39,7 +39,7 @@ const create = async (req, res, next) => {
       header, text, is_private, community_id,
     }, req.user.id);
 
-    res.status(200).send({
+    res.status(201).send({
       discussion,
     });
   } catch (err) {
@@ -86,11 +86,13 @@ const deleteById = async (req, res, next) => {
 };
 
 const getCommentsById = async (req, res) => {
-  const { id } = req.params;
   try {
+    const { discussionSlug } = req.params;
+    const discussion = await DiscussionService.getDiscussion(discussionSlug);
+
     const parents = await models.comments.findAll({
       where: {
-        discussion_id: id,
+        discussion_id: discussion.id,
       },
       include: {
         model: models.users,
@@ -98,18 +100,28 @@ const getCommentsById = async (req, res) => {
       },
     });
 
-    let isLastStep = false; let
-      childs = await models.comments.findAll({
-        where: {
-          parent_comment_id: {
-            [Op.or]: parents.map((c) => c.id),
+    if (parents.length === 0) {
+      return res.send({
+        errors: [
+          {
+            message: 'Comment not found!',
           },
-        },
-        include: {
-          model: models.users,
-          as: 'user',
-        },
+        ],
       });
+    }
+
+    let isLastStep = false;
+    let childs = await models.comments.findAll({
+      where: {
+        parent_comment_id: {
+          [Op.or]: parents.map((c) => c.id),
+        },
+      },
+      include: {
+        model: models.users,
+        as: 'user',
+      },
+    });
 
     // get all comment's comments
     let newComments = childs;
@@ -165,8 +177,13 @@ const getCommentsById = async (req, res) => {
 
 const getCommunityDiscussions = async (req, res, next) => {
   try {
-    const { communityId } = req.params;
-    const discussions = await DiscussionService.getCommunityDiscussions(communityId);
+    const { communitySlug } = req.params;
+    const community = await models.communities.findOne({
+      where: {
+        slug: communitySlug,
+      },
+    });
+    const discussions = await DiscussionService.getCommunityDiscussions(community.id);
     res.send({ discussions });
   } catch (err) {
     next(err);
@@ -175,9 +192,15 @@ const getCommunityDiscussions = async (req, res, next) => {
 
 const getDiscussionByCommunityId = async (req, res, next) => {
   try {
-    const { communityId, slug } = req.params;
+    const { communitySlug, discussionSlug } = req.params;
+    const community = await models.communities.findOne({
+      where: {
+        slug: communitySlug,
+      },
+    });
+
     // eslint-disable-next-line max-len
-    const discussion = await DiscussionService.getDiscussionByCommunityId(communityId, slug);
+    const discussion = await DiscussionService.getDiscussionByCommunityId(community.id, discussionSlug);
     res.send({ discussion });
   } catch (err) {
     next(err);
@@ -191,13 +214,13 @@ export default [{
     router.get('/:slug', detail);
     router.put('/:slug', update);
     router.delete('/:slug', deleteById);
-    router.get('/:slug/comments', getCommentsById);
+    router.get('/:discussionSlug/comments', getCommentsById);
   },
 },
 {
   prefix: '/communities',
   inject: (router) => {
-    router.get('/:communityId/discussions', getCommunityDiscussions);
-    router.get('/:communityId/:slug', getDiscussionByCommunityId);
+    router.get('/:communitySlug/discussions', getCommunityDiscussions);
+    router.get('/:communitySlug/:discussionSlug', getDiscussionByCommunityId);
   },
 }];

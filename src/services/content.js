@@ -81,7 +81,7 @@ const updateContent = async (
     name, type, description, image_path,
   }, slug, user_id,
 ) => {
-  let content = await getContentByUserId(slug, user_id);
+  const content = await getContentByUserId(slug, user_id);
   const image = await models.images.create({
     user_id,
     name: image_path,
@@ -96,7 +96,7 @@ const updateContent = async (
 };
 
 const deleteContent = async (slug, user_id) => {
-  let content = await ContentService.getContentByUserId(slug, user_id);
+  const content = await ContentService.getContentByUserId(slug, user_id);
   const isDeleted = await content.destroy();
 
   if (!isDeleted) {

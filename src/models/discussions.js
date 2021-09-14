@@ -28,7 +28,7 @@ const discussions = Sequelize.define('discussions',
     underscored: true,
     hooks: {
       beforeCreate(discussion, options) {
-        discussion.slug = generateSlug(discussion.name);
+        discussion.slug = generateSlug(discussion.header);
       },
     },
   });

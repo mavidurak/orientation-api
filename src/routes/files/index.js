@@ -1,15 +1,15 @@
-import generateSlug from '../../utils/generateSlug'
-import models from '../../models'
+import generateSlug from '../../utils/generateSlug';
+import models from '../../models';
 import HTTPError from '../../exceptions/HTTPError';
 import ImageService from '../../services/image';
 
 const upload = async (req, res, next) => {
   try {
     if (!req.files || Object.keys(req.files).length === 0) {
-      throw new HTTPError('No files were uploaded.', 400)
+      throw new HTTPError('No files were uploaded.', 400);
     }
-    let file = req.files.file;
-    let path = await ImageService.uploadFile(file);
+    const { file } = req.files;
+    const path = await ImageService.uploadFile(file);
     const image = await ImageService.createImage({
       user_id: req.user.id,
       name: file.name,
@@ -21,8 +21,7 @@ const upload = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-
-}
+};
 const getFile = async (req, res, next) => {
   const { path } = req.params;
 
@@ -32,8 +31,7 @@ const getFile = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-
-}
+};
 
 export default {
   prefix: '/files',
