@@ -245,6 +245,7 @@ const getReviewComments = async (req,res) => {
         content_review_id: reviewId,
       },
       include: {
+        attributes: { exclude: ['password_hash','password_salt'] },
         model: models.users,
         as: 'user',
       },
@@ -254,7 +255,6 @@ const getReviewComments = async (req,res) => {
       return res.send({ comments: [] });
     }
 
-    let isLastStep = false;
     let childs = await models.comments.findAll({
       where: {
         parent_comment_id: {
@@ -262,6 +262,7 @@ const getReviewComments = async (req,res) => {
         },
       },
       include: {
+        attributes: { exclude: ['password_hash','password_salt'] },
         model: models.users,
         as: 'user',
       },
@@ -269,7 +270,7 @@ const getReviewComments = async (req,res) => {
 
     // get all comment's comments
     let newComments = childs;
-    isLastStep = childs.length === 0 ? true : false; 
+    let isLastStep = childs.length === 0;
     while (!isLastStep) {
       newComments = await models.comments.findAll({
         where: {
@@ -278,6 +279,7 @@ const getReviewComments = async (req,res) => {
           },
         },
         include: {
+          attributes: { exclude: ['password_hash','password_salt'] },
           model: models.users,
           as: 'user',
         },
