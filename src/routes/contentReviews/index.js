@@ -241,6 +241,90 @@ const contentReviews = async (req, res) => {
   }
 };
 
+const getReviewComments = async (req,res) => {
+  try {
+    const { reviewId } = req.params;
+    const parents = await models.comments.findAll({
+      where: {
+        content_review_id: reviewId,
+      },
+      include: {
+        attributes: { exclude: ['password_hash','password_salt'] },
+        model: models.users,
+        as: 'user',
+      },
+    });
+
+    if (parents.length === 0) {
+      return res.send({ comments: [] });
+    }
+
+    let childs = await models.comments.findAll({
+      where: {
+        parent_comment_id: {
+          [Op.or]: parents.map((c) => c.id),
+        },
+      },
+      include: {
+        attributes: { exclude: ['password_hash','password_salt'] },
+        model: models.users,
+        as: 'user',
+      },
+    });
+
+    // get all comment's comments
+    let newComments = childs;
+    let isLastStep = childs.length === 0;
+    while (!isLastStep) {
+      newComments = await models.comments.findAll({
+        where: {
+          parent_comment_id: {
+            [Op.or]: newComments.map((c) => c.id),
+          },
+        },
+        include: {
+          attributes: { exclude: ['password_hash','password_salt'] },
+          model: models.users,
+          as: 'user',
+        },
+      });
+
+      if (newComments.length === 0) {
+        isLastStep = true;
+      } else {
+        childs = [...childs, ...newComments];
+      }
+    }
+
+    // sort nested comments
+    let comments = [...parents, ...childs];
+    /* eslint-disable-next-line no-return-assign */
+    comments.forEach((c) => c.dataValues.comments = []);
+
+    childs.forEach((child) => {
+      for (let index = 0; index < comments.length; index++) {
+        const element = comments[index];
+        if (element.id === child.parent_comment_id) {
+          comments[index].dataValues.comments.push(child);
+          break;
+        }
+      }
+    });
+
+    comments = comments.filter((c) => !(childs.map((ch) => ch.id).includes(c.id)));
+
+    res.send(200, { comments });
+  } catch (err) {
+    return res.status(500).send({
+      errors: [
+        {
+          message: err.message,
+        },
+      ],
+    });
+  }
+};
+
 export default [{
   prefix: '/reviews',
   inject: (router) => {
@@ -249,6 +333,7 @@ export default [{
     router.get('/:id', detail);
     router.put('/:id', update);
     router.delete('/:id', deleteById);
+    router.get('/:reviewId/comments',getReviewComments);
   },
 }, {
   prefix: '/users',
