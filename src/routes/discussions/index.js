@@ -172,7 +172,6 @@ const getCommentsById = async (req, res) => {
   }
 };
 
-
 const getCommunityDiscussions = async (req, res, next) => {
   try {
     const { communitySlug } = req.params;
