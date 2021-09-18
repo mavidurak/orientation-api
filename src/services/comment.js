@@ -25,6 +25,7 @@ const getCommentById = async (id) => {
       id,
     },
     include: {
+      attributes: { exclude: ['password_hash','password_salt'] },
       model: models.users,
       as: 'user',
     },

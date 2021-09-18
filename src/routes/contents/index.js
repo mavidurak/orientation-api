@@ -45,7 +45,6 @@ const create = async (req, res, next) => {
     next(err);
   }
 };
-
 const detail = async (req, res, next) => {
   try {
     const { slug } = req.params;

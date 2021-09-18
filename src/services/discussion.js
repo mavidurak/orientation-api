@@ -27,6 +27,7 @@ const getDiscussion = async (slug) => {
       as: 'communities',
     },
     {
+      attributes: { exclude: ['password_hash','password_salt'] },
       model: models.users,
       as: 'user',
     }],
@@ -43,6 +44,7 @@ const getDiscussionByUserId = async (slug, user_id) => {
       slug,
     },
     include: {
+      attributes: { exclude: ['password_hash','password_salt'] },
       model: models.users,
       as: 'user',
       where: {
