@@ -197,7 +197,6 @@ const getCommentsById = async (req, res) => {
 
     // get all comment's comments
     let newComments = childs;
-    isLastStep = childs.length === 0 ? true : false; 
     while (!isLastStep) {
       newComments = await models.comments.findAll({
         where: {
