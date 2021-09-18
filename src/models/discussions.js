@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 
 import Sequelize from '../sequelize';
+import generateSlug from '../utils/generateSlug';
 
 const discussions = Sequelize.define('discussions',
   {
@@ -16,11 +17,20 @@ const discussions = Sequelize.define('discussions',
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    slug: {
+      type: DataTypes.STRING,
+      unique: true,
+    },
   },
   {
     timestamps: true,
     paranoid: true,
     underscored: true,
+    hooks: {
+      beforeCreate(discussion, options) {
+        discussion.slug = generateSlug(discussion.header);
+      },
+    },
   });
 
 const initialize = (models) => {

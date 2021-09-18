@@ -1,5 +1,5 @@
 import Joi from '../../joi';
-import models from '../../models';
+import ContentService from '../../services/content';
 
 const createContentSchema = {
   body: Joi.object({
@@ -29,89 +29,35 @@ const updateContentSchema = {
   }),
 };
 
-const create = async (req, res) => {
+const create = async (req, res, next) => {
   const { error } = createContentSchema.body.validate(req.body);
   if (error) {
     return res.status(400).send({
       errors: error.details,
     });
   }
-  const {
-    name, type, description, image_path,
-  } = req.body;
-  const image = await models.images.create({
-    user_id: req.user.id,
-    name: image_path,
-    path: image_path,
-  });
-  const content = await models.contents.create({
-    user_id: req.user.id,
-    name,
-    type,
-    description,
-    image_id: image.id,
-  });
-  res.send({
-    content,
-  });
-};
-
-const detail = async (req, res) => {
-  const { slug } = req.params;
   try {
-    const content = await models.contents.findOne({
-      where: {
-        slug,
-      },
-      include: [
-        {
-          model: models.images,
-          as: 'image',
-        },
-        {
-          attributes: { exclude: ['password_hash','password_salt'] },
-          model: models.users,
-          as: 'user',
-        },
-      ],
+    const content = await ContentService.createContent({ ...req.body }, req.user.id);
+    res.status(200).send({
+      content,
     });
-
-    if (!content) {
-      return res.send({
-        errors: [
-          {
-            message: 'Content not found or you don\'t have a permission!',
-          },
-        ],
-      });
-    }
+  } catch (err) {
+    next(err);
+  }
+};
+const detail = async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+    const content = await ContentService.getContent(slug);
     content.views += 1;
     await content.save();
-    return res.send(content);
+    res.send({ content });
   } catch (err) {
-    return res.status(500).send({
-      errors: [
-        {
-          message: err.message,
-        },
-      ],
-    });
+    next(err);
   }
 };
 
-const getContents = async (req, res) => {
-  const { limit } = req.query;
-  const contents = await models.contents.findAll({
-    limit,
-    include: {
-      model: models.images,
-      as: 'image',
-    },
-  });
-  return res.send({ contents, count: contents.length });
-};
-
-const update = async (req, res) => {
+const update = async (req, res, next) => {
   const { error } = updateContentSchema.body.validate(req.body);
   if (error) {
     return res.status(400).send({
@@ -120,78 +66,33 @@ const update = async (req, res) => {
   }
   const { slug } = req.params;
   try {
-    const content = await models.contents.findOne({
-      where: {
-        slug,
-      },
-      include: {
-        model: models.users,
-        as: 'user',
-        where: {
-          id: req.user.id,
-        },
-      },
-    });
-    if (!content) {
-      return res.status(403).send({
-        errors: [
-          {
-            message: 'Content not found or you don\'t have a permission!',
-          },
-        ],
-      });
-    }
-
-    const {
-      name, type, description, image_path,
-    } = req.body;
-    models.contents.update({
-      name, type, description, image_path,
-    }, {
-      where: {
-        slug,
-      },
-    });
-    res.send({
-      message: 'Content was updated succesfully',
-    });
+    const content = await ContentService.updateContent({ ...req.body }, slug, req.user.id);
+    res.status(200).send({ content });
   } catch (err) {
-    res.status(500).send({
-      errors: [
-        {
-          message: err.message,
-        },
-      ],
-    });
+    next(err);
   }
 };
 
-const deleteContent = async (req, res) => {
-  const { slug } = req.params;
-  const user_id = req.user.id;
-  const content = await models.contents.findOne({
-    where: {
-      slug,
-      user_id,
-    },
-  });
-  if (!content) {
-    res.status(401).send({
-      errors: [
-        {
-          message: 'Content not found or you don\'t have a permission!',
-        },
-      ],
+const deleteContent = async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+    await ContentService.deleteContent(slug, req.user.id);
+    return res.send(200, {
+      message: 'Content deleted successfully!',
     });
+  } catch (error) {
+    next(error);
   }
-  await models.contents.destroy({
-    where: {
-      slug,
-    },
-  });
-  res.send({
-    message: 'Content was delected successfully!',
-  });
+};
+
+const getContents = async (req, res, next) => {
+  try {
+    const { limit } = req.query;
+    const contents = await ContentService.getContents(limit);
+    res.send({ contents });
+  } catch (err) {
+    next(err);
+  }
 };
 
 export default {
