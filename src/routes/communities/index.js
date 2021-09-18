@@ -1,3 +1,4 @@
+import HTTPError from '../../exceptions/HTTPError';
 import Joi from '../../joi';
 import models from '../../models';
 
@@ -88,6 +89,7 @@ const detail = async (req, res) => {
         ],
       });
     }
+    community.am_i_member = community.members.includes(req.user.id);
     return res.send(community);
   } catch (err) {
     return res.status(500).send({
@@ -102,14 +104,15 @@ const detail = async (req, res) => {
 
 const getCommunities = async (req, res) => {
   const { limit } = req.query;
-  const community = await models.communities.findAll({
+  const communities = await models.communities.findAll({
     limit,
     include: {
       model: models.images,
       as: 'image',
     },
   });
-  return res.send({ community, count: community.length });
+  communities.forEach((c) => c.dataValues.am_i_member = c.members.includes(req.user.id));
+  return res.send({ communities, count: communities.length });
 };
 
 const update = async (req, res) => {
@@ -203,6 +206,54 @@ const deleteCommunity = async (req, res) => {
   });
 };
 
+const join = async (req, res, next) => {
+  const { slug } = req.params;
+  try {
+    const community = await models.communities.findOne({
+      where: {
+        slug,
+      },
+    });
+
+    if (!community) {
+      throw new HTTPError('Community not found!', 404);
+    }
+    if (community.members.includes(req.user.id)) {
+      throw new HTTPError('You are already join this community', 400);
+    }
+
+    community.members = [...community.members, req.user.id];
+    await community.save();
+    return res.status(200).send(community);
+  } catch (error) {
+    next(error);
+  }
+};
+const leave = async (req, res, next) => {
+  const { slug } = req.params;
+  try {
+    const community = await models.communities.findOne({
+      where: {
+        slug,
+      },
+    });
+
+    if (!community) {
+      throw new HTTPError('Community not found!', 404);
+    }
+    if (!community.members.includes(req.user.id)) {
+      throw new HTTPError('You are not member of this community', 400);
+    }
+
+    community.members = community.members.filter((id) => id !== req.user.id);
+    await community.save();
+
+    return res.status(200).send(community);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   prefix: '/communities',
   inject: (router) => {
@@ -211,5 +262,7 @@ export default {
     router.get('/:slug', detail);
     router.put('/:slug', update);
     router.delete('/:slug', deleteCommunity);
+    router.get('/:slug/join', join);
+    router.get('/:slug/leave', leave);
   },
 };

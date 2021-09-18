@@ -117,3 +117,5 @@ dist
 *.sw?
 *.swap
 *.swp
+
+uploads/*

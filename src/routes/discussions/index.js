@@ -1,6 +1,7 @@
 import { Op } from 'sequelize';
 import models from '../../models';
 import Joi from '../../joi';
+import DiscussionService from '../../services/discussion';
 
 const create_validation = {
   body: Joi.object({
@@ -21,182 +22,105 @@ const update_validation = {
   }),
 };
 
-const create = async (req, res) => {
+const create = async (req, res, next) => {
   const { error } = create_validation.body.validate(req.body);
 
   if (error) {
-    return res.send(400,
-      {
-        errors: error.details,
-      });
-  }
-
-  const {
-    header, text, is_private, community_id,
-  } = req.body;
-  const discussion = await models.discussions.create({
-    header,
-    text,
-    is_private,
-    user_id: req.user.id,
-    community_id,
-  });
-  return res.status(201).send({
-    discussion,
-  });
-};
-
-const detail = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const discussion = await models.discussions.findOne({
-      where: {
-        id,
-      },
+    return res.status(400).send({
+      errors: error.details,
     });
+  }
+  try {
+    const {
+      header, text, is_private, community_id,
+    } = req.body;
 
-    if (!discussion) {
-      return res.send({
-        errors: [
-          {
-            message: 'Discussion not found or you don\'t have a permission!',
-          },
-        ],
-      });
-    }
-    return res.send(discussion);
+    const discussion = await DiscussionService.createDiscussion({
+      header, text, is_private, community_id,
+    }, req.user.id);
+
+    res.status(201).send({
+      discussion,
+    });
   } catch (err) {
-    return res.status(500).send({
-      errors: [
-        {
-          message: err.message,
-        },
-      ],
-    });
+    next(err);
   }
 };
 
-const update = async (req, res) => {
-  const { error } = update_validation.body.validate(req.body);
-
-  if (error) {
-    return res.send(400,
-      {
-        errors: error.details,
-      });
-  }
-
-  const { id } = req.params;
-  const discussion = await models.discussions.findOne({
-    where: {
-      id,
-      user_id: req.user.id,
-    },
-  });
-  if (!discussion) {
-    return res.send({
-      errors: [
-        {
-          message: 'Discussion not found or you don\'t have a permission!',
-        },
-      ],
-    });
-  }
-  const { header, text, is_private } = req.body;
-  const updated = await models.discussions.update({ header, text, is_private },
-    {
-      where: {
-        id: discussion.id,
-      },
-    });
-
-  if (!updated) {
-    return res.send({
-      errors: [
-        {
-          message: 'Some error occurred while updating discussions.',
-        },
-      ],
-    });
-  }
-  res.send({
-    message: 'Discussion updated successfully!',
-  });
-};
-
-const deleteById = async (req, res) => {
-  const { id } = req.params;
+const detail = async (req, res, next) => {
   try {
-    const discussion = await models.discussions.findOne({
-      where: {
-        id,
-        user_id: req.user.id,
-      },
-    });
+    const { slug } = req.params;
+    const discussion = await DiscussionService.getDiscussion(slug);
+    res.send({ discussion });
+  } catch (err) {
+    next(err);
+  }
+};
 
-    if (!discussion) {
-      return res.send({
-        errors: [
-          {
-            message: 'Discussion not found or you don\'t have a permission!',
-          },
-        ],
-      });
-    }
-    const isDeleted = await models.discussions.destroy({
-      where: {
-        id,
-      },
+const update = async (req, res, next) => {
+  const { error } = update_validation.body.validate(req.body);
+  if (error) {
+    return res.status(400).send({
+      errors: error.details,
     });
+  }
+  const { slug } = req.params;
+  try {
+    const discussion = await DiscussionService.updateDiscussion({ ...req.body }, slug, req.user.id);
+    res.status(200).send({ discussion });
+  } catch (err) {
+    next(err);
+  }
+};
 
-    if (!isDeleted) {
-      res.send({
-        message: 'Discussion not found or you don\'t have a permission!',
-      });
-    }
-    res.send({
+const deleteById = async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+    await DiscussionService.deleteDiscussion(slug, req.user.id);
+    return res.send(200, {
       message: 'Discussion deleted successfully!',
     });
-  } catch (err) {
-    return res.status(500).send({
-      errors: [
-        {
-          message: err.message,
-        },
-      ],
-    });
+  } catch (error) {
+    next(error);
   }
 };
 
 const getCommentsById = async (req, res) => {
-  const { id } = req.params;
   try {
+    const { discussionSlug } = req.params;
+    const discussion = await DiscussionService.getDiscussion(discussionSlug);
+
     const parents = await models.comments.findAll({
       where: {
-        discussion_id: id,
+        discussion_id: discussion.id,
       },
       include: {
+        attributes: { exclude: ['password_hash','password_salt'] },
         model: models.users,
         as: 'user',
       },
     });
 
-    let isLastStep = false; let
-      childs = await models.comments.findAll({
-        where: {
-          parent_comment_id: {
-            [Op.or]: parents.map((c) => c.id),
-          },
+    if (parents.length === 0) {
+      return res.send({ comments: [] });
+    }
+
+    let childs = await models.comments.findAll({
+      where: {
+        parent_comment_id: {
+          [Op.or]: parents.map((c) => c.id),
         },
-        include: {
-          model: models.users,
-          as: 'user',
-        },
-      });
+      },
+      include: {
+        attributes: { exclude: ['password_hash','password_salt'] },
+        model: models.users,
+        as: 'user',
+      },
+    });
 
     // get all comment's comments
     let newComments = childs;
+    let isLastStep = childs.length === 0;
     while (!isLastStep) {
       newComments = await models.comments.findAll({
         where: {
@@ -205,6 +129,7 @@ const getCommentsById = async (req, res) => {
           },
         },
         include: {
+          attributes: { exclude: ['password_hash','password_salt'] },
           model: models.users,
           as: 'user',
         },
@@ -246,85 +171,53 @@ const getCommentsById = async (req, res) => {
   }
 };
 
-const getCommunityDiscussions = async (req, res) => {
+const getCommunityDiscussions = async (req, res, next) => {
   try {
-    const { communityId } = req.params;
-    const discussion = await models.discussions.findAll({
+    const { communitySlug } = req.params;
+    const community = await models.communities.findOne({
       where: {
-        community_id: communityId,
+        slug: communitySlug,
       },
     });
-    if (discussion.length === 0) {
-      return res.send(403, {
-        errors: [
-          {
-            message: 'Discussion not found or you don\'t have a permission!',
-          },
-        ],
-      });
-    }
-
-    return res.send(discussion);
-  } catch (error) {
-    return res.send({
-      errors: [
-        {
-          message: error.message,
-        },
-      ],
-    });
+    const discussions = await DiscussionService.getCommunityDiscussions(community.id);
+    res.send({ discussions });
+  } catch (err) {
+    next(err);
   }
 };
 
-const getDiscussionByCommunityId = async (req, res) => {
+const getDiscussionByCommunityId = async (req, res, next) => {
   try {
-    const { communityId, discussionId } = req.params;
-    const discussion = await models.discussions.findOne({
+    const { communitySlug, discussionSlug } = req.params;
+    const community = await models.communities.findOne({
       where: {
-        id: discussionId,
-        community_id: communityId,
+        slug: communitySlug,
       },
-      include: [{
-        model: models.communities,
-        as: 'communities',
-      },
-      {
-        model: models.users,
-        as: 'user',
-      }],
     });
-    if (!discussion) {
-      return res.send({
-        message: 'Discussion not found or you don\'t have a permission!',
-      });
-    }
 
-    res.send(discussion);
-  } catch (error) {
-    return res.send({
-      errors: [
-        {
-          message: error.message,
-        },
-      ],
-    });
+    // eslint-disable-next-line max-len
+    const discussion = await DiscussionService.getDiscussionByCommunityId(community.id, discussionSlug);
+    res.send({ discussion });
+  } catch (err) {
+    next(err);
   }
 };
+
 
 export default [{
   prefix: '/discussions',
   inject: (router) => {
     router.post('', create);
-    router.get('/:id', detail);
-    router.put('/:id', update);
-    router.delete('/:id', deleteById);
-    router.get('/:id/comments', getCommentsById);
+    router.get('/:slug', detail);
+    router.put('/:slug', update);
+    router.delete('/:slug', deleteById);
+    router.get('/:discussionSlug/comments', getCommentsById);
   },
 },
 {
-  prefix: '/communites',
+  prefix: '/communities',
   inject: (router) => {
-    router.get('/:communityId/discussions', getCommunityDiscussions);
-    router.get('/:communityId/:discussionId', getDiscussionByCommunityId);
+    router.get('/:communitySlug/discussions', getCommunityDiscussions);
+    router.get('/:communitySlug/:discussionSlug', getDiscussionByCommunityId);
   },
 }];

@@ -223,6 +223,10 @@ const contentReviews = async (req, res) => {
       where: {
         content_id: contentId,
       },
+      include: {
+        model: models.users,
+        as: 'user',
+      },
       limit,
     });
     return res.send({ reviews, count: reviews.length });

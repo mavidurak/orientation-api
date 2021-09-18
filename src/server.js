@@ -4,6 +4,7 @@ import 'colors';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import fileUpload from 'express-fileupload';
 
 import router from './router';
 import pre_handlers from './pre_handlers';
@@ -14,6 +15,7 @@ const { PORT } = process.env;
 
 server.use(cors());
 server.use(bodyParser.json());
+server.use(fileUpload());
 pre_handlers.forEach((h) => server.use(h));
 server.use(router);
 server.use(errorHandler);

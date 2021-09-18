@@ -5,10 +5,9 @@ class HTTPError extends Error {
       throw RangeError();
     }
     this.statusCode = statusCode;
+    // If message is array add message object for each massage element
     const errors = Array.isArray(message) ? message.map((m) => ({ message: m })) : [{ message }];
-    this.message = JSON.stringify({
-      errors,
-    });
+    this.message = { errors };
   }
 }
 

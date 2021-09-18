@@ -1,5 +1,6 @@
-import models from '../../models';
 import Joi from '../../joi';
+import ImageService from '../../services/image';
+import HTTPError from '../../exceptions/HTTPError';
 
 const create_validation = {
   body: Joi.object({
@@ -21,7 +22,7 @@ const create = async (req, res) => {
   }
   const { name, path } = req.body;
 
-  const image = await models.images.create({
+  const image = await ImageService.createImage({
     user_id: req.user.id,
     name,
     path,
@@ -31,77 +32,31 @@ const create = async (req, res) => {
   });
 };
 
-const detail = async (req, res) => {
+const detail = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const image = await models.images.findOne({
-      where: {
-        id,
-      },
-    });
+    const image = await ImageService.getImageById(id);
 
-    if (!image) {
-      return res.send({
-        errors: [
-          {
-            message: 'Image not found or you don\'t have a permission!',
-          },
-        ],
-      });
-    }
     return res.send(image);
   } catch (err) {
-    return res.status(500).send({
-      errors: [
-        {
-          message: err.message,
-        },
-      ],
-    });
+    next(err);
   }
 };
 
-const deleteById = async (req, res) => {
+const deleteById = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const image = await models.images.findOne({
-      where: {
-        id,
-        user_id: req.user.id,
-      },
-    });
+    const image = await ImageService.getImageById(id);
 
-    if (!image) {
-      return res.send({
-        errors: [
-          {
-            message: 'Image not found or you don\'t have a permission!',
-          },
-        ],
-      });
+    if (image.user_id !== req.user.id) {
+      throw new HTTPError('Image not found or you don\'t have a permission!', 403);
     }
-    const isdeleted = await models.images.destroy({
-      where: {
-        id,
-      },
-    });
-
-    if (!isdeleted) {
-      res.send({
-        message: 'Image not found or you don\'t have a permission!',
-      });
-    }
+    await ImageService.deleteImage(id, req.user.id);
     res.send({
       message: 'Image was deleted successfully!',
     });
   } catch (err) {
-    return res.status(500).send({
-      errors: [
-        {
-          message: err.message,
-        },
-      ],
-    });
+    next(err);
   }
 };
 
