@@ -4,6 +4,16 @@ import models from '../models';
 import HTTPError from '../exceptions/HTTPError';
 import { createSaltHashPassword, makeSha512 } from '../utils/encription';
 
+// const getUser = async (usernameOrId) => {
+//   const inputType = typeof usernameOrId === 'string' ? 'username' : 'id';
+//   const user = await models.users.findOne({
+//     where: {
+//       [inputType]: usernameOrId,
+//     },
+//   });
+//   return user;
+// };
+
 const getUser = async (usernameOrId) => {
   const inputType = typeof usernameOrId === 'string' ? 'username' : 'id';
   const user = await models.users.findOne({
@@ -12,6 +22,15 @@ const getUser = async (usernameOrId) => {
     },
   });
   return user;
+};
+
+const getFriends = async (id) => {
+  const users = await models.users.findAll({
+    where: {
+      id,
+    },
+  });
+  return users;
 };
 
 const createUser = async (username, email, password, name) => {
@@ -96,6 +115,7 @@ const deleteUser = async (id) => {
 
 const UserService = {
   getUser,
+  getFriends,
   createUser,
   updateUser,
   deleteUser,
