@@ -12,6 +12,14 @@ const images = Sequelize.define('images',
       type: DataTypes.STRING,
       allowNull: false,
     },
+    href: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        /* eslint-disable global-require */
+        require('dotenv').config();
+        return `${process.env.API_PATH}/files/${this.path}`;
+      },
+    },
   },
   {
     timestamps: true,

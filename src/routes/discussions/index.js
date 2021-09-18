@@ -104,7 +104,6 @@ const getCommentsById = async (req, res) => {
       return res.send({ comments: [] });
     }
 
-    let isLastStep = false;
     let childs = await models.comments.findAll({
       where: {
         parent_comment_id: {
@@ -119,7 +118,7 @@ const getCommentsById = async (req, res) => {
 
     // get all comment's comments
     let newComments = childs;
-
+    let isLastStep = childs.length === 0;
     while (!isLastStep) {
       newComments = await models.comments.findAll({
         where: {

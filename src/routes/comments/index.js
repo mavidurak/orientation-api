@@ -1,7 +1,7 @@
 import Joi from '../../joi';
 
-import models from '../../models';
 import CommentService from '../../services/comment';
+import HTTPError from '../../exceptions/HTTPError';
 
 const createCommentSchema = {
   body: Joi.object({
@@ -42,7 +42,7 @@ const updateComment = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { text, is_spoiler } = req.body;
-    const comment = await CommentService.updateComment(id, req.user.id, text, is_spoiler);
+    await CommentService.updateComment(id, req.user.id, text, is_spoiler);
     res.send({
       message: 'Comment updated successfully!',
     });

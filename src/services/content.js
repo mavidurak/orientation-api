@@ -91,12 +91,12 @@ const updateContent = async (
     name, type, description, image_id: image.id,
   }, {
   });
-
-  return await content.reload();
+  const updatedContent = await content.reload();
+  return updatedContent;
 };
 
 const deleteContent = async (slug, user_id) => {
-  const content = await ContentService.getContentByUserId(slug, user_id);
+  const content = await getContentByUserId(slug, user_id);
   const isDeleted = await content.destroy();
 
   if (!isDeleted) {
