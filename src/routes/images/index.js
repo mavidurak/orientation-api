@@ -1,4 +1,3 @@
-import models from '../../models';
 import Joi from '../../joi';
 import ImageService from '../../services/image';
 import HTTPError from '../../exceptions/HTTPError';

@@ -1,5 +1,3 @@
-import generateSlug from '../../utils/generateSlug';
-import models from '../../models';
 import HTTPError from '../../exceptions/HTTPError';
 import ImageService from '../../services/image';
 

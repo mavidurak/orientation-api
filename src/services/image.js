@@ -3,9 +3,8 @@ import HTTPError from '../exceptions/HTTPError';
 import generateSlug from '../utils/generateSlug';
 
 const uploadFile = async (file) => {
-  let uploadPath;
   const path = generateSlug(file.name) + file.name;
-  uploadPath = __dirname.replace('src/services', 'uploads/') + path;
+  const uploadPath = __dirname.replace('src/services', 'uploads/') + path;
   await file.mv(uploadPath, (err) => {
     if (err) {
       throw new HTTPError(err.message, 500);
@@ -49,8 +48,11 @@ const createImage = async ({ user_id, name, path }) => {
   return image;
 };
 
-const updateImage = async ({ name }, user_id) => {
+const updateImage = async ({ name, path }, user_id) => {
   const image = await getImageByPath(path);
+  if (image.user_id !== user_id) {
+    throw new HTTPError('Image not found or you don\'t have a permission', 403);
+  }
   const updatedImage = await image.update({ name });
   return updatedImage;
 };
