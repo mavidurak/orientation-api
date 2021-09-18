@@ -177,6 +177,7 @@ const getCommentsById = async (req, res) => {
         discussion_id: id,
       },
       include: {
+        attributes: { exclude: ['password_hash','password_salt'] },
         model: models.users,
         as: 'user',
       },
@@ -190,6 +191,7 @@ const getCommentsById = async (req, res) => {
           },
         },
         include: {
+          attributes: { exclude: ['password_hash','password_salt'] },
           model: models.users,
           as: 'user',
         },
@@ -206,6 +208,7 @@ const getCommentsById = async (req, res) => {
           },
         },
         include: {
+          attributes: { exclude: ['password_hash','password_salt'] },
           model: models.users,
           as: 'user',
         },
@@ -290,6 +293,7 @@ const getDiscussionByCommunityId = async (req, res) => {
         as: 'communities',
       },
       {
+        attributes: { exclude: ['password_hash','password_salt'] },
         model: models.users,
         as: 'user',
       }],

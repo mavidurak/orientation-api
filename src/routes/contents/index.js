@@ -69,6 +69,7 @@ const detail = async (req, res) => {
           as: 'image',
         },
         {
+          attributes: { exclude: ['password_hash','password_salt'] },
           model: models.users,
           as: 'user',
         },
