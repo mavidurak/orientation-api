@@ -28,6 +28,7 @@ const updateWantedContent = async ({ status, my_score },content_id, user_id) => 
         user_id,
       },
     });
+  return true;
 };
 
 const deleteWantedContent = async (contentId, user_id) => {
@@ -41,6 +42,7 @@ const deleteWantedContent = async (contentId, user_id) => {
     throw new HTTPError('Content not found or you don\'t have a permission!', 401);
   }
   await wantedContent.destroy();
+  return true;
 };
 
 const getWantedList = async (user_id) => {
