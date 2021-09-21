@@ -16,6 +16,7 @@ const getUser = async (usernameOrId) => {
 
 const getFriends = async (id) => {
   const users = await models.users.findAll({
+    attributes: { exclude: ['password_hash', 'password_salt'] },
     where: {
       id,
     },
