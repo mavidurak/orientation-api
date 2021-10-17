@@ -14,6 +14,16 @@ const getUser = async (usernameOrId) => {
   return user;
 };
 
+const getFriends = async (id) => {
+  const users = await models.users.findAll({
+    attributes: { exclude: ['password_hash', 'password_salt'] },
+    where: {
+      id,
+    },
+  });
+  return users;
+};
+
 const createUser = async (username, email, password, name) => {
   let user = await models.users.findOne({
     where: {
@@ -96,6 +106,7 @@ const deleteUser = async (id) => {
 
 const UserService = {
   getUser,
+  getFriends,
   createUser,
   updateUser,
   deleteUser,

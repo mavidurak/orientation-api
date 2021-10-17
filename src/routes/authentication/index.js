@@ -139,6 +139,17 @@ const userInfo = async (req, res) => {
   res.send(req.user);
 };
 
+const getUser = async(req, res, next) => {
+  try {
+    const { username } = req.params;
+    const user = await UserService.getUser(username);
+    const friends = await UserService.getFriends(user.friends_ids);
+    res.send({user, friends});
+  } catch(err) {
+    next(err);
+  }
+}
+
 const update = async (req, res, next) => {
   const { error } = updateSchema.body.validate(req.body);
   if (error) {
@@ -250,7 +261,7 @@ const resetPassword = async (req, res, next) => {
   }
 };
 
-export default {
+export default [{
   prefix: '/authentication',
   inject: (router) => {
     router.post('/register', register);
@@ -262,4 +273,10 @@ export default {
     router.post('/forgot-password', sendForgotPasswordEmail);
     router.post('/reset-password', resetPassword);
   },
-};
+},
+{
+  prefix: '/user',
+  inject: (router) => {
+    router.get('/:username', getUser);
+  },
+}];
